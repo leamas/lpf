@@ -1,0 +1,105 @@
+#!/bin/bash
+#
+# Approve packages in approve-wait state
+#
+
+scriptdir=$( dirname $(readlink -fn $0))
+source $scriptdir/lpf-defs.bash
+
+
+function get_approve_script()
+# get_approve_script - return user defined approve script or 'default'.
+{
+    pkg=$1
+    approve_script='default'
+    user_approve_script="$PKG_DATA_DIR/$pkg/approve-eula"
+    [ -x $user_approve_script ] && \
+        approve_script=$user_approve_script
+    echo $approve_script
+}
+
+
+function get_eula_licenses()
+# Return possibly empty list of eula agreements.
+{
+    local eula_dir=$( get_eula_dir $1 )
+    find $eula_dir -type f
+}
+
+
+function create_approve_file()
+{
+    local pkg=$1
+    local approve_file=$( get_approve_file $pkg )
+    touch $approve_file
+    chgrp $LPF_GROUP  $approve_file
+    chmod 664 $approve_file
+}
+
+
+function gui_approve()
+{
+    # zenity  character dimensions width x height is about 7x24
+    # so this is about 85x20 in characters
+    # (*WHY* can't width x height be expressed in characters?)
+    zenity --text-info --filename $1  --width 600 --height 500 \
+        --title="EULA terms for: $2" \
+        --checkbox="I read and accept the terms"
+}
+
+
+function cli_approve()
+{
+    local license=$1
+    more $license
+    echo -n "Do you accept these license terms [n] ? "
+    read reply < $LPF_CONSOLE
+    [ -z "$reply" ] && reply='No'
+    [[ $reply == [Yy]* ]]
+}
+
+
+function approve()
+{
+    local script=$1
+    local license=$2
+    local pkg=$3
+
+    if [ "$script" = 'default' ]; then
+        if [[ -n "$DISPLAY" && -x /usr/bin/zenity ]]; then
+            gui_approve "$license" "$pkg"
+        else
+            cli_approve "$license"
+        fi
+    else
+        $script $license
+    fi
+}
+
+
+if [ $USER = $LPF_USER ]; then
+    error "Bad user id" "Approve must not be run as user $LPF_USER"
+    exit 1
+fi
+
+errors=''
+pkgdirs=( $(get_pkgdirs) )
+[ -n "$1" ] && pkgdirs=( $1 )
+for pkgdir in ${pkgdirs[@]}; do
+    pkg=${pkgdir##*/}
+    [[ "$( get_state $pkg )" == approve* ]] ||
+        continue
+    approve_script=$( get_approve_script )
+    new_state='build-wait'
+    for license in $(get_eula_licenses $pkg); do
+        approve "$approve_script" "$license" "$pkg" || {
+            new_state='not-approved'
+            break
+        }
+    done
+    set_state $pkg $new_state
+    [ "$new_state"  = 'not-approved' ] && errors="$errors $pkg"
+done
+
+[ -n  "$errors" ] && exit 1
+exit 0

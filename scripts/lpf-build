@@ -1,0 +1,93 @@
+#!/bin/bash
+#
+# Build packages in approved queues.
+#
+
+scriptdir=$( dirname $(readlink -fn $0))
+source $scriptdir/lpf-defs.bash
+
+
+function get_approving_user()
+{
+    local approve_file=$( get_approve_file $1 )
+    ls -l $approve_file 2>/dev/null | awk '{print $3}' ||  echo 'unknown'
+}
+
+
+function copy_results()
+{
+    local pkg=$1
+    local _rpmdir=$( rpm --eval %_rpmdir )
+    local resultdir="$( get_resultdir $pkg )"
+    [ -d "$resultdir" ] || {
+        mkdir $resultdir; chmod 775 $resultdir;
+    }
+    find $_rpmdir -name \*.rpm -exec chmod 664 {} \;
+    find $_rpmdir -name \*.rpm -exec cp {} $resultdir \;
+}
+
+
+function done_msg()
+{
+    local pkg=$1 state=$2
+    if [ "$state" == 'install-wait' ]; then
+        if [[ -n "$DISPLAY" && -z "$LPF_UPDATE" ]]; then
+            zenity --info --title "Build completed OK"
+        else
+            echo "$pkg: build completed, no errors"
+        fi
+    else
+        if [ -n "$DISPLAY" ]; then
+            reply=$( $scriptdir/build_error.py )
+            if [ "$reply" = "view_buildlog" ]; then
+                zenity --text-info --filename $(get_logfile $1)  \
+                    --width 600 --height 500
+            fi
+        else
+            echo "$pkg: build failed (use lpf log to view log)" >&2
+        fi
+    fi
+}
+
+
+if [ $USER != $LPF_USER ]; then
+    error "Bad user id" "Build must be run as user $LPF_USER"
+    exit 1
+fi
+
+trap "$scriptdir/lpf-kill-pgroup" SIGINT
+export NO_AT_BRIDGE=0
+
+readonly pkgdirs=( $(get_arg_pkgdirs $@) )
+[ -w "$( rpm --eval %_rpmdir )" ] || rpmdev-setuptree
+readonly rpm_srcdir=$(rpm --eval %_sourcedir)
+readonly rpmdir=$( rpm --eval %_rpmdir )
+[ -w $rpm_srcdir ] || rpmdev-setuptree
+
+exec 5<&1 6<&2  # Preserve  original stdout/stderr.
+
+for pkgdir in ${pkgdirs[@]}; do
+    pkg=${pkgdir##*/}
+    buildlog=$( get_logfile $pkg )
+    user=$( get_approving_user $pkg )
+    spec=$pkgdir/$pkg.spec
+    state=$( get_state $pkg )
+    if [[ $state == build-wait && "$user" != unknown ]]; then
+        rm -rf $rpmdir/* 2>/dev/null || :
+        cd $rpm_srcdir
+        exec &> $buildlog
+        cp $PKG_DATA_DIR/$pkg/SOURCES/* $(pwd) 2>/dev/null || :
+        echo "$pkg: downloading sources" >&5 && spectool -g $spec &&
+            echo "$pkg: installing build dependencies" >&5 &&
+            $SUDO yum-builddep $spec &&
+                echo "$pkg: building" >&5 && rpmbuild -bb $spec && \
+                    echo "$pkg: storing results" >&5 &&
+                    copy_results $pkg && state='install-wait' || state='failed'
+        chmod 664 $buildlog
+        set_state $pkg $state
+        echo "$pkg: build completed" >&5
+        done_msg $pkg $state
+        [ "$state" != 'install-wait' ] && exit 1
+    fi
+done
+exit 0

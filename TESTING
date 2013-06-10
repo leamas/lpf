@@ -1,0 +1,81 @@
+There is yet no automated tests. Here some manual:
+
+- Generate a new rpm and install it:
+    $ tools/make_rpm
+    $ sudo yum install ~/rpmbuild/RPMS/noarch/lpf-0-2.b7cd782.fc18.noarch.rpm
+
+- Verify the help output:
+    $ lpf -h
+
+- Remove all target and lpf packages:
+    $ sudo rpm -e spotify-client msttcore-fonts
+    $ sudo rpm -e lpf-msttcore-fonts lpf-spotify-client
+    error: package lpf-msttcore-fonts is not installed
+    error: package lpf-spotify-client is not installed
+
+- Build lpf-msttcore-fonts:
+    cd examples/msttcore-fonts/
+    cp * ~/rpmbuild/SOURCES/
+    rpmbuild -ba lpf-msttcore-fonts.spec
+    $ sudo rpm -U --force ~/rpmbuild/RPMS/noarch/lpf-msttcore-fonts-2.2-1.fc18.noarch.rpm
+
+
+- Build lpf-spotify-client
+    cd examples/spotify-client/
+    cp * ~/rpmbuild/SOURCES/
+    rpmbuild -bb lpf-spotify-client.spec
+    sudo rpm -U --force ~/rpmbuild/RPMS/noarch/lpf-spotify-client-0.9.0.133.gd18ed58.259-1.fc18.noarch.rpm
+
+- Test lpf list
+
+    $ lpf list
+    spotify-client
+    msttcore-fonts
+
+- Check lpf state:
+
+    $ lpf state
+    spotify-client       approve-wait   0.9.0.133.gd18ed58.259-2.fc18
+    msttcore-fonts       approve-wait   2.2-1
+
+- Check that there are three applications available in gnome: lpf,
+  lpf-spotify-client, lpf-msttcore-fonts with correct factory icon
+
+- Check approve followed by 'Cancel':
+
+    $ lpf approve spotify-client
+    $ lpf state
+    spotify-client                     not-approved   0.9.0.133.gd18ed58.259-2.fc18
+    msttcore-fonts                     approve-wait   2.2-1
+
+- Check non-gui update of just spotify-client:
+
+    $ DISPLAY= lpf update spotify-client
+    ::::::::::::::
+    /usr/share/lpf/packages/spotify-client/eula/eula.txt
+    ::::::::::::::
+    Copyright (c) 2002-2006, Marc Prud'hommeaux <mwp1@cornell.edu>
+    All rights reserved.
+
+    ...
+
+    Do you accept these license terms [n] y
+    spotify-client: downloading sources
+    spotify-client: installing build dependencies
+    spotify-client: building
+    spotify-client: storing results
+    spotify-client: build completed
+    Install spotify-client-0.9.0.133.gd18ed58.259-2.fc18.i686.rpm (Yes/no) [y] ? y
+
+    spotify-client: installing /var/lib/lpf/rpms/spotify-client/spotify-client-0.9.0.133.gd18ed58.259-2.fc18.i686.rpm.
+
+    $ lpf state
+    spotify-client     OK             0.9.0.133.gd18ed58.259-2.fc18
+    msttcore-fonts     approve-wait   2.2-1
+
+- Check corresponding GUI update of lpf-msttcore-fonts: click on the lpf-msttcore-fonts icon
+
+- Check that repeated GUI update displays correct "Nothing to update" message.
+
+- Check that lpf log displays last log from msttcore-fonts.
+

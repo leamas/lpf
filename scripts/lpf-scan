@@ -1,0 +1,99 @@
+#!/bin/bash
+#
+#  Update package state file
+#
+
+scriptdir=$( dirname $(readlink -fn $0))
+source $scriptdir/lpf-defs.bash
+
+
+function triage()
+{
+
+    local pkg=$1
+    local pkgdir="$PKG_DATA_DIR/$pkg"
+    local spec=$pkgdir/$pkg.spec
+    local name version curr_version
+    while read name version; do
+        curr_version=$(rpm -q --qf "%{VERSION}-%{RELEASE}\n" $name) \
+            || curr_version='undef'
+        if [ "$curr_version" != "$version" ]; then
+           if [ -n "$( find $(get_eula_dir $pkg) -type f)" ]; then
+               set_state $pkg 'approve-wait'
+           else
+               set_state $pkg 'build-wait'
+           fi
+           return
+        else
+           set_state $pkg 'OK'
+        fi
+    done < <(rpm --specfile $spec -q --qf "%{NAME} %{VERSION}-%{RELEASE}\n")
+}
+
+
+function check_OK
+{
+    local pkg=$1
+    local lpf_vers=$( get_pkg_version $pkg )
+    local current_vers
+    current_vers=$(rpm -q --qf "%{VERSION}-%{RELEASE}\n" $pkg) \
+        || current_vers='undef'
+    if [ $current_vers != "$lpf_vers" ]; then
+       if [ -n "$( find $(get_eula_dir $pkg) -type f)" ]; then
+           set_state $pkg 'approve-wait'
+       else
+           set_state $pkg 'build-wait'
+       fi
+    fi
+}
+
+
+function check_install
+{
+    local pkg=$1
+    local resultdir=$( get_resultdir $pkg )
+    [[ -d $resultdir && "$(ls $resultdir | wc -l)" != "0" ]] || {
+        set_state  $pkg 'untriaged'
+        triage $pkg
+    }
+    local lpf_vers=$( get_pkg_version $pkg )
+    local current_vers
+    current_vers=$(rpm -q --qf "%{VERSION}-%{RELEASE}\n" $pkg) \
+        || current_vers='undef'
+    [ "$current_vers" = "$lpf_vers" ] && set_state $pkg 'OK'
+}
+
+
+function update_state()
+{
+    local pkg="$1"
+    local approve_file=$( get_approve_file $pkg )
+    state=$( get_state $pkg )
+    case $state in
+        OK) check_OK $pkg
+            ;;
+        install-wait)
+            check_install $pkg
+            ;;
+        failed|build-wait)
+            ;;
+        approve-wait)
+            if [ -e $approve_file ]; then
+                set_state $pkg 'build-wait'
+                rm $approve_file
+            fi
+            ;;
+        untriaged)
+            triage $pkg
+            ;;
+    esac
+}
+
+if [ $USER != $LPF_USER ]; then
+    error "Bad user id" "Scan must be run as user $LPF_USER"
+    exit 1
+fi
+pkgdirs=( $(get_arg_pkgdirs) )
+for pkgdir in ${pkgdirs[@]}; do
+    update_state ${pkgdir##*/}
+done

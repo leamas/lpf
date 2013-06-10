@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# Setup package for build
+#
+# Usage: lpf-setup [eula license] <topdir> <spec> [ source... ]
+#
+scriptdir=$( dirname $(readlink -fn $0))
+
+if [ -f "$1" ]; then
+    eula=$1
+    shift
+fi
+topdir=$1; shift
+spec=$1; shift
+
+pkg=$(basename $spec .spec)
+
+install  -d $topdir/usr/share/lpf/packages/$pkg/SOURCES
+install  -d $topdir/usr/share/lpf/packages/$pkg/eula
+install  -dm 775  $topdir/var/lib/lpf/packages/$pkg
+echo 'untriaged' >  $topdir/var/lib/lpf/packages/$pkg/state
+chmod 664 $topdir/var/lib/lpf/packages/$pkg/state
+
+install -pm 644 -D  /usr/share/applications/lpf.desktop \
+    $topdir/usr/share/applications/lpf-$pkg.desktop
+sed  -e '/^Name/s/=.*/= lpf '"$pkg/" \
+     -e '/^Comment/s/=.*/= Use lpf system to build '"$pkg/" \
+     -e "/^Exec/s/\$/ $pkg/" \
+     -i $topdir/usr/share/applications/lpf-$pkg.desktop
+
+[ -n "$eula" ] && cp -a $eula $topdir/usr/share/lpf/packages/$pkg/eula
+cp -a $spec $topdir/usr/share/lpf/packages/$pkg
+for arg in $*; do
+    cp $arg $topdir/usr/share/lpf/packages/$pkg/SOURCES
+done

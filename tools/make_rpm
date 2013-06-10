@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# lpf: create a fresh rpm to try.
+#
+
+cd $(dirname $(readlink -fn $0))/..
+
+[ -n "$(git diff lpf.spec)" ] && {
+    "You have changes in lpf.spec, please stash" >&2
+    exit 2
+}
+
+set -x
+head=$(git rev-parse HEAD)
+sed -i '/%global commit/s/commit.*/commit '$head/ lpf.spec
+read tag tarball < <(spectool -l lpf.spec)
+git archive -o $(rpm --eval %_sourcedir)/$(basename $tarball) \
+            --prefix lpf-$head/  HEAD
+rpmbuild -bb lpf.spec
+git checkout lpf.spec
+

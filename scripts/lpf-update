@@ -1,0 +1,154 @@
+#!/bin/bash
+#
+# The update command
+
+scriptdir=$( dirname $(readlink -fn $0))
+source $scriptdir/lpf-defs.bash
+
+
+function update_package_close()
+{
+    local pkg=$1
+    local state=$( get_state $pkg )
+
+    if [ -n "$DISPLAY" ]; then
+        local text=$( list_states )
+	zenity --info --title "Update complete" --text="$text"
+    fi
+}
+
+
+function update_package()
+{
+    local pkg=$1
+    local state="$( get_state $pkg )"
+
+    [ "$state" = 'failed' ] && state='build-wait'
+    [ "$state" = 'not-approved' ] && state='approve-wait'
+    set_state $pkg $state
+    until [[ 'OK failed not-approved' == *$state* ]]; do
+        case $state in
+            'approve-wait')
+                 approve_package $pkg || "$scriptdir/lpf-kill-pgroup"
+                 ;;
+            'build-wait')
+                 build_packages $pkg || echo "$pkg: build errors" >&5
+                 ;;
+            'install-wait')
+                 install_rpms $pkg
+                 ;;
+            'untriaged')
+                 scan_packages $pkg
+                 ;;
+        esac
+        state=$( get_state $pkg )
+    done
+}
+
+
+function confirm_update_arg()
+{
+    local pkg state version
+    read pkg state version < <( list_states $@ ) || { usage; exit 1; }
+    if [[ 'failed approve-wait build-wait install-wait not-approved' \
+           == *$state* ]]
+    then
+        echo "$pkg"
+        return 0
+    else
+        echo "$pkg: state $state can't be updated" >&6
+        echo "$pkg: exiting" >&6
+        exit 2
+    fi
+}
+
+
+function cli_confirm_update()
+{
+    local to_install
+    local states=$( list_states )
+
+    [ -z "$states" ] && return
+    set $( echo $states )
+    while [ -n "$*" ]; do
+         if [ "$2" = 'failed' ]; then
+             local msg="Rebuild and install failed build for $1 ($3)"
+             msg="$msg (yes/no) [y]? "
+             echo -n $msg >&5
+         elif [ "$2" != 'OK' ]; then
+             echo -n "Build and install $1 ($3) (yes/no) [y]? " >&5
+             read < $LPF_CONSOLE
+             [[ $REPLY = [yY]* ]] && to_install=( ${to_install[@]} $1 )
+         fi
+         shift 3
+    done
+    echo ${to_install[@]}
+}
+
+
+function gui_confirm_update()
+{
+    update_states=' approve-wait | build-wait | failed | not-approved '
+    listdata=( $( list_states | egrep "$update_states" | sed 's/^/True /'))
+    zenity --list --title "Select packages to build and install" --checklist \
+        --column Install --column Package --column State --column Version  \
+        --separator=' ' ${listdata[@]} \
+            || $scriptdir/lpf-kill-pgroup
+
+}
+
+
+function get_to_update()
+# Return list of packages to update.
+{
+    local pkg state lpf_vers curr_vers states
+    declare -A states
+
+    scan_packages "$@"
+    while read pkg state lpf_vers; do
+        curr_vers=$( rpm -q $pkg 2>/dev/null ) || curr_vers='-'
+        [[ 'approve-wait build-wait failed' == *$state* ]] && \
+            states[$pkg]="$pkg $state $lpf_vers $curr_vers\n"
+    done < <( list_states )
+
+    if [ -z "${states[*]}" ]; then
+        ( unset LPF_UPDATE || :
+          info "Nothing to update" \
+            "All lpf packages built and installed"
+        )
+        $scriptdir/lpf-kill-pgroup
+    fi
+
+    local to_update
+    if [ -n "$*" ]; then
+        to_update=$( confirm_update_arg "$@" ) || to_update=()
+    elif [ -n "$DISPLAY" ]; then
+        to_update=( $(gui_confirm_update "${states[@]}") )
+    else
+        to_update=( $(cli_confirm_update "${states[@]}") )
+    fi
+    echo "${to_update[@]}"
+}
+
+
+function update_packages()
+{
+    local state pkg
+    local to_update=$( get_to_update "$@" )
+
+    for pkg in ${to_update[@]}; do
+        state=$( get_state $pkg )
+        update_package $pkg
+        state=$( get_state $pkg )
+        if [[ "$state" == 'failed' && -n "$DISPLAY" ]]; then
+            local reply=$( $scriptdir/build_error.py )
+            [ "$reply" = 'view_buildlog' ] && show_buildlog $pkg
+        fi
+    done
+    update_package_close $pkg
+}
+
+
+trap "$scriptdir/lpf-kill-pgroup" SIGINT
+exec 5<&1 6<&2
+update_packages "$@"

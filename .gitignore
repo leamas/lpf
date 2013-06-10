@@ -1,0 +1,7 @@
+*.gz
+*.html
+*.swp
+usr
+var
+test-usr
+test-var

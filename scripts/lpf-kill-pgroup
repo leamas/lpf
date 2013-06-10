@@ -1,0 +1,6 @@
+#!/bin/bash
+#
+# Use sudo to kill all members of "my" process group.
+
+pgroup=$(ps -ho pgid $$)
+sudo kill -TERM -${pgroup/ /}
