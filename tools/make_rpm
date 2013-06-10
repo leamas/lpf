@@ -16,6 +16,6 @@ sed -i '/%global commit/s/commit.*/commit '$head/ lpf.spec
 read tag tarball < <(spectool -l lpf.spec)
 git archive -o $(rpm --eval %_sourcedir)/$(basename $tarball) \
             --prefix lpf-$head/  HEAD
-rpmbuild -bb lpf.spec
+rpmbuild -ba lpf.spec
 git checkout lpf.spec
 

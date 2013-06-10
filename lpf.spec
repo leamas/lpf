@@ -1,9 +1,9 @@
-%global commit 1ef88240c1897f39d80d0f3fe485ce11aeecd013
+%global commit d961366e92861e290855db02a04141f301ee1758
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           lpf
 Version:        0
-Release:        2.%{shortcommit}%{?dist}
+Release:        1.%{shortcommit}%{?dist}
 Summary:        Local package factory - build non-redistributable rpms
 
                 # Icon from iconarchive.com
@@ -23,7 +23,7 @@ Requires(pre):  shadow-utils
 
 
 %description
-lpf (Local Package Build System) is designed to handle two separate
+lpf (Local Package Factory) is designed to handle two separate
 problems:
  - Packages built from sources which does not allow redistribution.
  - Packages requiring user to accept EULA-like terms.
@@ -96,5 +96,5 @@ fi
 
 
 %changelog
-* Sun May 05 2013 Alec Leamas <leamas@nowhere.net> - 0-1.fa1afe1
+* Mon Jun 10 2013 Alec Leamas <leamas@nowhere.net> - 0-1.d961366
 - Initial release
