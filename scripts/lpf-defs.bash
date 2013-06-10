@@ -2,7 +2,6 @@
 # Common code sourced by other scripts
 #
 
-
 scriptdir=$( dirname $(readlink -fn $0))
 
 LPF_VAR=${LPF_VAR:-/var/lib/lpf}
@@ -13,7 +12,6 @@ LPF_DATA=${LPF_DATA:-/usr/share/lpf}
 [ -e $scriptdir/usr ] && export LPF_DATA=$scriptdir/usr/share/lpf
 
 PKG_DATA_DIR="$LPF_DATA/packages"
-PKG_RPM_DIRS="$LPF_VAR/rpms"
 LPF_USER='pkg-build'
 LPF_GROUP='pkg-build'
 
@@ -72,7 +70,7 @@ function set_state()
 
 
 function get_pkg_version()
-# get_pkg_version pkgdir - return version of lpf version
+# get_pkg_version pkg - return version of lpf version
 {
     local pkg=$1
     local spec=$PKG_DATA_DIR/$pkg/$pkg.spec
