@@ -117,7 +117,7 @@ function approve_package_cmd()
 function install_rpms_cmd()
 {
     check_pkg_arg "$@"
-    install_rpms
+    install_rpms "$@"
 }
 
 
