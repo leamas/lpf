@@ -1,9 +1,9 @@
-%global commit d961366e92861e290855db02a04141f301ee1758
+%global commit c4bc5a2187ce2155e987f041bece79ad53d385d2
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           lpf
 Version:        0
-Release:        1.%{shortcommit}%{?dist}
+Release:        2.%{shortcommit}%{?dist}
 Summary:        Local package factory - build non-redistributable rpms
 
                 # Icon from iconarchive.com
@@ -78,5 +78,8 @@ fi
 
 
 %changelog
+* Tue Jun 11 2013 Alec Leamas <leamas@nowhere.net> - 0-1.c4bc5a2
+- Upstream Makefile added, clean up installation
+
 * Mon Jun 10 2013 Alec Leamas <leamas@nowhere.net> - 0-1.d961366
 - Initial release
