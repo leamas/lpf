@@ -41,32 +41,14 @@ Besides being interactive the operation is similar to akmod and dkms
 
 
 %install
-install -m 755 -d %{buildroot}/etc/sudoers.d
-install -m 755 -d %{buildroot}/var/lib/lpf/{packages,rpms,approvals,log}
-install -m 755 -d %{buildroot}%{_datadir}/lpf/packages
-install -m 755 -d %{buildroot}%{_bindir}
-install -m 755 -d %{buildroot}%{_libexecdir}
-
-cp -a pkg-build %{buildroot}/etc/sudoers.d
-cp -ar scripts examples  %{buildroot}%{_datadir}/lpf
-ln -s %{_datadir}/lpf/scripts/lpf %{buildroot}%{_bindir}/lpf
-
-pushd %{buildroot}%{_libexecdir}
-ln -s %{_datadir}/lpf/scripts/lpf-kill-pgroup .
-popd
-
-for size in 24 32 48 64 128; do
-    install -m 644 -D icons/lpf-$size.png \
-        %{buildroot}%{_datadir}/icons/hicolor/${size}x${size}/apps/lpf.png
-done
-desktop-file-install \
-    --dir %{buildroot}%{_datadir}/applications lpf.desktop
+make DESTDIR=%{buildroot} install
+desktop-file-validate %{buildroot}%{_datadir}/applications/lpf.desktop
 
 
 %pre
 getent group pkg-build >/dev/null || groupadd -r pkg-build
 getent passwd pkg-build >/dev/null || \
-    useradd -r -g pkg-build -d /var/lib/lpf -s /bin/bash \
+    useradd -r -g pkg-build -d /var/lib/lpf -s /sbin/nologin \
         -c "lpf local package build user" pkg-build
 exit 0
 
