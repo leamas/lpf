@@ -28,9 +28,8 @@ function _get_statefile()   { echo $LPF_VAR/packages/$1/state; }
 function _message()
 {
     local kind=$1; shift
-    local title=$1; shift
     if [[ -n "$DISPLAY"  && -z "$LPF_UPDATE" ]]; then
-        zenity --$kind --title="lpf: $title" --text "$*"
+        zenity --$kind --title="lpf: $1" --text "$*"
     else
         echo "$title${1:+:} $*"
     fi
