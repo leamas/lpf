@@ -1,4 +1,4 @@
-%global commit fe3defcf9c75172a64ac42edd733ba44f837f61f
+%global commit ecc32426c89401d80175886d469bc56bb955ae78
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           lpf
