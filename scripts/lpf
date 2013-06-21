@@ -102,8 +102,8 @@ function rebuild_package()
 
 function scan_packages_cmd()
 {
-    [ -z "$1" ] || { usage; exit 1; }
-    scan_packages
+    [ -n "$1" ] && check_pkg_arg "$@"
+    scan_packages "$@"
 }
 
 
