@@ -88,14 +88,12 @@ make install DESTDIR=%{buildroot}
 
 %post
 touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-lpf scan || :
 
 %postun
 if [ $1 -eq 0 ] ; then
   touch --no-create %{_datadir}/icons/hicolor &>/dev/null
   gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 fi
-lpf scan || :
 
 %posttrans
 gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :

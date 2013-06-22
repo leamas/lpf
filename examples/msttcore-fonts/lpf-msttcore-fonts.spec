@@ -39,18 +39,19 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 
 %post
-lpf scan 2>/dev/null || :
+lpf scan %{target_pkg} &>/dev/null || :
 
+%triggerpostun -- %{target_pkg}
+lpf scan-removal %{target_pkg} &>/dev/null || :
 
-%postun
-lpf scan 2>/dev/null || :
+%triggerin -- %{target_pkg}
+lpf scan %{target_pkg} &>/dev/null || :
 
 
 %files
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/lpf/packages/%{target_pkg}
 %attr(775,pkg-build,pkg-build) /var/lib/lpf/packages/%{target_pkg}
-%attr(664,pkg-build,pkg-build) /var/lib/lpf/packages/%{target_pkg}/state
 
 
 %changelog
