@@ -36,6 +36,9 @@ commands:
     log [package]
                 Display logs from last build for package, or just
                 last build.
+    scan-removal <package>
+                Triage package with the assumption that existing
+                target package is removed (use in spec scriptlets).
 EOF
 }
 
@@ -104,6 +107,14 @@ function scan_packages_cmd()
 {
     [ -n "$1" ] && check_pkg_arg "$@"
     scan_packages "$@"
+}
+
+
+function scan_removal_cmd()
+{
+    check_pkg_arg "$@"
+    set_state $1 'removing'
+    scan_packages_cmd "$1"
 }
 
 
@@ -189,6 +200,9 @@ case $command in
             ;;
     log)
             show_buildlog "$@"
+            ;;
+    scan-removal)
+            scan_removal_cmd "$@"
             ;;
     *)      usage
             exit 1

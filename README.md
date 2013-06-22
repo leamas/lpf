@@ -84,32 +84,32 @@ An alternative way without using any CLI magic:
 
 
                                   ------------------>-------------
-    lbps package                  |                              |
+    lpf package                   |                              |
     installation                  |   -------------          ----------
                  -------------    |   | approve-  | approve  | build- |
     ---->--------| untriaged |------>-| wait      |---->-----| wait   |
                  -------------  scan  -------------          ----------
-                         |             |      |                   |
-                         |     rebuild ^      v cancel            |
-                         |             |      |                   |
-                         |            ------------                |           )
-         target package  |            | not-     |    build       v
-         uninstallation  ^            | approved |    (pkg-build) |
-         (root)          |            ------------                |
-                         |                                        |
-                         |            -------------               |
-                         |            | failed    |------<--------|
-                         |            - -----------               |
-                         |              |    |                    |
-                         |              |    v  rebuild           v
-         lpf package     |              |    |                    |
-         update          ^              --<---------->--------    |
-         (root)          |                                   |    |
-                         |    --------                     ----------
-                         |    |      |                     |install- |
-                         -----|  OK  |------------<--------|wait     |
-                              |      |        install      -----------
-                              --------        (root)
+                   |     |             |      |                   |
+                   |     |     rebuild ^      v cancel            |
+                   |     |             |      |                   |
+                   |     |            ------------                |           )
+             scan  ^     |            | not-     |    build       v
+                   |     |  lpf pkg   | approved |    (pkg-build) |
+                   |     ^  update    ------------                |
+                   |     |  (root)                                |
+                   |     |            -------------               |
+                   |     ---------    | failed    |------<--------|
+                   |             |    -------------               |
+              ------------       |      |    |                    |
+              | removing |       |      |    v  rebuild           v
+              ------------       |      |    |                    |
+                   |             |      --<---------->--------    |
+    Target pkg     |             |                           |    |
+    remove (root)  ^           --------                     ----------
+                   |           |      |                     |install- |
+                   ------------|  OK  |------------<--------|wait     |
+                               |      |        install      -----------
+                               --------        (root)
 
 
  - After installation a lpf package is untriaged. Normally, the %post

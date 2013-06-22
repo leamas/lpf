@@ -20,4 +20,3 @@ git archive -o $(rpm --eval %_sourcedir)/$(basename $tarball) \
             --prefix lpf-$head/  HEAD
 rpmbuild -ba lpf.spec
 git checkout lpf.spec
-
