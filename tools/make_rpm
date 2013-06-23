@@ -11,12 +11,18 @@ cd $(dirname $(readlink -fn $0))/..
 }
 
 set -x
-head=$(git rev-parse HEAD)
+head=$( git rev-parse HEAD )
 sed -i -e '/%global commit/s/commit.*/commit '$head/ \
        -e '/%changelog/,/^$/ s/[0-9a-f]{7}/'"${head:0:7}/" \
      lpf.spec
+evr=$( rpm --specfile -q --qf "%{VERSION}-%{RELEASE}" lpf.spec )
 read tag tarball < <(spectool -l lpf.spec)
 git archive -o $(rpm --eval %_sourcedir)/$(basename $tarball) \
             --prefix lpf-$head/  HEAD
 rpmbuild -ba lpf.spec
+mkdir dist 2>/dev/null || :
+rm -rf dist/*
+cp lpf.spec dist
+cp $(rpm --eval %_srcrpmdir)/lpf-$evr.src.rpm dist
+cp $(rpm --eval %_rpmdir)/noarch/lpf-$evr.noarch.rpm dist
 git checkout lpf.spec
