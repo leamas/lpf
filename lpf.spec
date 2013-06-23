@@ -36,6 +36,7 @@ Besides being interactive the operation is similar to akmod and dkms
 
 %prep
 %setup -qn lpf-%{commit}
+rm -rf examples
 
 
 %build
@@ -55,7 +56,7 @@ exit 0
 
 %post
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-/usr/bin/lpf scan
+/usr/bin/lpf scan || :
 
 %postun
 if [ $1 -eq 0 ] ; then
@@ -79,6 +80,9 @@ fi
 
 
 %changelog
+* Sun Jun 23 2013 Alec Leamas <leamas@nowhere.net> - 0-3.fe3defcf9
+- Removed examples, added lpf spec tamplate.
+
 * Thu Jun 13 2013 Alec Leamas <leamas@nowhere.net> - 0-3.fe3defcf9
 - Added BR: python2-devel
 - Simplified Source0 (https://fedorahosted.org/fpc/ticket/284)
