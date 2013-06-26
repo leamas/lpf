@@ -25,4 +25,5 @@ rm -rf dist/*
 cp lpf.spec dist
 cp $(rpm --eval %_srcrpmdir)/lpf-$evr.src.rpm dist
 cp $(rpm --eval %_rpmdir)/noarch/lpf-$evr.noarch.rpm dist
+cp  $(rpm --eval %_sourcedir)/$(basename $tarball) dist
 git checkout lpf.spec
