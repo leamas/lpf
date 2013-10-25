@@ -1,5 +1,5 @@
 #These refer to the installer, not the main package:
-%global commit      fcc05c0a291847113894ad420b70b2e3f6b18ceb
+%global commit      cb564f2c83b93055ad94564f8df04f74fe88af9a
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 %global repo        http://repository.spotify.com/pool/non-free/s/spotify
@@ -12,8 +12,8 @@
 
 
 Name:           spotify-client
-Version:        0.9.0.133.gd18ed58.259
-Release:        2%{?dist}
+Version:        0.9.4.183.g644e24e.428
+Release:        4%{?dist}
 Summary:        Spotify music player native client
 
 # board=http://community.spotify.com/t5/Desktop-Linux
@@ -24,9 +24,6 @@ Group:          Applications/Multimedia
 ExclusiveArch:  i386 i686 x86_64
 Source0:        %{github_repo}/spotify-make-%{version}-%{shortcommit}.tar.gz
 Source1:        %{repo}/spotify-client_%{version}-1_amd64.deb
-                # Install dropbox GTK client, www.dropbox.com.
-                # Invoke dropbox in GUI, wait until it's installed.
-                # Find files in ~/.dropbox-dist
 Source2:        %{repo}/spotify-client_%{version}-1_i386.deb
 
 %ifarch x86_64
@@ -54,12 +51,12 @@ Provides:       spotify = %{version}-%{release}
 Provides:       bundled(libssl) = 0.9.8
 
 %description
-Think of Spotify as your new music collection. Your library. Only
-this time your collection is vast: millions of tracks and counting.
-Spotify comes in all shapes and sizes, available for your PC, Mac,
-home audio system and mobile phone. Wherever you go, your music
-follows you. And because the music plays live, there’s no need to wait
-for downloads and no big dent in your hard drive.
+Think of Spotify as your new music collection. Your library. Only this time
+your collection is vast: millions of tracks and counting.  Spotify comes in
+all shapes and sizes, available for your PC, Mac, home audio system and
+mobile phone. Wherever you go, your music follows you. And because the music
+plays live, there’s no need to wait for downloads and no big dent in your
+hard drive.
 
 # Bundled, we should not Provide these. Cannot use %%filter
 # due to BZ 873847. Instead, use builtin filtering:
@@ -71,6 +68,7 @@ for downloads and no big dent in your hard drive.
 %global __requires_exclude                     ^libssl.so.0.9.8
 %global __requires_exclude %__requires_exclude|^libcrypto.so.0.9.8
 %global __requires_exclude %__requires_exclude|^libcef.so
+%global __requires_exclude %__requires_exclude|^libudev.so.0
 %global __requires_exclude %__requires_exclude|[.]so[.][0-2][a-f]
 
 
@@ -112,6 +110,23 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sat Oct 12 2013 Alec Leamas <leamas@nowhere.net> - 0.9.4.183.g644e24e.428-4
+- Updating to latest spotify-make.
+- Still more fixes for directory layout.
+
+* Sat Oct 12 2013 Alec Leamas <leamas@nowhere.net> - 0.9.4.183.g644e24e.428-3
+- Updating to latest spotify-make
+- Fixes for directory layout in 0.9.4, notably SpotifyHelper in Data.
+
+* Fri Oct 11 2013 Alec Leamas <leamas@nowhere.net> - 0.9.4.183.g644e24e.428-2
+- Updating to latest spotify-make
+- New spotify release
+- Filter new bundled libudev.so.0.
+
+* Mon Jun 17 2013 Alec Leamas <leamas@nowhere.net> - 0.9.1.55.gbdd3b79.203-1
+- Updating to latest spotify-make
+- New upstream version
+
 * Sun May 05 2013 Alec Leamas <leamas@nowhere.net> - 0.9.0.133.gd18ed58.259-2
 - Updating to latest spotify-make.
 
