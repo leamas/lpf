@@ -74,6 +74,7 @@ fi
 %{_datadir}/lpf
 %{_datadir}/applications/lpf.desktop
 %{_datadir}/icons/hicolor/*/apps/lpf.png
+%{_datadir}/man/man1/lpf.*
 %{_libexecdir}/lpf-kill-pgroup
 %config(noreplace) /etc/sudoers.d/pkg-build
 %attr(2775, pkg-build, pkg-build)/var/lib/lpf
@@ -82,6 +83,7 @@ fi
 %changelog
 * Sun Jun 23 2013 Alec Leamas <leamas@nowhere.net> - 0-3.fe3defcf9
 - Removed examples, added lpf spec tamplate.
+- Add manpage
 
 * Thu Jun 13 2013 Alec Leamas <leamas@nowhere.net> - 0-3.fe3defcf9
 - Added BR: python2-devel
