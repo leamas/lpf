@@ -11,7 +11,7 @@ if [ -f "$1" ]; then
     shift
 fi
 topdir=$1; shift
-spec=$1; shift
+spec=${1%.in}; shift
 
 pkg=$(basename $spec .spec)
 

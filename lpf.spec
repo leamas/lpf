@@ -1,9 +1,9 @@
-%global commit 07c16885d582c9925d72cf2a61d0e646ceacf7e9
+%global commit 3051236453fd3d8fd9b135e0137cf6f0aa3de1e1
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           lpf
 Version:        0
-Release:        3.%{shortcommit}%{?dist}
+Release:        4.%{shortcommit}%{?dist}
 Summary:        Local package factory - build non-redistributable rpms
 
                 # Icon from iconarchive.com
@@ -76,11 +76,15 @@ fi
 %{_datadir}/icons/hicolor/*/apps/lpf.png
 %{_datadir}/man/man1/lpf.*
 %{_libexecdir}/lpf-kill-pgroup
-%config(noreplace) /etc/sudoers.d/pkg-build
+# fedpkg import does not accept /etc ATM.
+%config(noreplace) %{_sysconfdir}/sudoers.d/pkg-build
 %attr(2775, pkg-build, pkg-build)/var/lib/lpf
 
 
 %changelog
+* Fri Oct 25 2013 Alec Leamas <leamas.alec@gmail.com> - 0-4.3051236
+- Updating examples
+
 * Sun Jun 23 2013 Alec Leamas <leamas@nowhere.net> - 0-3.fe3defcf9
 - Removed examples, added lpf spec tamplate.
 - Add manpage
