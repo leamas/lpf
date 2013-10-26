@@ -1,9 +1,9 @@
-%global commit 3051236453fd3d8fd9b135e0137cf6f0aa3de1e1
+%global commit  84c3544573a328d43c4e971bb8c122a10073252a
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           lpf
 Version:        0
-Release:        4.%{shortcommit}%{?dist}
+Release:        5.%{shortcommit}%{?dist}
 Summary:        Local package factory - build non-redistributable rpms
 
                 # Icon from iconarchive.com
@@ -82,6 +82,9 @@ fi
 
 
 %changelog
+* Sat Oct 26 2013 Alec Leamas <leamas.alec@gmail.com> - 0-5.84c3544
+- Allow spec file to be named .spec.in
+
 * Fri Oct 25 2013 Alec Leamas <leamas.alec@gmail.com> - 0-4.3051236
 - Updating examples
 
