@@ -19,7 +19,8 @@ Requires:       hicolor-icon-theme
 Requires:       rpmdevtools
 Requires:       rpm-build
 Requires:       sudo
-Requires:       zenity
+Requires:       sudo
+Requires:       yum-utils
 Requires(pre):  shadow-utils
 
 

@@ -29,7 +29,7 @@ sed  -e '/^Name/s/=.*/= lpf '"$pkg/" \
      -i $topdir/usr/share/applications/lpf-$pkg.desktop
 
 [ -n "$eula" ] && cp -a $eula $topdir/usr/share/lpf/packages/$pkg/eula
-cp -a $spec* $topdir/usr/share/lpf/packages/$pkg
+cp -a $spec* $topdir/usr/share/lpf/packages/$pkg/${pkg}.spec
 for arg in $*; do
     cp $arg $topdir/usr/share/lpf/packages/$pkg/SOURCES
 done
