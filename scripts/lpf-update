@@ -149,6 +149,6 @@ function update_packages()
 }
 
 
-trap "$scriptdir/lpf-kill-pgroup" SIGINT
+trap "do_trap" SIGINT ERR EXIT
 exec 5<&1 6<&2
 update_packages "$@"

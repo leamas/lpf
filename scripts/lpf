@@ -166,7 +166,7 @@ fi
 
 [ -n "$DISPLAY" ] && xhost local:$LPF_USER >/dev/null
 
-trap "$scriptdir/lpf-kill-pgroup" SIGINT
+trap "do_trap" SIGINT ERR EXIT
 
 # http://forums.gentoo.org/viewtopic-t-947211-start-0.html
 export NO_AT_BRIDGE=0
