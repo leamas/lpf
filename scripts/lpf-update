@@ -15,6 +15,7 @@ function update_package_close()
         local text=$( list_states )
 	zenity --info --title "Update complete" --text="$text"
     fi
+    echo "$pkg: exiting" >&5
 }
 
 
