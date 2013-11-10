@@ -150,6 +150,6 @@ function update_packages()
 }
 
 
-trap "do_trap" SIGINT ERR EXIT
+trap "do_trap" SIGINT ERR
 exec 5<&1 6<&2
 update_packages "$@"
