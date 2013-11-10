@@ -168,7 +168,9 @@ function show_buildlog()
 function do_trap()
 # Handle standard traps: kill all processes in group.
 {
+    rc=${1:-80}
     trap '' EXIT ERR SIGINT
     $scriptdir/lpf-kill-pgroup
+    exit $rc
 }
 

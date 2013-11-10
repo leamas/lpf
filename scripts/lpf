@@ -166,7 +166,7 @@ fi
 
 [ -n "$DISPLAY" ] && xhost local:$LPF_USER >/dev/null
 
-trap "do_trap" SIGINT ERR EXIT
+trap "do_trap 81" SIGINT ERR
 
 # http://forums.gentoo.org/viewtopic-t-947211-start-0.html
 export NO_AT_BRIDGE=0
@@ -207,3 +207,5 @@ case $command in
     *)      usage
             exit 1
 esac
+
+do_trap 0

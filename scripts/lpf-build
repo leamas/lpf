@@ -55,7 +55,7 @@ if [ $USER != $LPF_USER ]; then
     exit 1
 fi
 
-trap "do_trap" SIGINT ERR
+trap "do_trap 82" SIGINT ERR
 export NO_AT_BRIDGE=0
 
 readonly pkgdirs=( $(get_arg_pkgdirs $@) )

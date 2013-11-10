@@ -105,5 +105,5 @@ function install_rpms()
 }
 
 
-trap "do_trap" SIGINT ERR
+trap "do_trap 83" SIGINT ERR
 install_rpms "$@"
