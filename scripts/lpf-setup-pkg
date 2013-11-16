@@ -11,9 +11,9 @@ if [ -f "$1" ]; then
     shift
 fi
 topdir=$1; shift
-spec=${1%.in}; shift
+spec=$1; shift
 
-pkg=$(basename $spec .spec)
+pkg=$(basename ${spec%.in} .spec)
 
 install  -d $topdir/usr/share/lpf/packages/$pkg/SOURCES
 install  -d $topdir/usr/share/lpf/packages/$pkg/eula
@@ -29,7 +29,7 @@ sed  -e '/^Name/s/=.*/= lpf '"$pkg/" \
      -i $topdir/usr/share/applications/lpf-$pkg.desktop
 
 [ -n "$eula" ] && cp -a $eula $topdir/usr/share/lpf/packages/$pkg/eula
-cp -a $spec* $topdir/usr/share/lpf/packages/$pkg/${pkg}.spec
+cp -a $spec $topdir/usr/share/lpf/packages/$pkg/${pkg}.spec
 for arg in $*; do
     cp $arg $topdir/usr/share/lpf/packages/$pkg/SOURCES
 done

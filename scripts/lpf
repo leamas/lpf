@@ -184,22 +184,27 @@ case $command in
     state)  list_states_cmd "$@"
             ;;
     build)  build_packages_cmd "$@"
+            do_trap 0
             ;;
     rebuild)
             rebuild_package "$@"
+            do_trap 0
             ;;
     scan)   scan_packages_cmd "$@"
             ;;
     approve)
             approve_package_cmd "$@"
+            do_trap 0
             ;;
     update) update_packages "$@"
             ;;
     install)
             install_rpms_cmd "$@"
+            do_trap 0
             ;;
     log)
             show_buildlog "$@"
+            do_trap 0
             ;;
     scan-removal)
             scan_removal_cmd "$@"
@@ -207,5 +212,3 @@ case $command in
     *)      usage
             exit 1
 esac
-
-do_trap 0

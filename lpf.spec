@@ -1,4 +1,4 @@
-%global commit  84c3544573a328d43c4e971bb8c122a10073252a
+%global commit  a3cedb280cf2de877548576710ac6877aca56cd4
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           lpf
@@ -83,7 +83,7 @@ fi
 
 
 %changelog
-* Sat Oct 26 2013 Alec Leamas <leamas.alec@gmail.com> - 0-5.84c3544
+* Sat Nov 16 2013 Alec Leamas <leamas.alec@gmail.com> - 0-5.a3cedb2
 - Allow spec file to be named .spec.in
 
 * Fri Oct 25 2013 Alec Leamas <leamas.alec@gmail.com> - 0-4.3051236
