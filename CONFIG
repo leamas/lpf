@@ -1,0 +1,5 @@
+# Default config file, if there is a user config file it is sourced after this
+
+rpmbuild_opts="-bb"
+# Example for building i686 packages also on x86_64 hosts:
+# rpmbuild_opts="-bb --target i686-linux-i686-linux"

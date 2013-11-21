@@ -141,6 +141,7 @@ accept before building. The directory structure is
 
     /usr/share/lpf/packages/spotify-client
                                 spotify-client.spec
+                                CONFIG
                                 SOURCES
                                     patch-1
                                     desktop-file
@@ -152,6 +153,10 @@ Writing the lpf spec should be simple using the examples as a
 starting point.  When the lpf package is installed, it will enter the
 'approve-wait' state and can be handled as described under Getting
 Started.
+
+The optional CONFIG file is used to tweak how lpf builds the package.
+Typical usage is in packages only built for i686 even on x86\_64 hosts.
+Look into /usr/share/lpg/CONFIG for more.
 
 
 ## The lpf tool
