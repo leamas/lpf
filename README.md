@@ -37,12 +37,11 @@ lpf bootstrap package and install it:
     $ rpmbuild -bb lpf-msttcore-fonts.spec
     $ rpm -U --force /home/al/rpmbuild/RPMS/noarch/lpf-msttcore-fonts-2.2-1.fc18.noarch.rpm
 
-To use lpf you need to be member of the pkg-build group. Do
+To use lpf you need to be member of the pkg-build group. On the first run you will be prompted
+about adding this group to your user. These prompts disappear after logging out and in again
+(or rebooting).
 
-    $ sudo usermod -a -G pkg-build <your uid>
-and then *you must logout and login again* for this to be effective.
-
-Check that the /etc/sudodoers file must contains the following line (default
+Check that the /etc/sudodoers file contains the following line (default
 in recent Fedora versions):
 
     #includedir /etc/sudoers.d
