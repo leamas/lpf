@@ -99,7 +99,7 @@ function install_rpms()
            log_and_echo "$pkg: install completed, no errors"
            ;;
         *) set_state $pkg 'failed'
-           log_and_echo "$pkg: installation errors (lpf buildlog shows log)"
+           log_and_echo "$pkg: installation errors (lpf log shows log)"
            ;;
     esac
 }
