@@ -92,6 +92,10 @@ function install_rpms()
         set_state $pkg 'OK'
         exit 1
     fi
+    if rpm -q $pkg &>/dev/null; then
+        log_and_echo "$pkg: Removing existing package."
+        $SUDO rpm -e --nodeps $( basename $pkg .rpm )
+    fi
     log_and_echo "$pkg: installing ${to_install[@]}."
     $SUDO yum -y install ${to_install[@]} && rm -rf $resultdir
     case $? in
