@@ -168,7 +168,9 @@ fi
 
 export SUDO_ASKPASS=$scriptdir/sudo_askpass
 id -Gn | grep -q $LPF_GROUP  || {
-    [ "$EUID" != "0" ] && $scriptdir/lpf-add-group || exit 1
+    if [ "$EUID" != "0" ]; then
+       $scriptdir/lpf-add-group || exit 1
+    fi
 }
 
 [ -z "$LPF_CONSOLE" ] && export LPF_CONSOLE=/dev/$( ps -p$$ -o tty="" )
