@@ -67,6 +67,9 @@ lpf scan %{target_pkg} &>/dev/null || :
 %postun
 lpf scan %{target_pkg} &>/dev/null || :
 
+%triggerpostun -- %{target_pkg}
+lpf scan-removal %{target_pkg} &>/dev/null || :
+
 
 %files
 %doc README
