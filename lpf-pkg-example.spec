@@ -45,6 +45,11 @@ Requires:       lpf
 Bootstrap package allowing the lpf system to build the
 restricted-fonts non-redistributable package.
 
+target-summary:  [Summar:y form target spec]
+target-arch:     [If there is Arch/ExclusiveArch: in target, duplicate here]
+target-license:  [License: from target]
+target-url:      [Url: from target]
+
 
 %prep
 %setup -cT
