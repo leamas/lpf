@@ -144,7 +144,7 @@ function get_srpm_cmd()
     sources=$(rpm --eval %_sourcedir)
     cp $LPF_DATA/packages/$1/SOURCES/* $sources 2>/dev/null || :
     spectool -g -C $sources  $LPF_DATA/packages/$1/*.spec
-    rpmbuild -bs  $LPF_DATA/packages/$1/*.spec | tee $log
+    rpmbuild -bs  --define="_srcrpmdir $PWD" $LPF_DATA/packages/$1/*.spec
 }
 
 
