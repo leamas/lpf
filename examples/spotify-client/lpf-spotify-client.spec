@@ -55,7 +55,7 @@ if [ "$1" = '0' ]; then
 fi
 
 %triggerpostun -- %{target_pkg}
-if [ "$1" = '0' ]; then
+if [ "$2" = '0' ]; then
     lpf scan-removal %{target_pkg} &>/dev/null || :
 fi
 
