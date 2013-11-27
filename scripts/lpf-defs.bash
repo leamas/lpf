@@ -73,7 +73,7 @@ function get_pkg_version()
 {
     local pkg=$1
     local spec=$PKG_DATA_DIR/$pkg/$pkg.spec
-    rpm --specfile $spec -q --qf "%{VERSION}-%{RELEASE}\n" | head -1
+    rpm --specfile $spec -q --qf "%{VERSION}-%{RELEASE}\n" 2>/dev/null | head -1
 }
 
 
