@@ -9,7 +9,6 @@ source $scriptdir/lpf-defs.bash
 
 function triage()
 {
-
     local pkg=$1
     local pkgdir="$PKG_DATA_DIR/$pkg"
     local spec=$pkgdir/$pkg.spec
@@ -17,6 +16,7 @@ function triage()
     while read name version; do
         curr_version=$(rpm -q --qf "%{VERSION}-%{RELEASE}\n" $name) \
             || curr_version='undef'
+	[ "$(get_state $pkg)" = 'removing' ] && curr_version='undef'
         if [ "$curr_version" != "$version" ]; then
            if [ -n "$( find $(get_eula_dir $pkg) -type f)" ]; then
                set_state $pkg 'approve-wait'
@@ -83,7 +83,7 @@ function update_state()
                 rm $approve_file
             fi
             ;;
-        untriaged)
+        untriaged|removing)
             triage $pkg
             ;;
     esac
@@ -93,6 +93,7 @@ if [ $USER != $LPF_USER ]; then
     error "Bad user id" "Scan must be run as user $LPF_USER"
     exit 1
 fi
+cd /tmp
 pkgdirs=( $(get_arg_pkgdirs) )
 for pkgdir in ${pkgdirs[@]}; do
     update_state ${pkgdir##*/}

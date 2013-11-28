@@ -1,7 +1,4 @@
 # lpf - Local Package Factory
-
-Current state is pre-alpha, in development!
-
 lpf is designed to handle two separate problems:
 
  - Packages built from sources which does not allow redistribution
@@ -45,6 +42,12 @@ To use lpf you need to be member of the pkg-build group. Do
     $ sudo usermod -a -G pkg-build <your uid>
 and then *you must logout and login again* for this to be effective.
 
+Check that the /etc/sudodoers file must contains the following line (default
+in recent Fedora versions):
+
+    #includedir /etc/sudoers.d
+
+
 ## Getting started
 
 At this point, your lpf package is installed and ready to approve, build
@@ -67,39 +70,46 @@ After running above, check status again
     $ lpf state
     msttcore-fonts                     OK             2.2-1
 
-That's all!
+
+## The GUI way
+
+An alternative way without using any CLI magic:
+   - install lpf-msttcore-fonts
+   - Locate the lpf-msttcore-fonts factory icon (eg g., search usng
+     gnome3) and click on it. Watch the package being built and installed
+     after some dialogs (see screenshots)
 
 
 ## lpf package licecycle
 
 
                                   ------------------>-------------
-    lbps package                  |                              |
+    lpf package                   |                              |
     installation                  |   -------------          ----------
                  -------------    |   | approve-  | approve  | build- |
     ---->--------| untriaged |------>-| wait      |---->-----| wait   |
                  -------------  scan  -------------          ----------
-                         |             |      |                   |
-                         |     rebuild ^      v cancel            |
-                         |             |      |                   |
-                         |            ------------                |           )
-         target package  |            | not-     |    build       v
-         uninstallation  ^            | approved |    (pkg-build) |
-         (root)          |            ------------                |
-                         |                                        |
-                         |            -------------               |
-                         |            | failed    |------<--------|
-                         |            - -----------               |
-                         |              |    |                    |
-                         |              |    v  rebuild           v
-         lpf package     |              |    |                    |
-         update          ^              --<---------->--------    |
-         (root)          |                                   |    |
-                         |    --------                     ----------
-                         |    |      |                     |install- |
-                         -----|  OK  |------------<--------|wait     |
-                              |      |        install      -----------
-                              --------        (root)
+                   |     |             |      |                   |
+                   |     |     rebuild ^      v cancel            |
+                   |     |             |      |                   |
+                   |     |            ------------                |           )
+             scan  ^     |            | not-     |    build       v
+                   |     |  lpf pkg   | approved |    (pkg-build) |
+                   |     ^  update    ------------                |
+                   |     |  (root)                                |
+                   |     |            -------------               |
+                   |     ---------    | failed    |------<--------|
+                   |             |    -------------               |
+              ------------       |      |    |                    |
+              | removing |       |      |    v  rebuild           v
+              ------------       |      |    |                    |
+                   |             |      --<---------->--------    |
+    Target pkg     |             |                           |    |
+    remove (root)  ^           --------                     ----------
+                   |           |      |                     |install- |
+                   ------------|  OK  |------------<--------|wait     |
+                               |      |        install      -----------
+                               --------        (root)
 
 
  - After installation a lpf package is untriaged. Normally, the %post
@@ -152,8 +162,10 @@ For now, here is the help (-h) output.
     Usage: lpf <command> [args]
 
     commands:
-        update      Interactive approve, build and installation.
         list 	List all packages.
+        update [package]
+                    Interactive approve, build and install of given package or
+                    all packages.
         state [package]
                     List package state or state of all packages.
         scan [package]
@@ -170,12 +182,12 @@ For now, here is the help (-h) output.
         install [package]
                     Install rpms for given package or all packages in state
                     install-wait
-        buildlog [package]
+        log [package]
                     Display logs from last build for package, or just
                     last build.
 
-In a desktop environment lpf will pop up various GUI windows. To make it work
-as a pure cli application unset the DISPLAY environment variable.
+In a desktop environment lpf will pop up various GUI windows. To make
+it work as a pure cli application unset the DISPLAY environment variable.
 
 ## Security, users and such
 
@@ -195,6 +207,8 @@ This is open software licensed under the MIT license, see the LICENSE file.
 lots...
  - Dozens of bugs...
  - Sooner or later write this in a proper language (python?).
+ - Modify the status page using a python GUI. Aligh  fields,
+   "log" and "build" buttons for each package
  - Unit tests.
- - A Dbus interface, including a notification mechanism so user can
-   build new packages as needed when lpf packages are updated.
+ - A notification mechanism so user can build new packages as needed
+   when lpf packages are updated.

@@ -1,0 +1,61 @@
+.TH lpf 1
+.SH NAME
+lpf \- Build non-redistributable rpms
+
+.SH SYNOPSIS
+.B lpf <command> [options]
+
+.SH DESCRIPTION
+Builds and installs non-redistributable rpms by downloading binaries,
+building and install a local rpm.
+.PP
+lpf handles lpf packages named like lpf-spotify-client and target
+packages which is spotify-client in this case. The lpf package is basically
+just a thin recipe how to build the target package. Target packages are
+by definition non-redistributable.
+
+The basic usage is
+.IP "" 4
+$ lpf update
+.PP
+which will build and install any not yet installed target packages
+corresponding to installed lpf packages. This also works to update
+target packages to match updated lpf packages.
+.PP
+lpf packages are visible as an icon in the GUI. Clicking this icon is
+the same as running 'lpf update' on the corresponding package.
+
+.SH COMMANDS
+.TP
+list:
+list all installed lpf packages.
+.TP
+update [package]:
+Interactive approve, build and install of given package or
+all packages.
+.TP
+state [package]:
+List package state or state of all packages.
+.TP
+scan [package]:
+Triage a given package or all packages and update their status.
+.TP
+approve \<package\>:
+Approve a package in state approve-wait.
+.TP
+build [package]:
+Build given package or all packages in state build-wait
+.TP
+rebuild [package]:
+Force re-install of a package where previous installation failed.
+.TP
+install [package]:
+Install rpms for given package or all packages in state install-wait
+.TP
+log [package]:
+Display logs from last build for package, or just last build.
+
+.SH SEE ALSO
+.TP
+https://github.com/leamas/lpf
+Source, FSM description, issue tracker, etc.

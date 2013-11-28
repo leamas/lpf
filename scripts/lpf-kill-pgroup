@@ -1,6 +1,8 @@
 #!/bin/bash
 #
-# Use sudo to kill all members of "my" process group.
+# Use sudo to kill all children of "my" process group.
 
 pgroup=$(ps -ho pgid $$)
-sudo kill -TERM -${pgroup/ /}
+members=$( ps  --sid $pgroup -ho pid)
+children=${members/$$/}
+if [ -n "${children/ /}" ]; then  kill -TERM $children; fi

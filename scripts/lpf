@@ -36,6 +36,9 @@ commands:
     log [package]
                 Display logs from last build for package, or just
                 last build.
+    scan-removal <package>
+                Triage package with the assumption that existing
+                target package is removed (use in spec scriptlets).
 EOF
 }
 
@@ -102,8 +105,16 @@ function rebuild_package()
 
 function scan_packages_cmd()
 {
-    [ -z "$1" ] || { usage; exit 1; }
-    scan_packages
+    [ -n "$1" ] && check_pkg_arg "$@"
+    scan_packages "$@"
+}
+
+
+function scan_removal_cmd()
+{
+    check_pkg_arg "$@"
+    set_state $1 'removing'
+    scan_packages_cmd "$1"
 }
 
 
@@ -117,7 +128,7 @@ function approve_package_cmd()
 function install_rpms_cmd()
 {
     check_pkg_arg "$@"
-    install_rpms
+    install_rpms "$@"
 }
 
 
@@ -155,7 +166,7 @@ fi
 
 [ -n "$DISPLAY" ] && xhost local:$LPF_USER >/dev/null
 
-trap "$scriptdir/lpf-kill-pgroup" SIGINT
+trap "do_trap 81" SIGINT ERR
 
 # http://forums.gentoo.org/viewtopic-t-947211-start-0.html
 export NO_AT_BRIDGE=0
@@ -190,6 +201,11 @@ case $command in
     log)
             show_buildlog "$@"
             ;;
+    scan-removal)
+            scan_removal_cmd "$@"
+            ;;
     *)      usage
             exit 1
 esac
+
+do_trap 0

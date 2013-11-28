@@ -105,5 +105,5 @@ function install_rpms()
 }
 
 
-trap "$scriptdir/lpf-kill-pgroup" SIGINT
+trap "do_trap 83" SIGINT ERR
 install_rpms "$@"

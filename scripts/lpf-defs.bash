@@ -2,7 +2,6 @@
 # Common code sourced by other scripts
 #
 
-
 scriptdir=$( dirname $(readlink -fn $0))
 
 LPF_VAR=${LPF_VAR:-/var/lib/lpf}
@@ -13,7 +12,6 @@ LPF_DATA=${LPF_DATA:-/usr/share/lpf}
 [ -e $scriptdir/usr ] && export LPF_DATA=$scriptdir/usr/share/lpf
 
 PKG_DATA_DIR="$LPF_DATA/packages"
-PKG_RPM_DIRS="$LPF_VAR/rpms"
 LPF_USER='pkg-build'
 LPF_GROUP='pkg-build'
 
@@ -30,9 +28,8 @@ function _get_statefile()   { echo $LPF_VAR/packages/$1/state; }
 function _message()
 {
     local kind=$1; shift
-    local title=$1; shift
     if [[ -n "$DISPLAY"  && -z "$LPF_UPDATE" ]]; then
-        zenity --$kind --title="lpf: $title" --text "$*"
+        zenity --$kind --title="lpf: $1" --text "$*"
     else
         echo "$title${1:+:} $*"
     fi
@@ -72,7 +69,7 @@ function set_state()
 
 
 function get_pkg_version()
-# get_pkg_version pkgdir - return version of lpf version
+# get_pkg_version pkg - return version of lpf version
 {
     local pkg=$1
     local spec=$PKG_DATA_DIR/$pkg/$pkg.spec
@@ -167,3 +164,13 @@ function show_buildlog()
         cat $logfile
     fi
 }
+
+function do_trap()
+# Handle standard traps: kill all processes in group.
+{
+    rc=${1:-80}
+    trap '' EXIT ERR SIGINT
+    $scriptdir/lpf-kill-pgroup
+    exit $rc
+}
+
