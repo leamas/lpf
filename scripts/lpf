@@ -35,9 +35,8 @@ commands:
     log [package]
                 Display logs from last build for package, or just
                 last build.
-    scan-removal <package>
-                Triage package with the assumption that existing
-                target package is removed (use in spec scriptlets).
+
+See the manpage for more commands and other info.
 EOF
 }
 

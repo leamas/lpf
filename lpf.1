@@ -24,7 +24,14 @@ target packages to match updated lpf packages.
 .PP
 lpf packages are visible as an icon in the GUI. Clicking this icon is
 the same as running 'lpf update' on the corresponding package.
-
+.PP
+To run privilieged operations lpf uses sudo(1). In order to use lpf, the
+sudo configuration must allow current user to run commands as root, with
+or without a password.
+.PP
+If DISPLAY is defined in the environment, lpf uses GUI dialogs for user
+interaction even when invoked from command line. To force CLI only
+operation, unset DISPLAY.
 .SH COMMANDS
 .TP
 list:
@@ -60,6 +67,11 @@ Copies spec file for package to current directory.
 .TP
 srpm <package>:
 Builds a srpm file for package.
+.TP
+scan-removal <package>:
+Triage package with the assumption that existing
+target package is removed (use in spec scriptlets).
+
 
 .SH SEE ALSO
 .TP
