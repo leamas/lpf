@@ -4,8 +4,9 @@ There is yet no automated tests. Here some manual:
     $ tools/make_rpm
     $ sudo yum install ~/rpmbuild/RPMS/noarch/lpf-0-2.b7cd782.fc18.noarch.rpm
 
-- Verify the help output:
+- Verify the help output and manpage:
     $ lpf -h
+    $ nroff -man lpf.1 | more
 
 - Remove all target and lpf packages:
     $ sudo rpm -e spotify-client msttcore-fonts
@@ -39,7 +40,8 @@ There is yet no automated tests. Here some manual:
     msttcore-fonts       approve-wait   2.2-1
 
 - Check that there are three applications available in gnome: lpf,
-  lpf-spotify-client, lpf-msttcore-fonts with correct factory icon
+  lpf-spotify-client, lpf-msttcore-fonts with correct factory icon (under System
+  Tools in classic mode).
 
 - Check approve followed by 'Cancel':
 
@@ -78,4 +80,22 @@ There is yet no automated tests. Here some manual:
 - Check that repeated GUI update displays correct "Nothing to update" message.
 
 - Check that lpf log displays last log from msttcore-fonts.
+
+- Check that lpf spec msttcore-fonts and lpf srpm msttcore-fonts is OK.
+
+- Remove msttcore-fonts package, check that state is OK:
+
+    $ sudo rpm -e msttcore-fonts
+    [mk@muminmamman lpf]$ lpf state
+    spotify-client                     OK             0.9.4.183.g644e24e.428-4.fc20
+    msttcore-fonts                     approve-wait   2.2-1
+    $
+
+- In the spotify example, patch Version to something bigger in both
+  lpf-spotify-client.spec and spotify-client.spec.in
+- Rebuild lpf-spotify-client and install it.
+- Check that lpf state shows approve-wait
+- Remove lpf-spotify-client. Verify that lpf state looks OK, without
+  lpf-spotify-client
+- Checkout git versions of lpf-spotify-client.spec spotify-client.spec.in
 

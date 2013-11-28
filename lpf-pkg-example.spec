@@ -34,7 +34,7 @@ Source1:        eula.txt
 # Add sources and patches used by target spec which can't
 # be downloaded:
 Source2:        restricted-fonts-fontconfig.conf
-Source3.	README
+Source3:	README
 
 BuildRequires:  desktop-file-utils
 BuildRequires:  lpf
@@ -44,6 +44,11 @@ Requires:       lpf
 %description
 Bootstrap package allowing the lpf system to build the
 restricted-fonts non-redistributable package.
+
+target-summary:  [Summary form target spec]
+target-arch:     [If there is Arch/ExclusiveArch: in target, duplicate here]
+target-license:  [License: from target]
+target-url:      [Url: from target]
 
 
 %prep
@@ -55,9 +60,9 @@ restricted-fonts non-redistributable package.
 
 %install
 # lpf-setup-pkg creates the package structure according to:
-# lpf-setup-pkg [eula] <topdir> <specfile> [sources...]:
+# lpf-setup-pkg [-a arch] [-e eula] <topdir> <specfile> [sources...]
 /usr/share/lpf/scripts/lpf-setup-pkg \
-    %{SOURCE1} %{buildroot} %{SOURCE0} %{SOURCE2}
+    -e %{SOURCE1} %{buildroot} %{SOURCE0} %{SOURCE2}
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 
@@ -65,7 +70,14 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 lpf scan %{target_pkg} &>/dev/null || :
 
 %postun
-lpf scan %{target_pkg} &>/dev/null || :
+if [ "$1" = '0' ]; then
+    /usr/share/lpf/scripts/lpf-pkg-postun %{target_pkg}
+fi
+
+%triggerpostun -- %{target_pkg}
+if [ "$2" = '0' ]; then
+    lpf scan-removal %{target_pkg} &>/dev/null || :
+fi
 
 
 %files

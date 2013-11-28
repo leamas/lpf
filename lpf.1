@@ -49,11 +49,17 @@ Build given package or all packages in state build-wait
 rebuild [package]:
 Force re-install of a package where previous installation failed.
 .TP
-install [package]:
-Install rpms for given package or all packages in state install-wait
+install <package>:
+Install rpms for given package.
 .TP
 log [package]:
 Display logs from last build for package, or just last build.
+.TP
+spec <package>:
+Copies spec file for package to current directory.
+.TP
+srpm <package>:
+Builds a srpm file for package.
 
 .SH SEE ALSO
 .TP
