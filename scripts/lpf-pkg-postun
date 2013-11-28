@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Clean up after removed lpf package
+#
+# Usage: lpf-pkg-postun <pkg>
+#
+# Runs without safety nets!
+
+[ $UID != 0 ] &&  { echo "You must be root to do this."; exit 1; }
+
+pkg=$1
+[ -z "$1" ] && { echo "No package given, goodbye." >&2; exit 1; }
+
+rm -rf /var/lib/lpf/packages/$pkg
+rm -rf /var/lib/lpf/rpms/$pkg
+rm -rf /var/lib/lpf/approvals/$pkg
+rm -f /var/lib/lpf/log/$pkg.log

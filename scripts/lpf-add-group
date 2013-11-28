@@ -1,0 +1,55 @@
+#!/bin/bash
+#
+# Add the lpf group to current user.
+#
+
+scriptdir=$( dirname $(readlink -fn $0))
+source $scriptdir/lpf-defs.bash
+
+
+function cli_confirm_add()
+{
+    local resultdir=$1
+    local to_install=()
+    local rpm
+    echo -n "OK to add group $LPF_GROUP to your current user $USER? [n]: "
+    read
+    if [[ "$REPLY" == [Yy]* ]]; then
+        rc=0
+    else
+        rc=1
+    fi
+    return $rc
+}
+
+
+function gui_confirm_add()
+{
+    text="You must be member of the $LPF_GROUP group to run lpf"
+    text="$text (log out and in again to mute this dialog)."
+    text="$text\nOK to add group $LPF_GROUP to your current user $USER?"
+    zenity --question  --text "$text"
+}
+
+
+function add_lpf_group()
+{
+    if [ -n "$DISPLAY" ]; then
+        gui_confirm_add
+        ok=$?
+    else
+        cli_confirm_add
+        ok=$?
+    fi
+    if [ $ok = "0" ]; then
+        $SUDO usermod -a -G $LPF_GROUP $USER
+    else
+        exit 1
+    fi
+}
+
+
+trap "do_trap 83" SIGINT ERR
+add_lpf_group
+
+

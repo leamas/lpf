@@ -37,12 +37,11 @@ lpf bootstrap package and install it:
     $ rpmbuild -bb lpf-msttcore-fonts.spec
     $ rpm -U --force /home/al/rpmbuild/RPMS/noarch/lpf-msttcore-fonts-2.2-1.fc18.noarch.rpm
 
-To use lpf you need to be member of the pkg-build group. Do
+To use lpf you need to be member of the pkg-build group. On the first run you will be prompted
+about adding this group to your user. These prompts disappear after logging out and in again
+(or rebooting).
 
-    $ sudo usermod -a -G pkg-build <your uid>
-and then *you must logout and login again* for this to be effective.
-
-Check that the /etc/sudodoers file must contains the following line (default
+Check that the /etc/sudodoers file contains the following line (default
 in recent Fedora versions):
 
     #includedir /etc/sudoers.d
@@ -141,6 +140,7 @@ accept before building. The directory structure is
 
     /usr/share/lpf/packages/spotify-client
                                 spotify-client.spec
+                                CONFIG
                                 SOURCES
                                     patch-1
                                     desktop-file
@@ -152,6 +152,10 @@ Writing the lpf spec should be simple using the examples as a
 starting point.  When the lpf package is installed, it will enter the
 'approve-wait' state and can be handled as described under Getting
 Started.
+
+The optional CONFIG file is used to tweak how lpf builds the package.
+Typical usage is in packages only built for i686 even on x86\_64 hosts.
+Look into /usr/share/lpg/CONFIG for more.
 
 
 ## The lpf tool

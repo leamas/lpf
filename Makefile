@@ -17,7 +17,7 @@ install:
 	install -m 755 -d $(DESTDIR)$(MAN1)
 
 	cp -a pkg-build $(DESTDIR)/etc/sudoers.d
-	cp -ar scripts $(DESTDIR)$(DATADIR)/lpf
+	cp -ar scripts CONFIG $(DESTDIR)$(DATADIR)/lpf
 	ln -s $(DATADIR)/lpf/scripts/lpf $(DESTDIR)$(BINDIR)/lpf
 	ln -s $(DATADIR)/lpf/scripts/lpf-kill-pgroup \
 	    $(DESTDIR)/$(LIBEXECDIR)/lpf-kill-pgroup

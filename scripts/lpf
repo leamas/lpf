@@ -149,12 +149,9 @@ if [ -z "$1" -o "$1" = '-h' ]; then
     exit 1
 fi
 
+export SUDO_ASKPASS=$scriptdir/sudo_askpass
 id -Gn | grep -q $LPF_GROUP  || {
-    if [ "$EUID" != "0" ]; then
-        error "Missing group" \
-           "You must be member of $LPF_GROUP group to run lpf"
-        exit 2
-    fi
+    [ "$EUID" != "0" ] && $scriptdir/lpf-add-group || exit 1
 }
 
 [ -z "$LPF_CONSOLE" ] && export LPF_CONSOLE=/dev/$( ps -p$$ -o tty="" )

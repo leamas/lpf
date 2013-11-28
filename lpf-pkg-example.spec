@@ -28,12 +28,13 @@ URL:            https://github.com/leamas/lpf
 Group:          Development/Tools
 BuildArch:      noarch
 # The target package spec:
-Source0:        restricted-fonts.spec
+Source0:        restricted-fonts.spec.in
 # The terms user needs to accept before building package.
 Source1:        eula.txt
 # Add sources and patches used by target spec which can't
 # be downloaded:
 Source2:        restricted-fonts-fontconfig.conf
+Source3.	README
 
 BuildRequires:  desktop-file-utils
 BuildRequires:  lpf
@@ -47,7 +48,6 @@ restricted-fonts non-redistributable package.
 
 %prep
 %setup -cT
-rm -rf examples
 
 
 %build
@@ -61,18 +61,15 @@ rm -rf examples
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 
-# Remaining parts should not need any editing besides the changelog:
 %post
 lpf scan %{target_pkg} &>/dev/null || :
 
-%triggerpostun -- %{target_pkg}
-lpf scan-removal %{target_pkg} &>/dev/null || :
-
-%triggerin -- %{target_pkg}
+%postun
 lpf scan %{target_pkg} &>/dev/null || :
 
 
 %files
+%doc README
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/lpf/packages/%{target_pkg}
 %attr(775,pkg-build,pkg-build) /var/lib/lpf/packages/%{target_pkg}

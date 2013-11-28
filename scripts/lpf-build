@@ -67,6 +67,8 @@ readonly rpmdir=$( rpm --eval %_rpmdir )
 exec 5<&1 6<&2  # Preserve  original stdout/stderr.
 
 for pkgdir in ${pkgdirs[@]}; do
+    source $scriptdir/../CONFIG
+    [ -f $pkgdir/CONFIG ] && source $pkgdir/CONFIG
     pkg=${pkgdir##*/}
     buildlog=$( get_logfile $pkg )
     user=$( get_approving_user $pkg )
@@ -80,9 +82,10 @@ for pkgdir in ${pkgdirs[@]}; do
         echo "$pkg: downloading sources" >&5 && spectool -g $spec &&
             echo "$pkg: installing build dependencies" >&5 &&
             $SUDO yum-builddep $spec &&
-                echo "$pkg: building" >&5 && rpmbuild -bb $spec && \
-                    echo "$pkg: storing results" >&5 &&
-                    copy_results $pkg && state='install-wait' || state='failed'
+                echo "$pkg: building" >&5 && \
+                rpmbuild ${rpmbuild_opts:-'-bb'} $spec && \
+                echo "$pkg: storing results" >&5 &&
+                copy_results $pkg && state='install-wait' || state='failed'
         chmod 664 $buildlog
         set_state $pkg $state
         echo "$pkg: build completed" >&5
