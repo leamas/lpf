@@ -5,4 +5,7 @@
 pgroup=$(ps -ho pgid $$)
 members=$( ps  --sid $pgroup -ho pid)
 children=${members/$$/}
-if [ -n "${children/ /}" ]; then  kill -TERM $children; fi
+if [ -n "${children/ /}" ]; then
+    kill -TERM $children || :
+fi
+exit 0
