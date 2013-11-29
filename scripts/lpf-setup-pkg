@@ -8,16 +8,18 @@ scriptdir=$( dirname $(readlink -fn $0))
 
 config=$( mktemp )
 eula=''
-case "$1" in
-    '-a')    shift
-             echo "rpmbuild_opts=\"-bb --target $1\"" > $config
-             shift
-             ;;
-    '-e')    shift
-             eula=$1
-             shift
-             ;;
-esac
+while [[ "$1" == -* ]]; do
+    case "$1" in
+        '-a')    shift
+                 echo "rpmbuild_opts=\"-bb --target $1\"" > $config
+                 shift
+                 ;;
+        '-e')    shift
+                 eula=$1
+                 shift
+                 ;;
+    esac
+done
 
 if [ -f "$1" ]; then
     # Compatibility mode for old [eula] <topdir> <spec> ...
