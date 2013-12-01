@@ -111,7 +111,7 @@ function scan_packages_cmd()
 function scan_removal_cmd()
 {
     check_pkg_arg "$@"
-    $scriptdir/lpf-packbuild 'set-state' $1 'removing'
+    $scriptdir/lpf-pkgbuild 'set-state' $1 'removing'
     scan_packages_cmd "$1"
 }
 

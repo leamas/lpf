@@ -1,0 +1,99 @@
+#!/bin/bash
+#
+# Stare-changing operations, needs to be run as pkg-build user.
+#
+
+scriptdir=$( dirname $(readlink -fn $0))
+source $scriptdir/lpf-defs.bash
+
+readonly rpm_srcdir=$( rpm --eval %_sourcedir )
+readonly rpm_rpmdir=$( rpm --eval %_rpmdir )
+
+
+function set_state()
+# Given package and state, set new state.
+{
+    [ -e $LPF_VAR/packages/$1 ] || mkdir -p  $LPF_VAR/packages/$1
+    echo $2 >$( _get_statefile $1 )
+}
+
+
+function copy_results()
+{
+    local pkg=$1
+    local resultdir="$( get_resultdir $pkg )"
+    [ -d "$resultdir" ] || mkdir $resultdir
+    find $rpm_rpmdir -name \*.rpm -exec cp {} $resultdir \;
+}
+
+
+function build_pkg()
+# Given pkg, build it
+{
+    pkg=$1
+    spec=$( get_spec $pkg )
+    buildlog=$( get_logfile $pkg )
+    rm -rf $rpm_rpmdir/* &> /dev/null
+    rm -rf $rpm_srcdir/* &> /dev/null
+    [ -w "$rpm_srcdir" ] || rpmdev-setuptree
+
+    exec 5<&1 6<&2  # Preserve  stdout/stderr.
+    exec &>> $buildlog
+    cd $rpm_srcdir
+    cp $( get_pkg_srcdir $pkg )/* $PWD &>/dev/null || :
+    echo "$pkg: downloading sources" >&5 && spectool -g $spec &&
+       echo "$pkg: building" >&5 &&
+           rpmbuild ${rpmbuild_opts:-'-bb'} $spec && \
+           echo "$pkg: storing results" >&5 &&
+       copy_results $pkg && state='install-wait' || state='failed'
+       echo "$pkg: build completed" >&5
+       set_state $pkg $state
+}
+
+
+function build()
+{
+    for pkg in $@; do build_pkg $pkg; done
+}
+
+
+function create_approve_file()
+{
+    local approve_file=$( get_approve_file $1 )
+    touch $approve_file
+}
+
+
+function clear_results()
+# Clear resultdir for given package.
+{
+    pkg=$1
+    local resultdir=$( get_resultdir $pkg )
+    rm -rf $resultdir &>/dev/null || :
+}
+
+
+if [ ! $( id -un ) = "$LPF_USER" ]; then
+    exec sudo -u $LPF_USER  $scriptdir/lpf-pkgbuild "$@"
+fi
+
+cmd="$1"; shift
+case "$cmd" in
+    'build')
+         build "$@"
+         ;;
+    'set-state')
+         set_state "$@"
+         ;;
+    'clear-results')
+         clear_results "$@"
+         ;;
+    'create-approve-file')
+         create_approve_file "$@"
+         ;;
+    *)   echo 'What!?' >&2
+         exit 1
+         ;;
+esac
+
+

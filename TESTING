@@ -77,6 +77,13 @@ There is yet no automated tests. Here some manual:
 
 - Check corresponding GUI update of lpf-msttcore-fonts: click on the lpf-msttcore-fonts icon
 
+- Reset msttcore-fonts:
+    $ lpf set-state msttcore-fonts build-wait
+    $ sudo rpm -e msttcore-fonts
+  Rebuild lpf package, check that Cancel works during build
+
+- Reset same way, check that Cancel works during install.
+
 - Check that repeated GUI update displays correct "Nothing to update" message.
 
 - Check that lpf log displays last log from msttcore-fonts.

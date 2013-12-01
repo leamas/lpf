@@ -41,9 +41,9 @@ export NO_AT_BRIDGE=0
 
 readonly pkgdirs=( $(get_arg_pkgdirs $@) )
 
-exec 5<&1 6<&2  # Preserve  original stdout/stderr.
 
 for pkgdir in ${pkgdirs[@]}; do
+    exec 5<&1 6<&2  # Preserve  original stdout/stderr.
     source $scriptdir/../CONFIG
     [ -f $pkgdir/CONFIG ] && source $pkgdir/CONFIG
     pkg=${pkgdir##*/}
@@ -57,6 +57,7 @@ for pkgdir in ${pkgdirs[@]}; do
             $SUDO yum-builddep $spec &&
             exec 1<&5 2<&6 &&
             $scriptdir/lpf-pkgbuild 'build' $pkg
+        exec 1<&5 2<&6
         state=$( get_state  $pkg )
         done_msg $pkg $state
         [ "$state" != 'install-wait' ] && exit 1
