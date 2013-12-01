@@ -14,19 +14,6 @@ function get_approving_user()
 }
 
 
-function copy_results()
-{
-    local pkg=$1
-    local _rpmdir=$( rpm --eval %_rpmdir )
-    local resultdir="$( get_resultdir $pkg )"
-    [ -d "$resultdir" ] || {
-        mkdir $resultdir; chmod 775 $resultdir;
-    }
-    find $_rpmdir -name \*.rpm -exec chmod 664 {} \;
-    find $_rpmdir -name \*.rpm -exec cp {} $resultdir \;
-}
-
-
 function done_msg()
 {
     local pkg=$1 state=$2
@@ -49,20 +36,10 @@ function done_msg()
     fi
 }
 
-
-if [ $USER != $LPF_USER ]; then
-    error "Bad user id" "Build must be run as user $LPF_USER"
-    exit 1
-fi
-
 trap "do_trap 82" SIGINT ERR
 export NO_AT_BRIDGE=0
 
 readonly pkgdirs=( $(get_arg_pkgdirs $@) )
-[ -w "$( rpm --eval %_rpmdir )" ] || rpmdev-setuptree
-readonly rpm_srcdir=$(rpm --eval %_sourcedir)
-readonly rpmdir=$( rpm --eval %_rpmdir )
-[ -w $rpm_srcdir ] || rpmdev-setuptree
 
 exec 5<&1 6<&2  # Preserve  original stdout/stderr.
 
@@ -75,20 +52,12 @@ for pkgdir in ${pkgdirs[@]}; do
     spec=$pkgdir/$pkg.spec
     state=$( get_state $pkg )
     if [[ $state == build-wait && "$user" != unknown ]]; then
-        rm -rf $rpmdir/* 2>/dev/null || :
-        cd $rpm_srcdir
         exec &> $buildlog
-        cp $PKG_DATA_DIR/$pkg/SOURCES/* $(pwd) 2>/dev/null || :
-        echo "$pkg: downloading sources" >&5 && spectool -g $spec &&
-            echo "$pkg: installing build dependencies" >&5 &&
+        echo "$pkg: installing build dependencies" >&5 &&
             $SUDO yum-builddep $spec &&
-                echo "$pkg: building" >&5 && \
-                rpmbuild ${rpmbuild_opts:-'-bb'} $spec && \
-                echo "$pkg: storing results" >&5 &&
-                copy_results $pkg && state='install-wait' || state='failed'
-        chmod 664 $buildlog
-        set_state $pkg $state
-        echo "$pkg: build completed" >&5
+            exec 1<&5 2<&6 &&
+            $scriptdir/lpf-pkgbuild 'build' $pkg
+        state=$( get_state  $pkg )
         done_msg $pkg $state
         [ "$state" != 'install-wait' ] && exit 1
     fi

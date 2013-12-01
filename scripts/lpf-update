@@ -26,14 +26,15 @@ function update_package()
 
     [ "$state" = 'failed' ] && state='build-wait'
     [ "$state" = 'not-approved' ] && state='approve-wait'
-    set_state $pkg $state
+    $scriptdir/lpf-pkgbuild 'set-state' $pkg $state
     until [[ 'OK failed not-approved' == *$state* ]]; do
         case $state in
             'approve-wait')
                  approve_package $pkg || "$scriptdir/lpf-kill-pgroup"
                  ;;
             'build-wait')
-                 build_packages $pkg || echo "$pkg: build errors" >&5
+                 LPF_UPDATE=1 $scriptdir/lpf-build $pkg || \
+                     echo "$pkg: build errors"  >&5
                  ;;
             'install-wait')
                  install_rpms $pkg

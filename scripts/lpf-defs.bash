@@ -22,6 +22,7 @@ function get_logfile()      { echo $LPF_VAR/log/$1.log; }
 function get_approve_file() { echo $LPF_VAR/approvals/$1; }
 function get_resultdir()    { echo $LPF_VAR/rpms/$1; }
 function get_eula_dir()     { echo $LPF_DATA/packages/$1/eula; }
+function get_spec()         { echo $LPF_DATA/packages/$1/$1.spec; }
 function _get_statefile()   { echo $LPF_VAR/packages/$1/state; }
 
 
@@ -57,15 +58,6 @@ function get_state()
 }
 
 
-function set_state()
-# set_state pkg state - update state for pkg
-{
-    reset_umask=$(umask -p)
-    umask 0022
-    [ -e $LPF_VAR/packages/$1 ] || mkdir -p  $LPF_VAR/packages/$1
-    echo $2 >$( _get_statefile $1 )
-    $reset_umask
-}
 
 
 function get_pkg_version()
@@ -102,15 +94,6 @@ function install_rpms()
 # install_rpms [rpm file...]: install command.
 {
     $scriptdir/lpf-install "$@"
-}
-
-
-function build_packages()
-# build_packages [package...]: build command.
-{
-    $SUDO -u $LPF_USER \
-        LPF_UPDATE="$LPF_UPDATE" SUDO_ASKPASS="$SUDO_ASKPASS" \
-        $scriptdir/lpf-build "$@"
 }
 
 

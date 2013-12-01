@@ -25,9 +25,9 @@ target packages to match updated lpf packages.
 lpf packages are visible as an icon in the GUI. Clicking this icon is
 the same as running 'lpf update' on the corresponding package.
 .PP
-To run privilieged operations lpf uses sudo(1). In order to use lpf, the
+To run privileged operations lpf uses sudo(1). In order to use lpf, the
 sudo configuration must allow current user to run commands as root, with
-or without a password.
+or without a password. See PRIVILEGED COMMANDS below.
 .PP
 If DISPLAY is defined in the environment, lpf uses GUI dialogs for user
 interaction even when invoked from command line. To force CLI only
@@ -71,6 +71,19 @@ Builds a srpm file for package.
 scan-removal <package>:
 Triage package with the assumption that existing
 target package is removed (use in spec scriptlets).
+
+.SH PRIVILEGED COMMANDS
+All builds run by lpf is using the pkg-build UID. The pkg-build user
+owns the files under /var/lib/lpf. lpf uses sudo(1) to run as this user
+when building.
+.PP
+lpf also needs to install build dependencies and eventually the built
+target package. These operations are run as root, also using sudo.
+.PP
+The user running lpf needs to access certain files owned by pkg-build.
+lpf adds the pkg-build group to running user if required, also using sudo.
+.PP
+The sudo configuration must allow for these operations for lpf to work.
 
 
 .SH SEE ALSO

@@ -32,10 +32,10 @@ function install_rpms()
     echo "$pkg: installing ${to_install[@]}."
     yum -y install ${to_install[@]} && rm -rf $resultdir
     case $? in
-        0) set_state $pkg 'OK'
+        0) $scriptdir/lpf-packbuild 'set-state' $pkg 'OK'
            echo "$pkg: install completed, no errors"
            ;;
-        *) set_state $pkg 'failed'
+        *) $scriptdir/lpf-packbuild 'set-state' $pkg 'failed'
            echo "$pkg: installation errors (lpf log shows log)"
            ;;
     esac

@@ -19,13 +19,13 @@ function triage()
 	[ "$(get_state $pkg)" = 'removing' ] && curr_version='undef'
         if [ "$curr_version" != "$version" ]; then
            if [ -n "$( find $(get_eula_dir $pkg) -type f)" ]; then
-               set_state $pkg 'approve-wait'
+               $scriptdir/lpf-pkgbuild 'set-state' $pkg 'approve-wait'
            else
-               set_state $pkg 'build-wait'
+               $scriptdir/lpf-pkgbuild 'set-state' $pkg 'build-wait'
            fi
            return
         else
-           set_state $pkg 'OK'
+           $scriptdir/lpf-pkgbuild 'set-state' $pkg 'OK'
         fi
     done < <(rpm --specfile $spec -q --qf "%{NAME} %{VERSION}-%{RELEASE}\n")
 }
@@ -40,9 +40,9 @@ function check_OK
         || current_vers='undef'
     if [ $current_vers != "$lpf_vers" ]; then
        if [ -n "$( find $(get_eula_dir $pkg) -type f)" ]; then
-           set_state $pkg 'approve-wait'
+           $scriptdir/lpf-pkgbuild 'set-state' $pkg 'approve-wait'
        else
-           set_state $pkg 'build-wait'
+           $scriptdir/lpf-pkgbuild 'set-state' $pkg 'build-wait'
        fi
     fi
 }
@@ -53,14 +53,15 @@ function check_install
     local pkg=$1
     local resultdir=$( get_resultdir $pkg )
     [[ -d $resultdir && "$(ls $resultdir | wc -l)" != "0" ]] || {
-        set_state  $pkg 'untriaged'
+        $scriptdir/lpf-pkgbuild 'set-state' $pkg 'untriaged'
         triage $pkg
     }
     local lpf_vers=$( get_pkg_version $pkg )
     local current_vers
     current_vers=$(rpm -q --qf "%{VERSION}-%{RELEASE}\n" $pkg) \
         || current_vers='undef'
-    [ "$current_vers" = "$lpf_vers" ] && set_state $pkg 'OK'
+    [ "$current_vers" = "$lpf_vers" ] && \
+        $scriptdir/lpf-pkgbuild 'set-state' $pkg 'OK'
 }
 
 
@@ -79,7 +80,7 @@ function update_state()
             ;;
         approve-wait)
             if [ -e $approve_file ]; then
-                set_state $pkg 'build-wait'
+                $scriptdir/lpf-pkgbuild 'set-state' $pkg 'build-wait'
                 rm $approve_file
             fi
             ;;

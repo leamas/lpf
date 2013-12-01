@@ -78,7 +78,7 @@ function list_states_cmd()
 function build_packages_cmd()
 {
     [ -n "$1" ] && check_pkg_arg "$@"
-    build_packages "$@"
+    $scriptdir/lpf-build "$@"
 }
 
 
@@ -88,12 +88,12 @@ function rebuild_package()
     local pkg=$1
 
     case $( get_state $pkg ) in
-        'failed')  set_state $pkg 'build-wait'
-                   build_packages $pkg
+        'failed')  $scriptdir/lpf-packbuild 'set-state' $pkg 'build-wait'
+                   $scriptdir/lpf-pkgbuild 'build' $pkg
                    ;;
         'not-approved')
-                  set_state $pkg 'approve-wait'
-                  lpf-approve $pkg && build_packages $pkg
+                  $scriptdir/lpf-packbuild 'set-state' $pkg 'approve-wait'
+                  lpf-approve $pkg && $scriptdir/lpf-pkgbuild 'build' $pkg
                   ;;
         *)        error "Rebuild error" "Illegal state (aborting)" >&2
                   ;;
@@ -111,7 +111,7 @@ function scan_packages_cmd()
 function scan_removal_cmd()
 {
     check_pkg_arg "$@"
-    set_state $1 'removing'
+    $scriptdir/lpf-packbuild 'set-state' $1 'removing'
     scan_packages_cmd "$1"
 }
 
@@ -192,7 +192,7 @@ command=$1
 shift
 case $command in
     set-state)
-            set_state $1 $2
+            $scriptdir/lpf-pkgbuild 'set-state' $1 $2
             ;;
     list)   list_packages "$@"
             ;;

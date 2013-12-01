@@ -89,20 +89,17 @@ function install_rpms()
     exec &>> $buildlog
     if [ -z "${to_install[*]}" ]; then
         log_and_echo "$pkg: no rpms to install."
-        set_state $pkg 'OK'
+        $scriptdir/lpf-pkgbuild 'set-state' $pkg 'OK'
         exit 1
     fi
-    if rpm -q $pkg &>/dev/null; then
-        log_and_echo "$pkg: Removing existing package."
-        $SUDO rpm -e --nodeps $( basename $pkg .rpm )
-    fi
     log_and_echo "$pkg: installing ${to_install[@]}."
-    $SUDO yum -y install ${to_install[@]} && rm -rf $resultdir
+    $SUDO yum -y install ${to_install[@]} && \
+        $scriptdir/lpf-pkgbuild 'clear-results' $pkg
     case $? in
-        0) set_state $pkg 'OK'
+        0) $scriptdir/lpf-pkgbuild 'set-state' $pkg 'OK'
            log_and_echo "$pkg: install completed, no errors"
            ;;
-        *) set_state $pkg 'failed'
+        *) $scriptdir/lpf-pkgbuild 'set-state' $pkg 'failed'
            log_and_echo "$pkg: installation errors (lpf log shows log)"
            ;;
     esac
