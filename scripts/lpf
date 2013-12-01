@@ -179,8 +179,6 @@ if [ "$( id -gn )" !=  "$LPF_GROUP" ]; then
     exit $?
 fi
 
-[ -n "$DISPLAY" ] && xhost local:$LPF_USER >/dev/null
-
 trap "do_trap 81" SIGINT ERR
 
 # http://forums.gentoo.org/viewtopic-t-947211-start-0.html
