@@ -1,0 +1,11 @@
+#!/bin/bash
+
+for rpm in "$@"; do
+    if [[ $rpm == /var/lib/lpf/rpms/* ]]; then
+       good_rpms="$good_rpms $rpm"
+    else
+       echo "$0: skipping bad rpm: $rpm" >&2
+    fi
+done
+
+[ "$good_rpms" ] && /usr/bin/yum -y install $good_rpms

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+for spec in "$@"; do
+    if [[ $spec == /usr/share/lpf/packages/* ]]; then
+       good_specs="$good_specs $spec"
+    else
+       echo "$0: skipping bad spec: $spec >&2"
+    fi
+done
+
+[ "$good_specs" ] && /usr/bin/yum-builddep $good_specs

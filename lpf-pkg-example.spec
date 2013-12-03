@@ -26,6 +26,9 @@ Summary:        Bootstrap package building restricted-fonts using lpf
 License:        MIT
 URL:            https://github.com/leamas/lpf
 Group:          Development/Tools
+# The arch should reflect the target package architecture. A font
+# package is noarch. For binary stuff, typically only i386 and
+# perhaps also x86_64 use ExclusiveArch: %{ix86} x86_64.
 BuildArch:      noarch
 # The target package spec:
 Source0:        restricted-fonts.spec.in

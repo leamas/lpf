@@ -93,7 +93,7 @@ function install_rpms()
         exit 1
     fi
     log_and_echo "$pkg: installing ${to_install[@]}."
-    $SUDO yum -y install ${to_install[@]} && \
+    $SUDO $scriptdir/lpf-sudo-install  ${to_install[@]} && \
         $scriptdir/lpf-pkgbuild 'clear-results' $pkg
     case $? in
         0) $scriptdir/lpf-pkgbuild 'set-state' $pkg 'OK'

@@ -54,7 +54,7 @@ for pkgdir in ${pkgdirs[@]}; do
     if [[ $state == build-wait && "$user" != unknown ]]; then
         exec &> $buildlog
         echo "$pkg: installing build dependencies" >&5 &&
-            $SUDO yum-builddep $spec &&
+            $SUDO $scriptdir/lpf-sudo-builddep $spec &&
             exec 1<&5 2<&6 &&
             $scriptdir/lpf-pkgbuild 'build' $pkg
         exec 1<&5 2<&6
