@@ -74,11 +74,14 @@ function cli_confirm_update()
     set $( echo $states )
     while [ -n "$*" ]; do
          if [ "$2" = 'failed' ]; then
-             local msg="Rebuild and install failed build for $1 ($3)"
+             local msg="Rebuild and install failed build for $1 ($3)" >&5
              msg="$msg (yes/no) [y]? "
              echo -n $msg >&5
          elif [ "$2" != 'OK' ]; then
              echo -n "Build and install $1 ($3) (yes/no) [y]? " >&5
+         else
+             shift 3
+             continue
          fi
          read
          [[ $REPLY = [yY]* ]] && to_install=( ${to_install[@]} $1 )
