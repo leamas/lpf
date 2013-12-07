@@ -14,7 +14,7 @@ function cli_confirm_install()
     local rpm
     for rpm in $( ls $resultdir ); do
         echo -n "Install $rpm (Yes/no) [y] ? " >&5
-        read < $LPF_CONSOLE
+        read
         if [[ -z "$REPLY" || "$REPLY" == [Yy]* ]]; then
             to_install=( ${to_install[@]} $resultdir/$rpm )
         fi

@@ -44,7 +44,7 @@ function cli_approve()
     local license=$1
     more $license
     echo -n "Do you accept these license terms [n] ? "
-    read reply < $LPF_CONSOLE
+    read reply
     [ -z "$reply" ] && reply='No'
     [[ $reply == [Yy]* ]]
 }

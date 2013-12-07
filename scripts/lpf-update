@@ -80,7 +80,7 @@ function cli_confirm_update()
          elif [ "$2" != 'OK' ]; then
              echo -n "Build and install $1 ($3) (yes/no) [y]? " >&5
          fi
-         read < $LPF_CONSOLE
+         read
          [[ $REPLY = [yY]* ]] && to_install=( ${to_install[@]} $1 )
          shift 3
     done

@@ -172,8 +172,6 @@ id -Gn | grep -q $LPF_GROUP  || {
     fi
 }
 
-[ -z "$LPF_CONSOLE" ] && export LPF_CONSOLE=/dev/$( ps -p$$ -o tty="" )
-
 if [ "$( id -gn )" !=  "$LPF_GROUP" ]; then
     echo "$0 $*" | newgrp "$LPF_GROUP"
     exit $?
