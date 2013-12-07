@@ -17,9 +17,11 @@ LPF_GROUP='pkg-build'
 
 if (( UID == 0 )); then
     SUDO=''
+    PKGBUILD_SUDO=''
 else
     SUDO='sudo'
     [ -n "$DISPLAY" ] && SUDO='sudo -A'
+    PKGBUILD_SUDO="$SUDO -u $LPF_USER"
 fi
 
 function get_logfile()      { echo $LPF_VAR/log/$1.log; }
@@ -111,7 +113,7 @@ function approve_package()
 function scan_packages()
 # scan_packages - state command.
 {
-    $SUDO -u $LPF_USER $scriptdir/lpf-scan "$@"
+    $PKGBUILD_SUDO $scriptdir/lpf-scan "$@"
 }
 
 

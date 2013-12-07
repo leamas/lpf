@@ -73,8 +73,8 @@ function clear_results()
 }
 
 
-if [ ! $( id -un ) = "$LPF_USER" ]; then
-    exec sudo -u $LPF_USER  $scriptdir/lpf-pkgbuild "$@"
+if [[ ! $( id -un ) = "$LPF_USER" && "$UID" -ne '0' ]]; then
+    exec $PKGBUILD_SUDO $scriptdir/lpf-pkgbuild "$@"
 fi
 
 cmd="$1"; shift
