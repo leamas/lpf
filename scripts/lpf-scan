@@ -90,10 +90,6 @@ function update_state()
     esac
 }
 
-if [ $USER != $LPF_USER ]; then
-    error "Bad user id" "Scan must be run as user $LPF_USER"
-    exit 1
-fi
 cd /tmp
 pkgdirs=( $(get_arg_pkgdirs) )
 for pkgdir in ${pkgdirs[@]}; do
