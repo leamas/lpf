@@ -15,8 +15,12 @@ PKG_DATA_DIR="$LPF_DATA/packages"
 LPF_USER='pkg-build'
 LPF_GROUP='pkg-build'
 
-SUDO='sudo'
-[ -n "$DISPLAY" ] && SUDO='sudo -A'
+if (( UID == 0 )); then
+    SUDO=''
+else
+    SUDO='sudo'
+    [ -n "$DISPLAY" ] && SUDO='sudo -A'
+fi
 
 function get_logfile()      { echo $LPF_VAR/log/$1.log; }
 function get_approve_file() { echo $LPF_VAR/approvals/$1; }
