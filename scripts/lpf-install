@@ -94,7 +94,7 @@ function install_rpms()
     fi
     log_and_echo "$pkg: installing ${to_install[@]}."
     $SUDO $scriptdir/lpf-sudo-install  ${to_install[@]} && \
-        $scriptdir/lpf-pkgbuild 'clear-results' $pkg
+        $SUDO -u pkg-build $scriptdir/lpf-pkgbuild 'clear-results' $pkg
     case $? in
         0) $scriptdir/lpf-pkgbuild 'set-state' $pkg 'OK'
            log_and_echo "$pkg: install completed, no errors"
