@@ -173,8 +173,7 @@ id -Gn | grep -q $LPF_GROUP  || {
 }
 
 if [ "$( id -gn )" !=  "$LPF_GROUP" ]; then
-    echo "$0 $*" | newgrp "$LPF_GROUP"
-    exit $?
+    exec sg pkg-build "$0 $*"
 fi
 
 trap "do_trap 81" SIGINT ERR

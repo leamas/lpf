@@ -19,6 +19,7 @@ Requires:       hicolor-icon-theme
 Requires:       procps-ng
 Requires:       rpmdevtools
 Requires:       rpm-build
+Requires:       shadow-utils
 Requires:       sudo
 Requires:       yum-utils
 Requires:       zenity
