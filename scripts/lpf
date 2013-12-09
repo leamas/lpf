@@ -70,7 +70,7 @@ function list_packages()
 
 function list_states_cmd()
 {
-    [ -z "$1" ] || { usage; exit 1; }
+    [ -n "$1" ] && check_pkg_arg "$@"
     list_states "$@"
 }
 
