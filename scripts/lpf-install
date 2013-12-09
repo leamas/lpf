@@ -40,29 +40,6 @@ function gui_confirm_install()
 }
 
 
-function check_to_install
-{
-    local pkg=$1; shift
-    local ok=()
-    local to_install=()
-    local rpm
-    for rpm in $@; do
-        local curr_vers=$( rpm -q --qf "%{VERSION}-%{RELEASE}\n" $pkg )
-        local lpf_vers=$( get_pkg_version $pkg )
-        if [ "$curr_vers"  = "$lpf_vers" ]; then
-           local rpm_base=$( basename $rpm .rpm )
-           ( unset LPF_UPDATE || :
-             warning  "installation errors" \
-               "$pkg: $rpm_base: Version $curr_vers already installed." >&5
-           )
-        else
-           ok=( ${ok[@]} $rpm )
-        fi
-    done
-    echo ${ok[@]}
-}
-
-
 function log_and_echo
 {
     echo $*
@@ -85,7 +62,6 @@ function install_rpms()
     else
         local to_install=( $(cli_confirm_install $resultdir) )
     fi
-    to_install=$( check_to_install $pkg ${to_install[@]} )
     exec &>> $buildlog
     if [ -z "${to_install[*]}" ]; then
         log_and_echo "$pkg: no rpms to install."
