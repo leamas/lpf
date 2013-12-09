@@ -4,6 +4,18 @@ There is yet no automated tests. Here some manual:
     $ tools/make_rpm
     $ sudo yum install ~/rpmbuild/RPMS/noarch/lpf-0-2.b7cd782.fc18.noarch.rpm
 
+- Apply patch to make unittests run without a password:
+
+	diff -U 2 ../pkg-build.sudo  /etc/sudoers.d/pkg-build
+	--- ../pkg-build.sudo	2013-12-09 16:04:14.344040024 +0100
+	+++ /etc/sudoers.d/pkg-build	2013-12-09 16:38:52.340805634 +0100
+	@@ -8,3 +8,3 @@
+	 %pkg-build ALL = NOPASSWD: /usr/share/lpf/scripts/lpf-kill-pgroup
+	 %pkg-build ALL = NOPASSWD: /usr/share/lpf/scripts/lpf-sudo-builddep
+	-%pkg-build ALL = /usr/share/lpf/scripts/lpf-sudo-install
+	+%pkg-build ALL = NOPASSWD: /usr/share/lpf/scripts/lpf-sudo-install
+
+
 - Verify the help output and manpage:
     $ lpf -h
     $ nroff -man lpf.1 | more
