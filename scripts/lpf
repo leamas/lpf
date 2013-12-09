@@ -153,12 +153,7 @@ function get_srpm_cmd()
 function update_packages()
 {
     [ -n "$1" ] && check_pkg_arg "$@"
-    export LPF_UPDATE=1
-    if [ -n "$DISPLAY" ]; then
-        $scriptdir/lpf-update "$@" | "$scriptdir/update.py"
-    else
-        $scriptdir/lpf-update "$@"
-    fi
+    $scriptdir/lpf-update "$@"
 }
 
 
