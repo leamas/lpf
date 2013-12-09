@@ -1,0 +1,47 @@
+#!/usr/bin/expect
+
+spawn env DISPLAY= /usr/bin/lpf approve bar
+log_file test-approve.log
+
+expect {
+   "Do you accept these license terms"  { send "no\r\n"  }
+   eof      { exit 1 }
+   timeout  { exit 1 }
+}
+
+expect { eof {} }
+
+spawn /usr/bin/lpf state
+
+expect {
+   -re "bar +not-approved"  {}
+   -re "bar +approve-wait"  { exit 1 }
+   eof      { exit 2 }
+   timeout  { exit 2 }
+}
+
+spawn /usr/bin/lpf set-state bar "approve-wait"
+expect { eof {} }
+
+spawn env DISPLAY= /usr/bin/lpf approve bar
+expect {
+   "Do you accept these license terms"  { send "Y\n"  }
+   eof      { exit 1 }
+   timeout  { exit 1 }
+}
+expect { eof {} }
+
+spawn /usr/bin/lpf state
+
+expect {
+   -re "bar +build-wait"  {}
+   -re "bar +approve-wait"  { exit 1 }
+   eof      { exit 2 }
+   timeout  { exit 2 }
+}
+expect { eof {} }
+
+spawn /usr/bin/lpf set-state bar "approve-wait"
+expect { eof {} }
+
+# vim: set expandtab ts=4 sw=4:

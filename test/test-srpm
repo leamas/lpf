@@ -1,0 +1,30 @@
+#!/usr/bin/expect
+
+log_file test-srpm.log
+set timeout 60
+
+spawn env DISPLAY= /usr/bin/lpf spec bar
+set gotit 0
+expect {
+   "bar.spec"    { set gotit 1; file delete bar.spec }
+   timeout       { exit 2 }
+   eof           {
+                   if { $gotit == 0 }  { exit 5 }
+                   catch wait result; exit [lindex $result 3]
+                 }
+
+}
+
+spawn env DISPLAY= /usr/bin/lpf srpm bar
+set gotit 0
+expect {
+   "Wrote: *bar-*src.rpm" { set gotit 1; file delete [glob  *bar-*src.rpm] }
+   timeout                { exit 2 }
+   eof                    {
+                            if { $gotit == 0 }  { exit 5 }
+                            catch wait result; exit [lindex $result 3]
+                          }
+
+}
+
+# vim: set expandtab ts=4 sw=4:

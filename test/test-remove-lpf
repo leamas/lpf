@@ -1,0 +1,16 @@
+#!/bin/bash
+
+exec &> test-remove-lpf.log
+set -x
+
+sudo rpm -U --force rpms/lpf-bar-1.0*rpm
+sudo rpm -e lpf-bar &> /dev/null || :
+test -e /usr/share/lpf/packages/bar && exit 1
+test -e /var/lib/lpf/rpms/bar && exit 2
+test -e /var/lib/lpf/approvals/bar && exit 3
+test -e /var/lib/lpf/packages§/bar && exit 4
+sudo rpm -i rpms/lpf-bar-1.0*rpm
+lpf scan
+exit 0
+
+# vim: set expandtab ts=4 sw=4:

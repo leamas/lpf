@@ -1,4 +1,4 @@
-There is yet no automated tests. Here some manual:
+There are some automated tests and some manual. To run them all:
 
 - Generate a new rpm and install it:
     $ tools/make_rpm
@@ -18,81 +18,21 @@ There is yet no automated tests. Here some manual:
 
 - Verify the help output and manpage:
     $ lpf -h
-    $ nroff -man lpf.1 | more
+    $ man lpf
 
-- Remove all target and lpf packages:
-    $ sudo rpm -e spotify-client msttcore-fonts
-    $ sudo rpm -e lpf-msttcore-fonts lpf-spotify-client
-    error: package lpf-msttcore-fonts is not installed
-    error: package lpf-spotify-client is not installed
+- Run the unittests:
+    $ cd test
+    $ python -m unittest discover
 
-- Build lpf-msttcore-fonts:
-    cd examples/msttcore-fonts/
-    cp * ~/rpmbuild/SOURCES/
-    rpmbuild -ba lpf-msttcore-fonts.spec
-    $ sudo rpm -U --force ~/rpmbuild/RPMS/noarch/lpf-msttcore-fonts-2.2-1.fc18.noarch.rpm
+- Check that there are three applications available in gnome: lpf, bar,
+  foo with correct factory icon (under System Tools in classic mode).
 
+- Check GUI update of bar: click on the bar icon
 
-- Build lpf-spotify-client
-    cd examples/spotify-client/
-    cp * ~/rpmbuild/SOURCES/
-    rpmbuild -bb lpf-spotify-client.spec
-    sudo rpm -U --force ~/rpmbuild/RPMS/noarch/lpf-spotify-client-0.9.0.133.gd18ed58.259-1.fc18.noarch.rpm
-
-- Test lpf list
-
-    $ lpf list
-    spotify-client
-    msttcore-fonts
-
-- Check lpf state:
-
-    $ lpf state
-    spotify-client       approve-wait   0.9.0.133.gd18ed58.259-2.fc18
-    msttcore-fonts       approve-wait   2.2-1
-
-- Check that there are three applications available in gnome: lpf,
-  lpf-spotify-client, lpf-msttcore-fonts with correct factory icon (under System
-  Tools in classic mode).
-
-- Check approve followed by 'Cancel':
-
-    $ lpf approve spotify-client
-    $ lpf state
-    spotify-client                     not-approved   0.9.0.133.gd18ed58.259-2.fc18
-    msttcore-fonts                     approve-wait   2.2-1
-
-- Check non-gui update of just spotify-client:
-
-    $ DISPLAY= lpf update spotify-client
-    ::::::::::::::
-    /usr/share/lpf/packages/spotify-client/eula/eula.txt
-    ::::::::::::::
-    Copyright (c) 2002-2006, Marc Prud'hommeaux <mwp1@cornell.edu>
-    All rights reserved.
-
-    ...
-
-    Do you accept these license terms [n] y
-    spotify-client: downloading sources
-    spotify-client: installing build dependencies
-    spotify-client: building
-    spotify-client: storing results
-    spotify-client: build completed
-    Install spotify-client-0.9.0.133.gd18ed58.259-2.fc18.i686.rpm (Yes/no) [y] ? y
-
-    spotify-client: installing /var/lib/lpf/rpms/spotify-client/spotify-client-0.9.0.133.gd18ed58.259-2.fc18.i686.rpm.
-
-    $ lpf state
-    spotify-client     OK             0.9.0.133.gd18ed58.259-2.fc18
-    msttcore-fonts     approve-wait   2.2-1
-
-- Check corresponding GUI update of lpf-msttcore-fonts: click on the lpf-msttcore-fonts icon
-
-- Reset msttcore-fonts:
-    $ lpf set-state msttcore-fonts build-wait
-    $ sudo rpm -e msttcore-fonts
-  Rebuild lpf package, check that Cancel works during build
+- Reset bar:
+    $ lpf set-state bar build-wait
+    $ sudo rpm -e bar
+  Rebuild lpf package, check that Cancel works during build.
 
 - Reset same way, check that Cancel works during install.
 
@@ -100,21 +40,11 @@ There is yet no automated tests. Here some manual:
 
 - Check that lpf log displays last log from msttcore-fonts.
 
-- Check that lpf spec msttcore-fonts and lpf srpm msttcore-fonts is OK.
-
-- Remove msttcore-fonts package, check that state is OK:
-
-    $ sudo rpm -e msttcore-fonts
-    [mk@muminmamman lpf]$ lpf state
-    spotify-client                     OK             0.9.4.183.g644e24e.428-4.fc20
-    msttcore-fonts                     approve-wait   2.2-1
-    $
-
-- In the spotify example, patch Version to something bigger in both
-  lpf-spotify-client.spec and spotify-client.spec.in
-- Rebuild lpf-spotify-client and install it.
-- Check that lpf state shows approve-wait
-- Remove lpf-spotify-client. Verify that lpf state looks OK, without
-  lpf-spotify-client
-- Checkout git versions of lpf-spotify-client.spec spotify-client.spec.in
-
+Running in mock:
+    $ mock -r fedora-19-i386  --init
+    $ mock -r fedora-19-i386  --install ~/lpf-0-99.b7cfc1e.fc20.noarch.rpm
+    $ mock -r fedora-19-i386  --install git python-unittest2 desktop-file-utils
+    $ mock -r fedora-19-i386  --shell
+    <mock-chroot> git clone -b devel https://github.com/leamas/lpf
+    <mock-chroot> cd lpf/test
+    <mock-chroot> python -m unittest discover

@@ -1,0 +1,38 @@
+#!/bin/bash
+
+home=$( readlink -fn $(dirname $0 ))/..
+
+here=$PWD
+
+test -d rpms || mkdir rpms
+
+for pkg in bar bar-1.1 foo; do
+    cd $home/examples/$pkg
+    rpmbuild --quiet -bb --define="_rpmdir $OLDPWD/rpms"  \
+        --define "_sourcedir $PWD" lpf-${pkg%-*}.spec
+    arch=$( rpm --specfile -q --qf '%{arch}\n' lpf-${pkg%-*}.spec )
+    cd $here
+    mv rpms/$arch/* rpms
+    rm -r rpms/$arch
+done
+
+sudo rpm -U --force rpms/lpf-foo*rpm
+lpf set-state foo build-wait
+DISPLAY= lpf build foo
+cp /var/lib/lpf/rpms/foo/*rpm rpms
+
+sudo rpm -U --force rpms/lpf-bar-1.1*rpm
+lpf set-state bar build-wait
+DISPLAY= lpf build bar
+cp /var/lib/lpf/rpms/bar/bar-1.1*rpm rpms
+
+sudo rpm -U --force rpms/lpf-bar-1.0*rpm
+lpf set-state bar build-wait
+DISPLAY= lpf build bar
+cp /var/lib/lpf/rpms/bar/bar-1.0*rpm rpms
+
+
+lpf set-state bar approve-wait
+lpf set-state foo approve-wait
+
+# vim: set expandtab ts=4 sw=4:

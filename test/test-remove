@@ -1,0 +1,18 @@
+#!/bin/bash
+
+exec 2> test-remove.log
+set -x
+
+rpm -q bar &>/dev/null || sudo rpm -i rpms/bar-1.0*rpm
+lpf scan
+lpf set-state bar 'OK'
+set $(lpf state bar)
+[[ $2 != 'OK' ]] && exit 1
+
+sudo rpm -e bar
+set $(lpf state bar)
+[[ $2 != approve-wait ]] && exit 1
+
+exit 0
+
+# vim: set expandtab ts=4 sw=4:

@@ -1,9 +1,13 @@
 *.gz
 *.html
+*.log
 *.patch
+*.pyc
+*.src.rpm
 *.swp
 dist
-usr
-var
+rpms
 test-usr
 test-var
+usr
+var
