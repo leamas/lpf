@@ -7,6 +7,7 @@ for rpm in "$@"; do
        echo "$0: skipping bad rpm: $rpm" >&2
     fi
 done
+good_rpms=${good_rpms# }
 
 [ "$good_rpms" ]  || { echo "Nothing to install" >&2; exit 1; }
 
@@ -17,9 +18,8 @@ for file in $( echo $good_rpms ); do
 done
 to_remove=${to_remove## }
 
-
 if [ "$to_remove" ]; then
-    current_vers=$( rpm -q --qf '%{version}-%{release}' ${to_remove% *} )
+    current_vers=$( rpm -q --qf '%{version}-%{release}' $to_remove )
     new_vers=$( rpm -q --qf '%{version}-%{release}' -p ${good_rpms% *} )
     install='install'
     [ "$current_vers" = "$new_vers" ] && install='reinstall'
@@ -31,4 +31,3 @@ EOF
 else
     yum -y install $good_rpms
 fi
-
