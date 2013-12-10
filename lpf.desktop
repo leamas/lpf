@@ -3,9 +3,8 @@ Name=lpf - Local Package Factory
 Version=1.0
 GenericName=Package Builder
 Comment=Use lpf system to build local packages
-Exec=setsid /usr/bin/lpf update
+Exec=/usr/bin/lpf update
 Icon=lpf
 Type=Application
 Terminal=false
 Categories=GTK;System;
-
