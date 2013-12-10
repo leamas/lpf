@@ -70,17 +70,13 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 
 %post
-lpf scan %{target_pkg} &>/dev/null || :
+%lpf_post
 
 %postun
-if [ "$1" = '0' ]; then
-    /usr/share/lpf/scripts/lpf-pkg-postun %{target_pkg}
-fi
+%lpf_postun
 
 %triggerpostun -- %{target_pkg}
-if [ "$2" = '0' ]; then
-    lpf scan-removal %{target_pkg} &>/dev/null || :
-fi
+%lpf_triggerpostun
 
 
 %files

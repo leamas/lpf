@@ -1,0 +1,21 @@
+#
+# lpf macros
+#
+
+%lpf_post() \
+DISPLAY= lpf scan 2>/dev/null || : \
+%{nil}
+
+
+%lpf_postun() \
+if [ "$1" = '0' ]; then \
+    /usr/share/lpf/scripts/lpf-pkg-postun %{target_pkg} &>/dev/null || :; \
+fi \
+%{nil}
+
+
+%lpf_triggerpostun() \
+if [ "$2" = '0' ]; then \
+    lpf scan-removal %{target_pkg} &>/dev/null || : ; \
+fi \
+%{nil}

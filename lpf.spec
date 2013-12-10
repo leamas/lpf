@@ -75,6 +75,7 @@ fi
 %files
 %doc README.md LICENSE
 %{_bindir}/lpf
+/usr/lib/rpm/macros.d/macros.lpf
 %{_datadir}/lpf
 %{_datadir}/applications/lpf.desktop
 %{_datadir}/icons/hicolor/*/apps/lpf.png

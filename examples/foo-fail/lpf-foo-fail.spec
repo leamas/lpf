@@ -47,17 +47,13 @@ cp -a %{SOURCE4} README
 
 
 %post
-DISPLAY= lpf scan 2>/dev/null || :
+%lpf_post
 
 %postun
-if [ "$1" = '0' ]; then
-    /usr/share/lpf/scripts/lpf-pkg-postun %{target_pkg} &>/dev/null || :
-fi
+%lpf_postun
 
 %triggerpostun -- %{target_pkg}
-if [ "$2" = '0' ]; then
-    lpf scan-removal %{target_pkg} &>/dev/null || :
-fi
+%lpf_triggerpostun
 
 
 %files

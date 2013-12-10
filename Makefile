@@ -3,6 +3,7 @@ PREFIX=/usr
 BINDIR=$(PREFIX)/bin
 LIBEXECDIR=$(PREFIX)/libexec
 DATADIR=$(PREFIX)/share
+RPM_MACROS_DIR=/usr/lib/rpm/macros.d
 MAN1=$(DATADIR)/man/man1
 
 all:
@@ -16,6 +17,7 @@ install:
 	install -m 755 -d $(DESTDIR)$(MAN1)
 
 	install -pDm 640 pkg-build.sudo $(DESTDIR)/etc/sudoers.d/pkg-build
+	install -pDm 644 macros.lpf $(DESTDIR)$(RPM_MACROS_DIR)/macros.lpf
 	cp -ar scripts CONFIG $(DESTDIR)$(DATADIR)/lpf
 	ln -s $(DATADIR)/lpf/scripts/lpf $(DESTDIR)$(BINDIR)/lpf
 	ln -s $(DATADIR)/lpf/scripts/lpf-kill-pgroup \
