@@ -38,8 +38,6 @@ There are some automated tests and some manual. To run them all:
 
 - Check that repeated GUI update displays correct "Nothing to update" message.
 
-- Check that lpf log displays last log from msttcore-fonts.
-
 Running in mock:
     $ mock -r fedora-19-i386  --init
     $ mock -r fedora-19-i386  --install ~/lpf-0-99.b7cfc1e.fc20.noarch.rpm

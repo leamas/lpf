@@ -1,0 +1,34 @@
+#!/bin/bash
+
+exec &> test-build-fail.log
+set -x
+
+sudo rpm -i rpms/lpf-foo-fail*rpm
+lpf set-state foo-fail build-wait
+
+unset DISPLAY
+
+/usr/bin/expect << EOF
+spawn env lpf build foo-fail
+log_file test-build-fail.log
+
+expect {
+   "foo-fail: build failed" {}
+   timeout                  { exit 2 }
+   eof                      { exit 3 }
+}
+EOF
+rc=$?
+
+if (( rc == 0 )); then
+    if lpf log foo-fail | egrep -q 'install: cannot stat.*SOURCE2'; then
+        rc=0
+    else
+        rc=5
+    fi
+fi
+
+sudo rpm -e lpf-foo-fail
+exit $rc
+
+# vim: set expandtab ts=4 sw=4:

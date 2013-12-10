@@ -1,0 +1,47 @@
+# We cannot strip this binary (licensing restrictions).
+%global debug_package %{nil}
+%global __os_install_post \
+                    %(echo '%{__os_install_post}' | sed -e '/brp-strip/d')
+
+
+Name:           foo-fail
+Version:        1.0
+Release:        1%{?dist}
+Summary:        foo app
+
+License:        No modification permitted, non-redistributable
+URL:            https://github.com/leamas/lpf/tree/master/examples
+Group:          Applications/Multimedia
+ExclusiveArch:  i386 i686 x86_64
+Source0:        foo.sh
+Source1:        README.fedora
+
+BuildRequires:  desktop-file-utils
+
+Requires:       hicolor-icon-theme
+
+%description
+The magical foo app makes you feel younger and stronger.
+
+%prep
+%setup -cT
+cp %{SOURCE1} README.fedora
+
+
+%build
+
+
+%install
+install -pDm 755 %{SOURCE2}   %{buildroot}%{_bindir}/foo-fail.sh
+
+
+%files
+%doc  README.fedora
+%{_bindir}/foo.sh
+
+
+%changelog
+* Sat Oct 12 2013 Alec Leamas <leamas@nowhere.net> - 0.9.4.183.g644e24e.428-4
+- Initial release
+
+

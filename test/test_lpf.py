@@ -56,4 +56,9 @@ class TestLpf(unittest.TestCase):
         with open('/dev/null', 'w') as devnull:
             subprocess.check_call('./test-remove-lpf', stdout=devnull)
 
+    def test_build_fail(self):
+        ''' Test build failure. '''
+        with open('/dev/null', 'w') as devnull:
+            subprocess.check_call('./test-build-fail', stdout=devnull)
+
 # vim: set expandtab ts=4 sw=4:
