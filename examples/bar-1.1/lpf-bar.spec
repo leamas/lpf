@@ -64,7 +64,7 @@ fi
 %doc README
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/lpf/packages/%{target_pkg}
-%attr(775,pkg-build,pkg-build) /var/lib/lpf/packages/%{target_pkg}
+%dir %attr(775,pkg-build,pkg-build) /var/lib/lpf/packages/%{target_pkg}
 %attr(664,pkg-build,pkg-build) /var/lib/lpf/packages/%{target_pkg}/state
 
 

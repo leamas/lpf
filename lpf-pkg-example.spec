@@ -86,7 +86,7 @@ fi
 %files
 %doc README
 %{_datadir}/applications/%{name}.desktop
-%{_datadir}/lpf/packages/%{target_pkg}
+%dir %{_datadir}/lpf/packages/%{target_pkg}
 %attr(775,pkg-build,pkg-build) /var/lib/lpf/packages/%{target_pkg}
 
 
