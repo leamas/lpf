@@ -1,7 +1,7 @@
 #!/usr/bin/expect
 
 log_file test-update.log
-set timeout 120
+set timeout 180
 
 spawn env DISPLAY= /usr/bin/lpf update bar
 
