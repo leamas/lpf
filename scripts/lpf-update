@@ -26,14 +26,15 @@ function update_package()
 
     [ "$state" = 'failed' ] && state='build-wait'
     [ "$state" = 'not-approved' ] && state='approve-wait'
-    set_state $pkg $state
+    $scriptdir/lpf-pkgbuild 'set-state' $pkg $state
     until [[ 'OK failed not-approved' == *$state* ]]; do
         case $state in
             'approve-wait')
                  approve_package $pkg || "$scriptdir/lpf-kill-pgroup"
                  ;;
             'build-wait')
-                 build_packages $pkg || echo "$pkg: build errors" >&5
+                 LPF_UPDATE=1 $scriptdir/lpf-build $pkg || \
+                     echo "$pkg: build errors"  >&5
                  ;;
             'install-wait')
                  install_rpms $pkg
@@ -78,9 +79,12 @@ function cli_confirm_update()
              echo -n $msg >&5
          elif [ "$2" != 'OK' ]; then
              echo -n "Build and install $1 ($3) (yes/no) [y]? " >&5
-             read < $LPF_CONSOLE
-             [[ $REPLY = [yY]* ]] && to_install=( ${to_install[@]} $1 )
+         else
+             shift 3
+             continue
          fi
+         read
+         [[ $REPLY = [yY]* ]] && to_install=( ${to_install[@]} $1 )
          shift 3
     done
     echo ${to_install[@]}
@@ -135,9 +139,8 @@ function get_to_update()
 function update_packages()
 {
     local state pkg
-    local to_update=$( get_to_update "$@" )
 
-    for pkg in ${to_update[@]}; do
+    for pkg in "$@"; do
         state=$( get_state $pkg )
         update_package $pkg
         state=$( get_state $pkg )
@@ -152,4 +155,13 @@ function update_packages()
 
 trap "do_trap 84" SIGINT ERR
 exec 5<&1 6<&2
-update_packages "$@"
+export LPF_UPDATE=1
+
+to_update=$( get_to_update $@ )
+for pkg in ${to_update[@]}; do
+    if [ -n "$DISPLAY" ]; then
+        update_packages $pkg  | "$scriptdir/update.py"
+    else
+        update_packages $pkg
+    fi
+done

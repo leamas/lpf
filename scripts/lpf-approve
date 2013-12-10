@@ -27,15 +27,6 @@ function get_eula_licenses()
 }
 
 
-function create_approve_file()
-{
-    local pkg=$1
-    local approve_file=$( get_approve_file $pkg )
-    touch $approve_file
-    chgrp $LPF_GROUP  $approve_file
-    chmod 664 $approve_file
-}
-
 
 function gui_approve()
 {
@@ -53,7 +44,7 @@ function cli_approve()
     local license=$1
     more $license
     echo -n "Do you accept these license terms [n] ? "
-    read reply < $LPF_CONSOLE
+    read reply
     [ -z "$reply" ] && reply='No'
     [[ $reply == [Yy]* ]]
 }
@@ -92,12 +83,13 @@ for pkgdir in ${pkgdirs[@]}; do
     approve_script=$( get_approve_script )
     new_state='build-wait'
     for license in $(get_eula_licenses $pkg); do
+        # FIXME: Approve-file?!
         approve "$approve_script" "$license" "$pkg" || {
             new_state='not-approved'
             break
         }
     done
-    set_state $pkg $new_state
+    $scriptdir/lpf-pkgbuild 'set-state' $pkg $new_state
     [ "$new_state"  = 'not-approved' ] && errors="$errors $pkg"
 done
 

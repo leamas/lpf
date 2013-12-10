@@ -11,6 +11,7 @@
 pkg=$1
 [ -z "$1" ] && { echo "No package given, goodbye." >&2; exit 1; }
 
+rm -rf /usr/share/lpf/packages/$pkg
 rm -rf /var/lib/lpf/packages/$pkg
 rm -rf /var/lib/lpf/rpms/$pkg
 rm -rf /var/lib/lpf/approvals/$pkg

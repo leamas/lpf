@@ -10,7 +10,7 @@ License:        MIT
 URL:            https://github.com/leamas/lpf
 Group:          Development/Tools
 BuildArch:      noarch
-Source0:        msttcore-fonts.spec
+Source0:        msttcore-fonts.spec.in
 Source1:        License.txt
 Source2:        msttcore-fonts-fontconfig.conf
 
@@ -41,11 +41,16 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %post
 lpf scan %{target_pkg} &>/dev/null || :
 
-%triggerpostun -- %{target_pkg}
-lpf scan-removal %{target_pkg} &>/dev/null || :
+%postun
+if [ "$1" = '0' ]; then
+    /usr/share/lpf/scripts/lpf-pkg-postun %{target_pkg}
+fi
 
-%triggerin -- %{target_pkg}
-lpf scan %{target_pkg} &>/dev/null || :
+%triggerpostun -- %{target_pkg}
+echo "postun: args: $@" > /tmp/triggerpostun
+if [ "$2" = '0' ]; then
+    lpf scan-removal %{target_pkg} &>/dev/null || :
+fi
 
 
 %files

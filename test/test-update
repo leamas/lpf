@@ -1,0 +1,16 @@
+#!/usr/bin/expect
+
+log_file test-update.log
+set timeout 120
+
+spawn env DISPLAY= /usr/bin/lpf update bar
+
+expect {
+   "Do you accept these license terms" { send "yes\r\n"; exp_continue }
+   "Install*Yes/no"                    { send "Yes\r\n"; exp_continue }
+   "installation errors"               { exit 1}
+   timeout       { exit 2 }
+   eof           { catch wait result; exit [lindex $result 3] }
+}
+
+# vim: set expandtab ts=4 sw=4:

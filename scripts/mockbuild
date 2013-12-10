@@ -1,0 +1,23 @@
+#/bin/sh
+#
+# Given an lpf package, build and install the target package
+# in a yum changeroot, similar to lpf update.
+#
+# Usage: mockbuild <lpf package> [ mock root]
+
+set -x
+pkg=$1
+mockroot=${2:-'default'}
+scripts='/usr/share/lpf/scripts'
+
+mock -r $mockroot --init
+mock -r $mockroot --install $pkg
+mock -r $mockroot --copyin $pkg .
+# test work-around until lpf version is released
+mock -r $mockroot --copyin $scripts/mockbuild-helper $scripts
+pkg_base=$( basename $pkg )
+pkg_base=${pkg_base%-*}
+pkg_base=${pkg_base%-*}
+pkg_base=${pkg_base#lpf-}
+echo "$scripts/mockbuild-helper  $pkg_base" | mock -r $mockroot --shell -q
+

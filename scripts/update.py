@@ -36,9 +36,9 @@ class UpdateHandler:
         self._icons[row] = widget
 
     def _do_init(self, line):
-        if 'downloading' in line:
+        if 'build dependencies' in line:
             self._set_icon(1, Gtk.Spinner())
-            self._state = 'downloading'
+            self._state = 'builddeps'
 	    dialog = self.builder.get_object("main_dlg")
             try:
 		title = "lpf: " + line.split(':')[0]
@@ -47,22 +47,22 @@ class UpdateHandler:
                 pass
 	    dialog.show_all()
 
-    def _do_download(self, line):
-        if 'build dependencies' in line:
+    def _do_builddeps(self, line):
+        if 'downloading' in line:
             self._set_icon(1, Gtk.Image(stock=Gtk.STOCK_YES))
             self._set_icon(2, Gtk.Spinner())
-            self._state = 'builddeps'
+            self._state = 'downloading'
         elif  'rror' in  line:
-            self._set_icon(1, Gtk.Image(stock=Gtk.STOCK_NO))
+            self._set_icon(3, Gtk.Image(stock=Gtk.STOCK_NO))
             self._state = 'failed'
 
-    def _do_builddeps(self, line):
+    def _do_download(self, line):
         if 'building' in line:
             self._set_icon(2, Gtk.Image(stock=Gtk.STOCK_YES))
             self._set_icon(3, Gtk.Spinner())
             self._state = 'building'
         elif  'rror' in  line:
-            self._set_icon(3, Gtk.Image(stock=Gtk.STOCK_NO))
+            self._set_icon(1, Gtk.Image(stock=Gtk.STOCK_NO))
             self._state = 'failed'
 
     def _do_build(self, line):
@@ -95,15 +95,12 @@ class UpdateHandler:
     def process_line(self, source, cb_condition):
         l = sys.stdin.readline()
         print l.rstrip()
-        if 'exiting' in l:
-            sys.stdout.flush()
-            _goodbye()
-        elif self._state == 'init':
+        if self._state == 'init':
             self._do_init(l)
-        elif self._state == 'downloading':
-            self._do_download(l)
         elif self._state == 'builddeps':
             self._do_builddeps(l)
+        elif self._state == 'downloading':
+            self._do_download(l)
         elif self._state == 'building':
             self._do_build(l)
         elif self._state == 'installing':

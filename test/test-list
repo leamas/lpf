@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Test lpf list outcome.
+
+exec &> test-list.log
+set -x
+
+list=$( lpf list )
+case $list in
+    foo*bar ) exit 0 ;;
+    bar*foo ) exit 0 ;;
+    *)        exit 1 ;;
+esac
+
+# vim: set expandtab ts=4 sw=4:

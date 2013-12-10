@@ -24,7 +24,14 @@ target packages to match updated lpf packages.
 .PP
 lpf packages are visible as an icon in the GUI. Clicking this icon is
 the same as running 'lpf update' on the corresponding package.
-
+.PP
+To run privileged operations lpf uses sudo(1). In order to use lpf, the
+sudo configuration must allow current user to run commands as root, with
+or without a password. See PRIVILEGED COMMANDS below.
+.PP
+If DISPLAY is defined in the environment, lpf uses GUI dialogs for user
+interaction even when invoked from command line. To force CLI only
+operation, unset DISPLAY.
 .SH COMMANDS
 .TP
 list:
@@ -60,6 +67,39 @@ Copies spec file for package to current directory.
 .TP
 srpm <package>:
 Builds a srpm file for package.
+.TP
+scan-removal <package>:
+Triage package with the assumption that existing
+target package is removed (use in spec scriptlets).
+
+.SH PRIVILEGED COMMANDS
+All builds run by lpf is using the pkg-build UID. The pkg-build user
+owns the files under /var/lib/lpf. lpf uses sudo(1) to run as this user
+when building.
+.PP
+lpf also needs to install build dependencies and eventually the built
+target package. These operations are run as root, also using sudo.
+.PP
+The user running lpf needs to access certain files owned by pkg-build.
+lpf adds the pkg-build group to running user if required, also using sudo.
+.PP
+lpf installs a sudo config file  which allows users in the pkg-build
+group to make all required operations. The setup requires a password when
+the user should be added to the pkg-build group and when installing target
+packages, but runs otherwise without password prompt.
+
+
+.SH FILES
+.TP
+/etc/sudoers.d/pkg-build
+Sudo configuration, allows users in pkg-build group to perform several
+otherwise restricted operations.
+.TP
+/var/lib/lpf
+Temporary files: logs, state, built rpm packages etc.
+.TP
+/usr/share/lpf/packages
+Installed lpf packages data.
 
 .SH SEE ALSO
 .TP

@@ -9,14 +9,13 @@ all:
 	echo 'Only "make install" is doing something'.
 
 install:
-	install -m 755 -d $(DESTDIR)/etc/sudoers.d
 	install -m 755 -d $(DESTDIR)/var/lib/lpf/{packages,rpms,approvals,log}
 	install -m 755 -d $(DESTDIR)$(DATADIR)/lpf/packages
 	install -m 755 -d $(DESTDIR)$(BINDIR)
 	install -m 755 -d $(DESTDIR)$(LIBEXECDIR)
 	install -m 755 -d $(DESTDIR)$(MAN1)
 
-	cp -a pkg-build $(DESTDIR)/etc/sudoers.d
+	install -pDm 640 pkg-build.sudo $(DESTDIR)/etc/sudoers.d/pkg-build
 	cp -ar scripts CONFIG $(DESTDIR)$(DATADIR)/lpf
 	ln -s $(DATADIR)/lpf/scripts/lpf $(DESTDIR)$(BINDIR)/lpf
 	ln -s $(DATADIR)/lpf/scripts/lpf-kill-pgroup \

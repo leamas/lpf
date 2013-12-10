@@ -15,13 +15,21 @@ PKG_DATA_DIR="$LPF_DATA/packages"
 LPF_USER='pkg-build'
 LPF_GROUP='pkg-build'
 
-SUDO='sudo'
-[ -n "$DISPLAY" ] && SUDO='sudo -A'
+if (( UID == 0 )); then
+    SUDO=''
+    PKGBUILD_SUDO=''
+else
+    SUDO='sudo'
+    [ -n "$DISPLAY" ] && SUDO='sudo -A'
+    PKGBUILD_SUDO="$SUDO -u $LPF_USER"
+fi
 
 function get_logfile()      { echo $LPF_VAR/log/$1.log; }
 function get_approve_file() { echo $LPF_VAR/approvals/$1; }
 function get_resultdir()    { echo $LPF_VAR/rpms/$1; }
+function get_pkg_srcdir()   { echo $LPF_DATA/packages/$1/SOURCES; }
 function get_eula_dir()     { echo $LPF_DATA/packages/$1/eula; }
+function get_spec()         { echo $LPF_DATA/packages/$1/$1.spec; }
 function _get_statefile()   { echo $LPF_VAR/packages/$1/state; }
 
 
@@ -57,15 +65,6 @@ function get_state()
 }
 
 
-function set_state()
-# set_state pkg state - update state for pkg
-{
-    reset_umask=$(umask -p)
-    umask 0022
-    [ -e $LPF_VAR/packages/$1 ] || mkdir -p  $LPF_VAR/packages/$1
-    echo $2 >$( _get_statefile $1 )
-    $reset_umask
-}
 
 
 function get_pkg_version()
@@ -73,7 +72,7 @@ function get_pkg_version()
 {
     local pkg=$1
     local spec=$PKG_DATA_DIR/$pkg/$pkg.spec
-    rpm --specfile $spec -q --qf "%{VERSION}-%{RELEASE}\n" | head -1
+    rpm --specfile $spec -q --qf "%{VERSION}-%{RELEASE}\n" 2>/dev/null | head -1
 }
 
 
@@ -105,15 +104,6 @@ function install_rpms()
 }
 
 
-function build_packages()
-# build_packages [package...]: build command.
-{
-    $SUDO -u $LPF_USER \
-        LPF_UPDATE="$LPF_UPDATE" SUDO_ASKPASS="$SUDO_ASKPASS" \
-        $scriptdir/lpf-build "$@"
-}
-
-
 function approve_package()
 # approve_package <package>: approve command.
 {
@@ -123,7 +113,7 @@ function approve_package()
 function scan_packages()
 # scan_packages - state command.
 {
-    $SUDO -u $LPF_USER $scriptdir/lpf-scan "$@"
+    $PKGBUILD_SUDO $scriptdir/lpf-scan "$@"
 }
 
 

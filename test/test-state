@@ -1,0 +1,18 @@
+#!/usr/bin/expect
+
+spawn /usr/bin/lpf state
+set matches 0
+log_file test-state.log
+
+expect {
+   -re "bar +approve-wait +1.0-1"  {
+                 set matches [expr $matches + 1]; exp_continue }
+
+   -re "foo +approve-wait +1.0-1"  {
+                 set matches [expr $matches + 1]; exp_continue }
+
+   eof           { if { $matches == 2 } { exit 0 } else { exit 1 }}
+   timeout       { exit 5 }
+}
+
+# vim: set expandtab ts=4 sw=4:
