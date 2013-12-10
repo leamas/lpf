@@ -50,7 +50,7 @@ in recent Fedora versions):
 ## Getting started
 
 At this point, your lpf package is installed and ready to approve, build
-and install the msttcore-fonts package. Check the situation using lpf status:
+and install the msttcore-fonts package. Check the situation using lpf state:
 
     $ lpf state
     msttcore-fonts                     approve-wait   2.2-1
@@ -111,7 +111,7 @@ An alternative way without using any CLI magic:
                                --------        (root)
 
 
- - After installation a lpf package is untriaged. Normally, the %post
+ - After installation an lpf package is untriaged. Normally, the %post
    scriptlet will invoke lpf scan.
  - After running lpf scan the package is waiting for user approving the
    eula or if this is not required submitted for building directly.
@@ -127,12 +127,12 @@ An alternative way without using any CLI magic:
  - The update command is indeed a shortcut for approve-build-install.
 
 ## The lpf package
-To create a lpf package you first create a target package. My example
+To create an lpf package you first create a target package. My example
 is spotify-client. There is nothing specific about the target
 package besides the fact that it cannot be in public repositories
 for legal reasons. The spotify-client spec is in examples/spotify-client.
 
-Since you cannot distribute this package you create a lpf package,
+Since you cannot distribute this package you create an lpf package,
 in this case lpf-spotify-client (in examples). This package is used to build
 the target locally. This package contains the spec file, extra sources
 such as desktop files, patches etc.,  and the eula agreement user should
@@ -213,6 +213,5 @@ lots...
  - Sooner or later write this in a proper language (python?).
  - Modify the status page using a python GUI. Aligh  fields,
    "log" and "build" buttons for each package
- - Unit tests.
  - A notification mechanism so user can build new packages as needed
    when lpf packages are updated.
