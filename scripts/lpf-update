@@ -7,6 +7,7 @@ source $scriptdir/lpf-defs.bash
 
 
 function update_package_close()
+# Issue update complete message.
 {
     local pkg=$1
     local state=$( get_state $pkg )
@@ -20,6 +21,7 @@ function update_package_close()
 
 
 function update_package()
+# Push package through FSM until state is in [OK, failed, not-approved].
 {
     local pkg=$1
     local state="$( get_state $pkg )"
@@ -66,6 +68,7 @@ function confirm_update_arg()
 
 
 function cli_confirm_update()
+# Check what packages to update with user (CLI)
 {
     local to_install
     local states=$( list_states )
@@ -92,6 +95,7 @@ function cli_confirm_update()
 
 
 function gui_confirm_update()
+# Check what packages to update with user (GUI).
 {
     update_states=' approve-wait | build-wait | failed | not-approved '
     listdata=( $( list_states | egrep "$update_states" | sed 's/^/True /'))
@@ -138,17 +142,14 @@ function get_to_update()
 
 function update_packages()
 {
-    local state pkg
+    local pkg="$1"
 
-    for pkg in "$@"; do
-        state=$( get_state $pkg )
-        update_package $pkg
-        state=$( get_state $pkg )
-        if [[ "$state" == 'failed' && -n "$DISPLAY" ]]; then
-            local reply=$( $scriptdir/build_error.py )
-            [ "$reply" = 'view_buildlog' ] && show_buildlog $pkg
-        fi
-    done
+    update_package $pkg
+    local state=$( get_state $pkg )
+    if [[ "$state" == 'failed' && -n "$DISPLAY" ]]; then
+        local reply=$( $scriptdir/build_error.py )
+        [ "$reply" = 'view_buildlog' ] && show_buildlog $pkg
+    fi
     update_package_close $pkg
 }
 

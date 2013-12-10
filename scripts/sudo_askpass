@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-    # zenity wrapper used as sudo askpass helper
+# zenity wrapper used as sudo askpass helper
 
 # http://forums.gentoo.org/viewtopic-t-947210-start-0.html
 export NO_AT_BRIDGE=0

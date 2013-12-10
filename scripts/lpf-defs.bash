@@ -68,7 +68,7 @@ function get_state()
 
 
 function get_pkg_version()
-# get_pkg_version pkg - return version of lpf version
+# get_pkg_version pkg - return version of target spec i. e., target package.
 {
     local pkg=$1
     local spec=$PKG_DATA_DIR/$pkg/$pkg.spec

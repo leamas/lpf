@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Stare-changing operations, needs to be run as pkg-build user.
+# State-changing operations, needs to be run as pkg-build user.
 #
 
 scriptdir=$( dirname $(readlink -fn $0))
@@ -19,6 +19,7 @@ function set_state()
 
 
 function copy_results()
+# Copy built rpms to resultdir.
 {
     local pkg=$1
     local resultdir="$( get_resultdir $pkg )"

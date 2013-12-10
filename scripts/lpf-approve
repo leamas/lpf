@@ -10,8 +10,8 @@ source $scriptdir/lpf-defs.bash
 function get_approve_script()
 # get_approve_script - return user defined approve script or 'default'.
 {
-    pkg=$1
-    approve_script='default'
+    local pkg=$1
+    local approve_script='default'
     user_approve_script="$PKG_DATA_DIR/$pkg/approve-eula"
     [ -x $user_approve_script ] && \
         approve_script=$user_approve_script

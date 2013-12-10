@@ -6,7 +6,7 @@
 #
 # Runs without safety nets!
 
-[ $UID != 0 ] &&  { echo "You must be root to do this."; exit 1; }
+[ $UID != 0 ] &&  { echo "You must be root to do this." >&2; exit 1; }
 
 pkg=$1
 [ -z "$1" ] && { echo "No package given, goodbye." >&2; exit 1; }

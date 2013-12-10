@@ -14,7 +14,7 @@ function triage()
     local spec=$pkgdir/$pkg.spec
     local name version curr_version
     while read name version; do
-        curr_version=$(rpm -q --qf "%{VERSION}-%{RELEASE}\n" $name) \
+        curr_version=$( rpm -q --qf "%{VERSION}-%{RELEASE}\n" $name ) \
             || curr_version='undef'
 	[ "$(get_state $pkg)" = 'removing' ] && curr_version='undef'
         if [ "$curr_version" != "$version" ]; then
@@ -89,6 +89,7 @@ function update_state()
             ;;
     esac
 }
+
 
 cd /tmp
 pkgdirs=( $(get_arg_pkgdirs) )

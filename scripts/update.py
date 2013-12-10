@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+''' Update package GUI. '''
+
 import os.path
 import os
 import signal
@@ -10,6 +12,7 @@ from gi.repository import GLib
 from gi.repository import Gtk
 
 def _goodbye():
+    ''' Kill everything we've started. '''
     kill_pgroup = os.path.dirname(os.path.abspath(__file__)) + \
         "/lpf-kill-pgroup"
     subprocess.call([kill_pgroup])
@@ -17,6 +20,7 @@ def _goodbye():
 
 
 class UpdateHandler:
+    ''' FSM GUI accepting user commands and input from script to update. '''
 
     def __init__(self, builder):
         self.builder = builder
@@ -26,6 +30,7 @@ class UpdateHandler:
         builder.get_object('buildlog_btn').set_sensitive(False)
 
     def _set_icon(self, row, widget):
+        ''' Set icon in row to good, bad or spinning. '''
         table = builder.get_object('feedback_table')
         if self._icons[row]:
             table.remove(self._icons[row])
@@ -36,6 +41,7 @@ class UpdateHandler:
         self._icons[row] = widget
 
     def _do_init(self, line):
+        ''' Setup default GUI. '''
         if 'build dependencies' in line:
             self._set_icon(1, Gtk.Spinner())
             self._state = 'builddeps'
@@ -48,6 +54,7 @@ class UpdateHandler:
 	    dialog.show_all()
 
     def _do_builddeps(self, line):
+        ''' Process input line in state builddeps. '''
         if 'downloading' in line:
             self._set_icon(1, Gtk.Image(stock=Gtk.STOCK_YES))
             self._set_icon(2, Gtk.Spinner())
@@ -57,6 +64,7 @@ class UpdateHandler:
             self._state = 'failed'
 
     def _do_download(self, line):
+        ''' Process input line in state downloading. '''
         if 'building' in line:
             self._set_icon(2, Gtk.Image(stock=Gtk.STOCK_YES))
             self._set_icon(3, Gtk.Spinner())
@@ -66,6 +74,7 @@ class UpdateHandler:
             self._state = 'failed'
 
     def _do_build(self, line):
+        ''' Process input line in state building. '''
         if 'installation error' in line:
             self._set_icon(3, Gtk.Image(stock=Gtk.STOCK_YES))
             self._set_icon(4, Gtk.Image(stock=Gtk.STOCK_NO))
@@ -84,6 +93,7 @@ class UpdateHandler:
             self._state = 'installing'
 
     def _do_install(self, line):
+        ''' Process input line in state installing. '''
         if 'install completed' in line:
             self._set_icon(4, Gtk.Image(stock=Gtk.STOCK_YES))
             self._state = 'done'
@@ -93,6 +103,7 @@ class UpdateHandler:
 
 
     def process_line(self, source, cb_condition):
+        ''' Parse input line from update script. '''
         l = sys.stdin.readline()
         print l.rstrip()
         if self._state == 'init':
@@ -112,6 +123,7 @@ class UpdateHandler:
 
 
 class Handler:
+    ''' default glade event handlers. '''
 
     def on_build_error_dialog_destroy(self, *args):
         print "close"
