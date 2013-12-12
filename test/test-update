@@ -1,11 +1,12 @@
 #!/usr/bin/expect
 
 log_file test-update.log
-set timeout 180
+set timeout 240
 
 spawn env DISPLAY= /usr/bin/lpf update bar
 
 expect {
+   "More--"                            { send " "; exp_continue }
    "Do you accept these license terms" { send "yes\r\n"; exp_continue }
    "Install*Yes/no"                    { send "Yes\r\n"; exp_continue }
    "installation errors"               { exit 1}
