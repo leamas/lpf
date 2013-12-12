@@ -65,12 +65,17 @@ function create_approve_file()
 }
 
 
-function clear_results()
-# Clear resultdir for given package.
+function reset()
+# reset state to pristine, installed package.
 {
     pkg=$1
     local resultdir=$( get_resultdir $pkg )
     rm -rf $resultdir &>/dev/null || :
+    local appprove_file=$( get_approve_file $pkg )
+    rm -f $approve_file
+    local logfile=$( get_logfile $pkg )
+    rm -f $logfile
+    set_state $pkg 'untriaged' >/dev/null
 }
 
 
@@ -86,8 +91,8 @@ case "$cmd" in
     'set-state')
          set_state "$@"
          ;;
-    'clear-results')
-         clear_results "$@"
+    'reset')
+         reset "$@"
          ;;
     'create-approve-file')
          create_approve_file "$@"

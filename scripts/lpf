@@ -132,6 +132,14 @@ function install_rpms_cmd()
 }
 
 
+function reset_cmd()
+{
+    check_pkg_arg "$@"
+    $scriptdir/lpf-pkgbuild 'reset' "$1"
+    scan_packages "@"
+}
+
+
 function get_spec_cmd()
 {
     check_pkg_arg "$@"
@@ -209,8 +217,9 @@ case $command in
             install_rpms_cmd "$@"
             do_trap 0
             ;;
-    log)
-            show_buildlog "$@"
+    reset)  reset_cmd "$@"
+            ;;
+    log)    show_buildlog "$@"
             do_trap 0
             ;;
     spec)   get_spec_cmd "$@"
