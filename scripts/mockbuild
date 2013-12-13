@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 #
 # Given an lpf package, build and install the target package
 # in a yum changeroot, similar to lpf update.
