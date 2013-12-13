@@ -78,6 +78,15 @@ function reset()
     set_state $pkg 'untriaged' >/dev/null
 }
 
+function clear_results()
+# Remove all built rpms for package
+{
+    pkg=$1
+    local resultdir=$( get_resultdir $pkg )
+    rm -rf $resultdir &>/dev/null || :
+}
+
+
 
 if [[ ! $( id -un ) = "$LPF_USER" && "$UID" -ne '0' ]]; then
     exec $PKGBUILD_SUDO $scriptdir/lpf-pkgbuild "$@"
@@ -90,6 +99,9 @@ case "$cmd" in
          ;;
     'set-state')
          set_state "$@"
+         ;;
+    'clear-results')
+         clear_results "$@"
          ;;
     'reset')
          reset "$@"
