@@ -59,6 +59,9 @@ function confirm_update_arg()
     then
         echo "$pkg"
         return 0
+    elif [ "$DISPLAY" ]; then
+        text="$pkg is already in state $state and can't be updated."
+	zenity --info --title "Update: info" --text="$text"
     else
         echo "$pkg: state $state can't be updated" >&6
         echo "$pkg: exiting" >&6
