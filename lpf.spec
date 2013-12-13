@@ -82,7 +82,7 @@ fi
 %{_datadir}/man/man1/lpf.*
 %{_libexecdir}/lpf-kill-pgroup
 # fedpkg import does not accept /etc ATM.
-%config(noreplace) %{_sysconfdir}/sudoers.d/pkg-build
+%attr(440, root, root) %config(noreplace) %{_sysconfdir}/sudoers.d/pkg-build
 %attr(2775, pkg-build, pkg-build)/var/lib/lpf
 
 
