@@ -2,7 +2,7 @@
 # Common code sourced by other scripts
 #
 
-scriptdir=$( dirname $(readlink -fn $0))
+scriptdir=${scriptdir:-$( dirname $(readlink -fn $0))}
 
 LPF_VAR=${LPF_VAR:-/var/lib/lpf}
 LPF_DATA=${LPF_DATA:-/usr/share/lpf}
