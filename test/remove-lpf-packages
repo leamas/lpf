@@ -4,7 +4,7 @@ for pkg in $( lpf list ); do
    to_remove="$to_remove lpf-$pkg"
    rpm -q ${pkg} &> /dev/null && to_remove="$to_remove $pkg"
 done
-sudo rpm -e $( echo $to_remove )
-sudo rm -rf /var/lib/lpf/rpms/foo /var/lib/lpf/rpms/bar
+[ "$to_remove" ] && sudo rpm -e $( echo $to_remove )
+sudo rm -rf rpms/*
 
 # vim: set expandtab ts=4 sw=4:

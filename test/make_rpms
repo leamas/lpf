@@ -8,7 +8,7 @@ rm -rf rpms;  mkdir rpms
 
 for pkg in bar bar-1.1 foo foo-fail; do
     cd $home/examples/$pkg
-    rpmbuild --quiet -bb --define="_rpmdir $OLDPWD/rpms"  \
+    rpmbuild --quiet -bb --define="_rpmdir $here/rpms"  \
         --define "_sourcedir $PWD" lpf-${pkg/-1.1/}.spec
     arch=$( rpm --specfile -q --qf '%{arch}\n' lpf-${pkg/-1.1/}.spec )
     cd $here
