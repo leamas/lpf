@@ -65,6 +65,14 @@ Remove all temporaty files for package, set state as after fresh install.
 log [package]:
 Display logs from last build for package, or just last build.
 .TP
+hide <package>
+Disable notification messages for package as long as it stays in current
+state.
+.TP
+notify [message]
+Print given message or a default  one if there are lpf packages in need
+of action - typically in need to be updated.
+.TP
 spec <package>:
 Copy spec file for package to current directory.
 .TP

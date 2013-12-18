@@ -11,10 +11,19 @@ readonly rpm_rpmdir=$( rpm --eval %_rpmdir )
 
 
 function set_state()
-# Given package and state, set new state.
+# Given package and state, set new state. Possibly create notification.
 {
     [ -e $LPF_VAR/packages/$1 ] || mkdir -p  $LPF_VAR/packages/$1
-    echo $2 >$( _get_statefile $1 )
+    local statefile=$(  _get_statefile $1 )
+    oldstate=$( cat $statefile ) || oldstate='untriaged'
+    echo $2 >$statefile
+    case $2 in
+       'OK'|'removing'|'untriaged')
+            $scriptdir/lpf-notify remove "$1"
+	    ;;
+        *)  $scriptdir/lpf-notify create "$1" "$2"
+            ;;
+    esac
 }
 
 
@@ -78,6 +87,7 @@ function reset()
     set_state $pkg 'untriaged' >/dev/null
 }
 
+
 function clear_results()
 # Remove all built rpms for package
 {
@@ -85,7 +95,6 @@ function clear_results()
     local resultdir=$( get_resultdir $pkg )
     rm -rf $resultdir &>/dev/null || :
 }
-
 
 
 if [[ ! $( id -un ) = "$LPF_USER" && "$UID" -ne '0' ]]; then
@@ -96,6 +105,9 @@ cmd="$1"; shift
 case "$cmd" in
     'build')
          build "$@"
+         ;;
+    'hide')
+         $scriptdir/lpf-notify hide "$1"
          ;;
     'set-state')
          set_state "$@"
