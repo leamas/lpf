@@ -1,0 +1,120 @@
+#!/bin/bash
+#
+#
+# Notification handling: create, check, hide, remove.
+#
+
+scriptdir=$( dirname $(readlink -fn $0))
+source $scriptdir/lpf-defs.bash
+
+function get_user() { echo "${SUDO_USER:-$USER}"; }
+
+function check_pkgbuild_user()
+{
+    [ "$USER" != 'pkg-build' ] && {
+        echo >&2 "Error: must be run as pkk-build user."
+        exit 1
+    }
+}
+
+
+function create()
+# Create a new, pending message for a given package and state.
+# Invoke as pkg-build user. Clears any active hides.
+{
+    check_pkgbuild_user
+    pkg=$1
+    state=$2
+    test -d $LPF_VAR/notify || mkdir -p $LPF_VAR/notify
+    test -d $LPF_VAR/tmp || mkdir -p $LPF_VAR/tmp
+    new_dir=$( mktemp -d $LPF_VAR/tmp/XXXX )
+    echo $state > $new_dir/state
+    chmod 755 $new_dir
+    rm -rf  $LPF_VAR/notify/$pkg
+    mv -Tf $new_dir $LPF_VAR/notify/$pkg
+}
+
+function hide()
+# Hide message about given package for invoking user.
+# Invoke as pkg-build user.
+{
+    check_pkgbuild_user
+    pkg=$1
+    user=$( get_user )
+    new_hide=$( mktemp $LPF_VAR/tmp/XXXX )
+    mv $new_hide $LPF_VAR/notify/$pkg/hide.$user
+}
+
+
+function remove()
+# Remove message for given package
+# Invoke as pkg-build user.
+{
+    check_pkgbuild_user
+    pkg=$1
+    rm -rf $LPF_VAR/notify/$pkg
+}
+
+
+function is_pkg_message_pending()
+# Return true if a message is pending for given package.
+{
+    pkg=$1
+    user=$( get_user )
+    test -d $LPF_VAR/notify/$pkg  || return 1
+    hide_file=$LPF_VAR/notify/$pkg/hide.$user
+    test -f $hide_file && return 1
+    test  $hide_file -nt $LPF_VAR/notify/$pkg/state && return 1
+    return 0
+}
+
+
+function is_message_pending()
+# Return true if there is any message pending.
+{
+    for dir in $LPF_VAR/notify/*; do
+        is_pkg_message_pending ${dir##*/} && return 0
+    done
+    return 1
+}
+
+
+function cli_notify()
+# Print message if there are lpf packages needing rebuild.
+{
+   msg="lpf packages need rebuild (lpf update to fix)."
+   is_message_pending && echo ${1:-$msg}
+}
+
+
+function notify_watch
+# Invoke  $1 if there is package(s) needing rebuild. Does not return.
+{
+    trigger_func="$*"
+    is_message_pending && eval $trigger_func &
+    while :; do
+        inotifywait -q -q -e moved_to $( find $LPF_VAR/notify -type d )
+        sync
+        is_message_pending && eval $trigger_func &
+    done
+}
+
+cmd=$1; shift
+
+case $cmd in
+    create)   create "$@"
+              ;;
+    hide)     hide "$@"
+              ;;
+    remove)   remove "$@"
+              ;;
+    is-message-pending)
+              is_message_pending "$@"
+              ;;
+    cli-notify)
+              cli_notify "$@"
+              ;;
+    notify-watch)
+              notify_watch "$@"
+              ;;
+esac

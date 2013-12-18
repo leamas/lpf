@@ -61,4 +61,10 @@ class TestLpf(unittest.TestCase):
         with open('/dev/null', 'w') as devnull:
             subprocess.check_call('./test-build-fail', stdout=devnull)
 
+    def test_notify(self):
+        ''' Test notifications i. e., lpf-notify. '''
+        with open('/dev/null', 'w') as devnull:
+            subprocess.check_call(['/bin/bash', '-c', './test-notify'],
+                                   stdout=devnull)
+
 # vim: set expandtab ts=4 sw=4:
