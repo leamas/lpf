@@ -11,6 +11,7 @@ all:
 
 install:
 	install -m 755 -d $(DESTDIR)/var/lib/lpf/{packages,rpms,approvals,log}
+	install -m 755 -d $(DESTDIR)/var/lib/lpf/notify
 	install -m 755 -d $(DESTDIR)$(DATADIR)/lpf/packages
 	install -m 755 -d $(DESTDIR)$(BINDIR)
 	install -m 755 -d $(DESTDIR)$(LIBEXECDIR)
