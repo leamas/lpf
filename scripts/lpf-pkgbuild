@@ -80,6 +80,8 @@ function reset()
     pkg=$1
     local resultdir=$( get_resultdir $pkg )
     rm -rf $resultdir &>/dev/null || :
+    local notifydir=$( get_notifydir $pkg )
+    rm -rf $notifydir &>/dev/null || :
     local appprove_file=$( get_approve_file $pkg )
     rm -f $approve_file
     local logfile=$( get_logfile $pkg )
