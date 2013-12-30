@@ -23,6 +23,7 @@ install:
 	cp -ar scripts CONFIG $(DESTDIR)$(DATADIR)/lpf
 	cp -a lpf-notify.desktop $(DESTDIR)$(DATADIR)/lpf
 	cp -a icons/*.png $(DESTDIR)$(DATADIR)/lpf/icons
+	rm -f  $(DESTDIR)$(DATADIR)/lpf/scripts/pylint.conf
 	ln -s $(DATADIR)/lpf/scripts/lpf $(DESTDIR)$(BINDIR)/lpf
 	ln -s $(DATADIR)/lpf/scripts/lpf-kill-pgroup \
 	    $(DESTDIR)/$(LIBEXECDIR)/lpf-kill-pgroup
