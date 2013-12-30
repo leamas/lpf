@@ -56,7 +56,11 @@ function build_pkg()
            rpmbuild ${rpmbuild_opts:-'-bb'} $spec && \
            echo "$pkg: storing results" >&5 &&
        copy_results $pkg && state='install-wait' || state='failed'
-       echo "$pkg: build completed" >&5
+       if [ $state = 'install-wait' ]; then
+           echo "$pkg: build completed" >&5
+       else
+           echo "$pkg: build failed" >&5
+       fi
        set_state $pkg $state
 }
 
