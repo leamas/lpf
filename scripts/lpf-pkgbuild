@@ -111,6 +111,9 @@ case "$cmd" in
     'hide')
          $scriptdir/lpf-notify hide "$1"
          ;;
+    'unhide')
+         $scriptdir/lpf-notify unhide "$1"
+         ;;
     'set-state')
          set_state "$@"
          ;;

@@ -157,6 +157,13 @@ function hide_cmd()
 }
 
 
+function unhide_cmd()
+{
+    check_pkg_arg "$@"
+    sudo -u pkg-build $scriptdir/lpf-pkgbuild 'unhide' "$@"
+}
+
+
 function get_srpm_cmd()
 {
     check_pkg_arg "$@"
@@ -236,6 +243,8 @@ case $command in
     srpm)   get_srpm_cmd "$@"
             ;;
     hide)   hide_cmd "$@"
+            ;;
+    unhide) unhide_cmd "$@"
             ;;
     notify) $scriptdir/lpf-notify 'cli-notify' "$@"
             ;;

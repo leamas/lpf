@@ -34,6 +34,7 @@ function create()
     mv -Tf $new_dir $LPF_VAR/notify/$pkg
 }
 
+
 function hide()
 # Hide message about given package for invoking user.
 # Invoke as pkg-build user.
@@ -42,7 +43,28 @@ function hide()
     pkg=$1
     user=$( get_user )
     new_hide=$( mktemp $LPF_VAR/tmp/XXXX )
+    [ -d  $LPF_VAR/notify/$pkg ] || mkdir -p $LPF_VAR/notify/$pkg
     mv $new_hide $LPF_VAR/notify/$pkg/hide.$user
+}
+
+
+function unhide()
+#  Make message about given package visible for invoking user.
+# Invoke as pkg-build user. No-op if not hidden.
+{
+    check_pkgbuild_user
+    local pkg=$1
+    local user=$( get_user )
+    rm -f $LPF_VAR/notify/$pkg/hide.$user
+}
+
+
+function is_hidden()
+# Return 0 if messages for given package are hidden for current user.
+{
+    local pkg=$1
+    local user=$( get_user )
+    test -e  $LPF_VAR/notify/$pkg/hide.$user
 }
 
 
@@ -63,7 +85,7 @@ function is_pkg_message_pending()
     user=$( get_user )
     test -d $LPF_VAR/notify/$pkg  || return 1
     hide_file=$LPF_VAR/notify/$pkg/hide.$user
-    test -f $hide_file && return 1
+    test -f $hide_file || return 0
     test  $hide_file -nt $LPF_VAR/notify/$pkg/state && return 1
     return 0
 }
@@ -106,6 +128,8 @@ case $cmd in
               ;;
     hide)     hide "$@"
               ;;
+    unhide)   unhide "$@"
+              ;;
     remove)   remove "$@"
               ;;
     is-message-pending)
@@ -116,5 +140,7 @@ case $cmd in
               ;;
     notify-watch)
               notify_watch "$@"
+              ;;
+    is-hidden) is_hidden "$@"
               ;;
 esac
