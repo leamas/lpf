@@ -9,8 +9,9 @@ lpf set-state foo-fail build-wait
 unset DISPLAY
 
 /usr/bin/expect << EOF
-spawn env lpf build foo-fail
 log_file test-build-fail.log
+set timeout 60
+spawn env lpf build foo-fail
 
 expect {
    "foo-fail: build failed" {}

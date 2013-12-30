@@ -4,26 +4,30 @@ source $scriptdir/lpf-defs.bash
 exec &> test-notify.log
 set -x
 
+sudo -u pkg-build $scriptdir/lpf-notify remove foo &>/dev/null || :
+sudo -u pkg-build $scriptdir/lpf-notify remove bar &>/dev/null || :
+
 sudo -u pkg-build $scriptdir/lpf-notify create 'foo' 'approve-wait'
 test -f $LPF_VAR/notify/foo/state || exit 1
 [ $(cat $LPF_VAR/notify/foo/state) = 'approve-wait' ] || exit 2
 
 $scriptdir/lpf-notify is-message-pending || exit 3
 
+sleep 1
 sudo -u pkg-build $scriptdir/lpf-notify hide foo
 [ -f $LPF_VAR/notify/foo/hide.$USER ] || exit 4
 
 $scriptdir/lpf-notify is-message-pending && exit 5
 
 sudo -u pkg-build $scriptdir/lpf-notify remove foo
-[ -d $LPF_VAR/notify/foo ] || exit 6
+[ -d $LPF_VAR/notify/foo ] && exit 6
 
 rm -rf /tmp/ivar.log
 $scriptdir/lpf-notify notify-watch "echo ivar >/tmp/ivar.log" &
 watcher_pid=$!
 sudo -u pkg-build $scriptdir/lpf-notify create 'foo' 'approve-wait'
 sleep 1
-[ -f /tmp/ivar.log ] || { exit 6; }
+[ -f /tmp/ivar.log ] || { exit 7; }
 [ $( cat /tmp/ivar.log ) = 'ivar' ] || { kill $watcher_pid; exit 7; }
 kill $watcher_pid
 exit 0
