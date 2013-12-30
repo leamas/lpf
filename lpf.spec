@@ -16,6 +16,7 @@ BuildArch:      noarch
 BuildRequires:  desktop-file-utils
 Buildrequires:  python2-devel
 Requires:       hicolor-icon-theme
+Requires:       inotify-tools
 Requires:       procps-ng
 Requires:       rpmdevtools
 Requires:       rpm-build
