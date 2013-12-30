@@ -28,7 +28,7 @@ class Handler(object):
 
 
 builder = Gtk.Builder()
-ui = os.path.dirname(os.path.abspath(__file__)) + "/build-error.glade"
+ui = os.path.dirname(os.path.abspath(__file__)) + "/build-error.ui"
 builder.add_from_file(ui)
 builder.connect_signals(Handler())
 window = builder.get_object('build_error_dialog')

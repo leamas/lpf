@@ -153,7 +153,7 @@ class Handler(object):
 signal.signal(signal.SIGPIPE, signal.SIG_IGN)
 
 builder = Gtk.Builder()
-ui = os.path.dirname(os.path.abspath(__file__)) + "/update.glade"
+ui = os.path.dirname(os.path.abspath(__file__)) + "/update.ui"
 builder.add_from_file(ui)
 builder.connect_signals(Handler())
 
