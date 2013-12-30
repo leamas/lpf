@@ -13,6 +13,7 @@ install:
 	install -m 755 -d $(DESTDIR)/var/lib/lpf/{packages,rpms,approvals,log}
 	install -m 755 -d $(DESTDIR)/var/lib/lpf/notify
 	install -m 755 -d $(DESTDIR)$(DATADIR)/lpf/packages
+	install -m 755 -d $(DESTDIR)$(DATADIR)/lpf/icons
 	install -m 755 -d $(DESTDIR)$(BINDIR)
 	install -m 755 -d $(DESTDIR)$(LIBEXECDIR)
 	install -m 755 -d $(DESTDIR)$(MAN1)
@@ -20,6 +21,8 @@ install:
 	install -pDm 640 pkg-build.sudo $(DESTDIR)/etc/sudoers.d/pkg-build
 	install -pDm 644 macros.lpf $(DESTDIR)$(RPM_MACROS_DIR)/macros.lpf
 	cp -ar scripts CONFIG $(DESTDIR)$(DATADIR)/lpf
+	cp -a lpf-notify.desktop $(DESTDIR)$(DATADIR)/lpf
+	cp -a icons/*.png $(DESTDIR)$(DATADIR)/lpf/icons
 	ln -s $(DATADIR)/lpf/scripts/lpf $(DESTDIR)$(BINDIR)/lpf
 	ln -s $(DATADIR)/lpf/scripts/lpf-kill-pgroup \
 	    $(DESTDIR)/$(LIBEXECDIR)/lpf-kill-pgroup

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=lpfd
+Version=1.0
+GenericName=Local Package Factory notifications daemon.
+Comment=Notify user if lpf packages needs to be rebuilt.
+Exec=/usr/bin/lpf-notify notify-watch zenity --info --text="lpf packages needs update."
+Icon=lpf
+Type=Application
+Terminal=false
+Categories=GTK;System;
