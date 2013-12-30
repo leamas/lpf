@@ -119,7 +119,7 @@ function get_to_update()
     scan_packages "$@"
     while read pkg state lpf_vers; do
         curr_vers=$( rpm -q $pkg 2>/dev/null ) || curr_vers='-'
-        [[ 'approve-wait build-wait failed' == *$state* ]] && \
+        [[ 'approve-wait build-wait failed not-approved' == *$state* ]] && \
             states[$pkg]="$pkg $state $lpf_vers $curr_vers\n"
     done < <( list_states )
 
