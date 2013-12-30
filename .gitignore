@@ -5,6 +5,7 @@
 *.pyc
 *.src.rpm
 *.swp
+*.xcf
 dist
 rpms
 test-usr
