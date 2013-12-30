@@ -16,3 +16,4 @@ rm -rf /var/lib/lpf/packages/$pkg
 rm -rf /var/lib/lpf/rpms/$pkg
 rm -rf /var/lib/lpf/approvals/$pkg
 rm -f /var/lib/lpf/log/$pkg.log
+rm -rf /var/lib/lpf/notify/$pkg
