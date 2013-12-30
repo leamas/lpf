@@ -7,7 +7,7 @@ lpf \- Build non-redistributable rpms
 
 .SH DESCRIPTION
 Builds and installs non-redistributable rpms by downloading binaries,
-building and install a local rpm.
+building and installing a local rpm.
 .PP
 lpf handles lpf packages named like lpf-spotify-client and target
 packages which is spotify-client in this case. The lpf package is basically
@@ -23,15 +23,20 @@ corresponding to installed lpf packages. This also works to update
 target packages to match updated lpf packages.
 .PP
 lpf packages are visible as an icon in the GUI. Clicking this icon is
-the same as running 'lpf update' on the corresponding package.
+the same as running 'lpf update' on the corresponding package.  The
+lpf-gui GUI program  handles basic lpf operations: update,
+view logs, check overall state and notifications management.
 .PP
-To run privileged operations lpf uses sudo(1). In order to use lpf, the
+To run privileged operations lpf uses sudo(8). In order to use lpf, the
 sudo configuration must allow current user to run commands as root, with
 or without a password. See PRIVILEGED COMMANDS below.
 .PP
 If DISPLAY is defined in the environment, lpf uses GUI dialogs for user
 interaction even when invoked from command line. To force CLI only
 operation, unset DISPLAY.
+.PP
+lpf has a notification system for packages needing to be updated. See
+NOTIFICATIONS below.
 .SH COMMANDS
 .TP
 list:
@@ -85,13 +90,13 @@ target package is removed (use in spec scriptlets).
 
 .SH PRIVILEGED COMMANDS
 All builds run by lpf is using the pkg-build user which
-owns the files under /var/lib/lpf. lpf uses sudo(1) to run as pkg-build
+owns the files under /var/lib/lpf. lpf uses sudo(8) to run as pkg-build
 when building and to run as root when installing. lpf installs a sudo
 config file  which allows users in the pkg-build group to make all required
 operations.
 .PP
 One way to run lpf is to allow the running user to run commands as
-root, with or without a password. Refer to the sudo(1) configuration
+root, with or without a password. Refer to the sudo(8) configuration
 for this. With this configuration, running user will be added to the
 pkg-build group.
 .PP
@@ -101,7 +106,24 @@ the pkg-build group manually. Run
     $ su -c "usermod -a -G pkg-build $USER"
 .PP
 After this, log out and in again before proceeding.
+.SH NOTIFICATIONS
+lpf is capable of notifying user when lpf packages are in need of an update
+e. g., when the lpf package has been updated. GUI notifications could
+be enabled from the lpf-gui main window. This installs a daemon listening
+to package state changes for current user, displaying gui messages as
+appropriate.
 
+Command line notifications could
+be enabled by adding code to e. g., .bashlogin:
+.IP "" 4
+lpf notify
+.IP "" 0
+which will output a message similar to the well-known "You have mail" if lpf
+packages needs to be updated.
+.PP
+Notifications could be blocked (a. k. a. "hidden") on a per-user basis. This
+is done using the "hide" command or by marking the checkbox in the GUI
+notification window.
 .SH FILES
 .TP
 /etc/sudoers.d/pkg-build
@@ -113,10 +135,14 @@ Temporary files: logs, state, built rpm packages etc.
 .TP
 /usr/share/lpf/packages
 Installed lpf packages data.
+.TP
+~/.config/autostart/lpf-notify.desktop
+Daemon listening for package state change events.
+Installed by the GUI when enabling notifications
 
 .SH SEE ALSO
 .TP
 https://github.com/leamas/lpf
 Source, FSM description, issue tracker, etc.
 .TP
-sudo(1)
+sudo(8)
