@@ -422,7 +422,7 @@ class Handler(GObject.GObject):
 
 
 builder = Gtk.Builder()                   # pylint: disable=invalid-name
-builder.add_from_file(here("main_window.ui"))
+builder.add_from_file(here("lpf-gui.ui"))
 Handler(builder)
 Gtk.main()
 
