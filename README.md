@@ -1,4 +1,4 @@
-# lpf - Local Package Factory
+ lpf - Local Package Factory
 lpf is designed to handle two separate problems:
 
  - Packages built from sources which does not allow redistribution
@@ -73,9 +73,9 @@ After running above, check status again
 ## The GUI way
 
 An alternative way without using any CLI magic:
-   - install lpf-msttcore-fonts
-   - Locate the lpf-msttcore-fonts factory icon (eg g., search usng
-     gnome3) and click on it. Watch the package being built and installed
+   - Install lpf-msttcore-fonts
+   - Locate the lpf factory icon (eg g., search usng gnome3) and click on it.
+     Select "Build all" and watch the package being built and installed
      after some dialogs (see screenshots)
 
 
@@ -193,14 +193,43 @@ For now, here is the help (-h) output.
 In a desktop environment lpf will pop up various GUI windows. To make
 it work as a pure cli application unset the DISPLAY environment variable.
 
+## Notifications
+
+There is a notifications system which can be used both from the command
+line and the GUI.
+
+At the command line, 'lpf notify' writes a message if there are lpf packages
+which need to be built. It's intended to be included e. g., in .bashlogin.
+Notifications can be hidden, basically blocking this message until the
+package enters a new state.
+
+In the GUI, the basic tool is the lpf-notify user daemon. This is installed
+by the lpf-gui when selecting "Enable notifications" in the Notifications
+menu. The daemon listens for package state changes and pops up a message
+using the 'lpf notify-watch' command.
+
+There is a locking system for the GUI notifications to avoid multiple messages
+e. g., when actually updating the lpf package.
+
 ## Security, users and such
 
 Target packages are built by a dedicated user pkg-build who owns all files
 related to lpf. Users need to access some files e. g., to change state. This
-is done using group permissions.
+is done using group permissions. See the manpage (PRIVILEGED COMMANDS) for
+more.
 
-user need to run as pkg-build to build packages, and pkg-build need to run as
-root to install packages.  This is all done using sudo, with a GUI wrapper.
+## Tests
+The test directory contains some unit tests. To work, the package to test
+must be installed. BEWARE: tests remove all lpf packages on your machine!
+
+To run the tests:
+
+    $ tools/make_rpm
+    $ sudo rpm -U --force /path/to/created/rpm
+    $ cd test
+    $ python -m unittest discover # [-vf]
+
+Adding -vf stops at first failure and prints more info.
 
 
 ## License
@@ -211,7 +240,3 @@ This is open software licensed under the MIT license, see the LICENSE file.
 lots...
  - Dozens of bugs...
  - Sooner or later write this in a proper language (python?).
- - Modify the status page using a python GUI. Aligh  fields,
-   "log" and "build" buttons for each package
- - A notification mechanism so user can build new packages as needed
-   when lpf packages are updated.
