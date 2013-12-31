@@ -96,7 +96,7 @@ config file  which allows users in the pkg-build group to make all required
 operations.
 .PP
 One way to run lpf is to allow the running user to run commands as
-root, with or without a password. Refer to the sudo(8) configuration
+root, with or without a password. Refer to sudoers(8) configuration
 for this. With this configuration, running user will be added to the
 pkg-build group.
 .PP
@@ -113,8 +113,8 @@ be enabled from the lpf-gui main window. This installs a daemon listening
 to package state changes for current user, displaying gui messages as
 appropriate.
 
-Command line notifications could
-be enabled by adding code to e. g., .bashlogin:
+Command line notifications could be enabled by adding code to e. g.,
+ .bashlogin:
 .IP "" 4
 lpf notify
 .IP "" 0
@@ -122,8 +122,8 @@ which will output a message similar to the well-known "You have mail" if lpf
 packages needs to be updated.
 .PP
 Notifications could be blocked (a. k. a. "hidden") on a per-user basis. This
-is done using the "hide" command or by marking the checkbox in the GUI
-notification window.
+is done using the "hide" command or by marking the checkbox in the lpf-gui
+Notification menu.
 .SH FILES
 .TP
 /etc/sudoers.d/pkg-build
@@ -139,6 +139,9 @@ Installed lpf packages data.
 ~/.config/autostart/lpf-notify.desktop
 Daemon listening for package state change events.
 Installed by the GUI when enabling notifications
+
+.SH LICENSE
+This is open source software under the MIT license, see the LICENSE file.
 
 .SH SEE ALSO
 .TP
