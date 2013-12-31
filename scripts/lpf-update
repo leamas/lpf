@@ -160,6 +160,7 @@ function update_packages()
 trap "do_trap 84" SIGINT ERR
 exec 5<&1 6<&2
 export LPF_UPDATE=1
+$scriptdir/lpf-notify lock
 
 to_update=$( get_to_update $@ )
 for pkg in ${to_update[@]}; do
@@ -169,3 +170,5 @@ for pkg in ${to_update[@]}; do
         update_packages $pkg
     fi
 done
+
+$scriptdir/lpf-notify unlock

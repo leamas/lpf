@@ -71,7 +71,7 @@ class Handler(object):
         ''' User clicked 'Quit' button. '''
         Gtk.main_quit()
 
-
+subprocess.check_call([here('lpf-notify'), 'lock'])
 builder = Gtk.Builder()
 builder.add_from_file(here("notify.ui"))
 builder.connect_signals(Handler(builder))
@@ -79,5 +79,6 @@ builder.get_object('main_window').show_all()
 
 Gtk.main()
 
+subprocess.check_call([here('lpf-notify'), 'unlock'])
 
 # vim: set expandtab ts=4 sw=4:

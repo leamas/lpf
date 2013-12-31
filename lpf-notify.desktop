@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=lpfd
+Name=lpf-notify
 Version=1.0
 GenericName=Local Package Factory notifications daemon.
 Comment=Notify user if lpf packages needs to be rebuilt.

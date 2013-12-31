@@ -1,13 +1,66 @@
 #!/bin/bash
 #
 #
-# Notification handling: create, check, hide, remove.
+# Notification handling: create, check, hide, remove. Here is
+# also a 'hide' mechanism hiding current state for user (affects
+# all notifications) and a locking tool aimed for the GUI.
 #
 
 scriptdir=$( dirname $(readlink -fn $0))
 source $scriptdir/lpf-defs.bash
 
 function get_user() { echo "${SUDO_USER:-$USER}"; }
+function get_uid() { echo "${SUDO_UID:-$UID}"; }
+
+
+function get_lockdir()
+# Return lock directory for current user and DISPLAY. Requires $DISPLAY.
+{
+    [ "$DISPLAY" ] || { echo; return 1; }
+    local lockdir="/var/run/user/$( get_uid )/lpf/$DISPLAY"
+    [ -d $lockdir ]  || mkdir -p $lockdir
+    echo "$lockdir"
+}
+
+
+function get_lockfile()
+# Return lockfile for current user, requires DISPLAY.
+{
+    echo $( get_lockdir )/$( get_user ).$$
+}
+
+
+function clean_locks()
+# Remove all locks referring to dead processes.
+{
+    for lock in $( ls $( get_lockdir )/$( get_user ).* 2>/dev/null ); do
+        pid=${lock#*.}
+        ps --pid $pid &> /dev/null || rm -f $lock
+    done
+}
+
+
+function lock()
+# Create a lock for current user and DISPLAY (no-op without DISPLAY)
+{
+    [ "$DISPLAY" ] || return 0 && clean_locks && touch $( get_lockfile )
+}
+
+
+function unlock()
+# Unlock, no-op if not locked.
+{
+    [ "$DISPLAY" ] || return 0 && clean_locks && rm -f $( get_lockfile )
+}
+
+
+function is_locked()
+# Silent test if there is a lock for current user and DISPLAY.
+{
+    [ "$DISPLAY" ] ||  return 1 && \
+        test -f $( get_lockdir )/$( get_user).* &>/dev/null
+}
+
 
 function check_pkgbuild_user()
 {
@@ -116,6 +169,7 @@ function notify_watch
     is_message_pending && eval $trigger_func &
     while :; do
         inotifywait -q -q -e moved_to $( find $LPF_VAR/notify -type d )
+        is_locked && continue
         sync
         is_message_pending && eval $trigger_func &
     done
@@ -142,5 +196,12 @@ case $cmd in
               notify_watch "$@"
               ;;
     is-hidden) is_hidden "$@"
+              ;;
+    lock)     lock "$@"
+              ;;
+    unlock)   unlock "$@"
+              ;;
+    is-locked)
+              is_locked "$@"
               ;;
 esac
