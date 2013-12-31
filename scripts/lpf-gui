@@ -19,7 +19,7 @@ _USER_NOTIFIER_TEMPLATE = os.path.join(_HERE, '..', 'lpf-notify.desktop')
 
 
 def set_hourglass_cursor(builder_):
-    ' Use the hourglass cursor to makr long operations. '
+    ' Use the hourglass cursor to mark long operations. '
     cursor = Gdk.Cursor.new(Gdk.CursorType.WATCH)
     builder_.get_object('main_window').get_root_window().set_cursor(cursor)
 
@@ -61,46 +61,6 @@ def do_build_cmd(handler, cmd):
     GObject.idle_add(do_build)
 
 
-def on_main_cancel_clicked_cb(button, data=None):
-    ''' Cancel button in main UI callback. '''
-    Gtk.main_quit()
-
-
-def on_manpage_clicked_cb(button, handler):
-    ''' Display manpage... '''
-
-    def do_manpage():
-        ''' Do the dirty work. '''
-        subprocess.call(['yelp', 'man:' + here('../lpf.1')])
-        set_arrow_cursor(handler.builder)
-        handler.builder.get_object('main_window').set_sensitive(True)
-
-    set_hourglass_cursor(handler.builder)
-    handler.builder.get_object('main_window').set_sensitive(False)
-    GObject.idle_add(do_manpage)
-
-
-def on_details_notify_checkbox_cb(widget, self):
-    ''' User changes value of notifications checkbox in details window. '''
-    # pylint: disable=undefined-loop-variable
-    notifications_menu = self.builder.get_object('notifications_menu')
-    for item in notifications_menu.get_children():
-        if not hasattr(item, 'get_label'):
-            continue
-        if self.window_name in item.get_label():
-            break
-    else:
-        print("Cannot find active view menu item for window: "
-              + self.window_name)
-        return
-    item.set_active(widget.get_active())
-
-
-def on_details_dismiss_btn_cb(widget, builder_):
-    ''' User clicks 'Dismiss' button in details window. '''
-    builder_.get_object('overview_item').set_active(True)
-
-
 def show_some_text(text, builder_):
     ''' Read-only text display in a textview. '''
 
@@ -126,18 +86,6 @@ def show_some_text(text, builder_):
     w.set_size_request(600, 600)
     w.show_all()
     return w
-
-
-def on_details_log_button_cb(widget, self):
-    ''' Show last logfile in read-only window. '''
-    logfile = '/var/lib/lpf/log/%s.log' % self.window_name
-    try:
-        with open(logfile) as f:
-            log = f.read()
-    except OSError:
-        print(" Cannot open logfile: " + logfile)
-        return
-    show_some_text(log, self.builder)
 
 
 class Handler(GObject.GObject):
@@ -369,41 +317,98 @@ class Handler(GObject.GObject):
         except subprocess.CalledProcessError:
             hidden_box.set_active(False)
 
-    def __init__(self, builder_):
+    def connect(self, builder_):
+        ''' Connect most static signals. '''
 
         def on_build_all_clicked_cb(button, data=None):
             ''' Build button in main UI callback. '''
             do_build_cmd(self, ['./lpf', 'update'])
 
+        def on_manpage_clicked_cb(button, data=None):
+            ''' Display manpage... '''
+
+            def do_manpage():
+                ''' Do the dirty work. '''
+                subprocess.call(['yelp', 'man:' + here('../lpf.1')])
+                set_arrow_cursor(self.builder)
+                self.builder.get_object('main_window').set_sensitive(True)
+
+            set_hourglass_cursor(self.builder)
+            self.builder.get_object('main_window').set_sensitive(False)
+            GObject.idle_add(do_manpage)
+
+        def on_main_cancel_clicked_cb(button, data=None):
+            ''' Cancel button in main UI callback. '''
+            Gtk.main_quit()
+
+        def on_details_notify_checkbox_cb(widget, data=None):
+            ''' User changes value of notifications checkbox in details
+            window.
+            '''
+            # pylint: disable=undefined-loop-variable
+            notifications_menu = self.builder.get_object('notifications_menu')
+            for item in notifications_menu.get_children():
+                if not hasattr(item, 'get_label'):
+                    continue
+                if self.window_name in item.get_label():
+                    break
+            else:
+                print("Cannot find active view menu item for window: "
+                      + self.window_name)
+                return
+            item.set_active(widget.get_active())
+
+        def on_details_log_button_cb(widget, data=None):
+            ''' Show last logfile in read-only window. '''
+            logfile = '/var/lib/lpf/log/%s.log' % self.window_name
+            try:
+                with open(logfile) as f:
+                    log = f.read()
+            except OSError:
+                print(" Cannot open logfile: " + logfile)
+                return
+            show_some_text(log, self.builder)
+
+        def on_details_dismiss_btn_cb(widget, data=None):
+            ''' User clicks 'Dismiss' button in details window. '''
+            self.builder.get_object('overview_item').set_active(True)
+
+        connections = [
+            ["menuitem_quit", "activate", Gtk.main_quit],
+            ["menuitem_build_all", "activate", on_build_all_clicked_cb],
+            ["manpage_item", "activate", on_manpage_clicked_cb],
+            ["main_cancel_btn", "clicked", on_main_cancel_clicked_cb],
+            ["build_all_btn", "clicked", on_build_all_clicked_cb],
+            ["details_block_notify_checkbox",
+                "toggled", on_details_notify_checkbox_cb],
+            ["details_log_button", "clicked", on_details_log_button_cb],
+            ["details_dismiss_btn", "clicked", on_details_dismiss_btn_cb],
+            ['main_window', "delete-event", Gtk.main_quit]
+        ]
+
+        for [object_id, signal, func] in connections:
+            builder_.get_object(object_id).connect(signal, func)
+
+    def __init__(self, builder_):
+
+        def windows_setup():
+            ''' Detach the two windows (overview/main) from builder model
+            and store as self.main_window and self.details_window.
+            '''
+            # pylint: disable=attribute-defined-outside-init
+            self.details_window = self.builder.get_object('details_vbox')
+            self.main_window = self.builder.get_object('main_view_vbox')
+            self.builder.get_object('main_vbox').remove(
+                self.builder.get_object('details_vbox_align'))
+            self.builder.get_object('details_vbox_align').remove(
+                self.builder.get_object('details_vbox'))
+
         GObject.GObject.__init__(self)
         self.builder = builder_
         self.window_name = 'overview'
-        builder_.get_object('overview_item').set_active(True)
-        builder_.get_object("menuitem_quit").connect(
-            "activate", Gtk.main_quit)
-        builder_.get_object("menuitem_build_all").connect(
-            "activate", on_build_all_clicked_cb)
-        builder_.get_object("manpage_item").connect(
-            "activate", on_manpage_clicked_cb, self)
-        builder_.get_object("main_cancel_btn").connect(
-            "clicked", on_main_cancel_clicked_cb)
-        builder_.get_object("build_all_btn").connect(
-            "clicked", on_build_all_clicked_cb)
-        builder_.get_object("details_block_notify_checkbox").connect(
-            "toggled", on_details_notify_checkbox_cb, self)
-        builder_.get_object("details_log_button").connect(
-            "clicked", on_details_log_button_cb, self)
-        builder_.get_object("details_dismiss_btn").connect(
-            "clicked", on_details_dismiss_btn_cb, self.builder)
-        builder.get_object('main_window').connect(
-            "delete-event", Gtk.main_quit)
+        self.connect(builder)
         self.get_about(builder_)
-        self.details_window = builder_.get_object('details_vbox')
-        self.main_window = builder_.get_object('main_view_vbox')
-        builder_.get_object('main_vbox').remove(
-            builder_.get_object('details_vbox_align'))
-        builder_.get_object('details_vbox_align').remove(
-            builder_.get_object('details_vbox'))
+        windows_setup()
         statelines = \
             subprocess.check_output([here('lpf'), 'state']).split('\n')
         self.update_main_grid(statelines)
@@ -421,7 +426,7 @@ class Handler(GObject.GObject):
         builder.get_object('main_window').show_all()
 
 
-builder = Gtk.Builder()                   # pylint: disable=invalid-name
+builder = Gtk.Builder()
 builder.add_from_file(here("lpf-gui.ui"))
 Handler(builder)
 Gtk.main()
