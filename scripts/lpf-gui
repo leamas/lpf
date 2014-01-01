@@ -91,6 +91,16 @@ def show_some_text(text, builder_):
 class Handler(GObject.GObject):
     ''' Handle the GUI signals. '''
 
+    def _find_in_menu(self, menu, condition):
+        '''Find item in menu for which condition(item) is true. '''
+        for item in self.builder.get_object(menu).get_children():
+            try:
+                if condition(item):
+                    return(item)
+            except AttributeError:
+                continue
+        return None
+
     @staticmethod
     def pkg_label(pkg_name):
         ''' Label for package in main window. '''
@@ -157,14 +167,8 @@ class Handler(GObject.GObject):
 
         def on_view_item_activate_cb(widget, data=None):
             ''' User clicks on item in view menu. '''
-
-            # pylint: disable=undefined-loop-variable
-            for item in self.builder.get_object('view_menu').get_children():
-                if not hasattr(item, 'get_active'):
-                    continue
-                if item.get_active():
-                    break
-            else:
+            item = self._find_in_menu('view_menu', lambda i: i.get_active())
+            if not item:
                 print("Cannot find active view item?!")
                 return
             pkg_name = str(item.get_label())
@@ -208,14 +212,10 @@ class Handler(GObject.GObject):
         ''' Return More... button for package in main window. '''
 
         def on_details_more_button_cb(widget, data=None):
-            ''' user cliked on build button in details window. '''
-            # pylint: disable=undefined-loop-variable
-            for item in self.builder.get_object('view_menu').get_children():
-                if not hasattr(item, 'get_label'):
-                    continue
-                if item.get_label() == pkg_name:
-                    break
-            else:
+            ''' User clicked on build button in details window. '''
+            item = self._find_in_menu('view_menu',
+                                      lambda i: i.get_label() == pkg_name)
+            if not item:
                 print("Cannot find active view item?!")
                 return
             item.set_active(True)
@@ -342,18 +342,11 @@ class Handler(GObject.GObject):
             Gtk.main_quit()
 
         def on_details_notify_checkbox_cb(widget, data=None):
-            ''' User changes value of notifications checkbox in details
-            window.
-            '''
-            # pylint: disable=undefined-loop-variable
-            notifications_menu = self.builder.get_object('notifications_menu')
-            for item in notifications_menu.get_children():
-                if not hasattr(item, 'get_label'):
-                    continue
-                if self.window_name in item.get_label():
-                    break
-            else:
-                print("Cannot find active view menu item for window: "
+            ''' User changes notifications checkbox in details window.  '''
+            find_condition = lambda i: self.window_name in i.get_label()
+            item = self._find_in_menu('notifications_menu', find_condition)
+            if not item:
+                print("Cannot find view menu item for window: "
                       + self.window_name)
                 return
             item.set_active(widget.get_active())
