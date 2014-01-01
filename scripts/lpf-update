@@ -132,7 +132,9 @@ function get_to_update()
     fi
 
     local to_update
-    if [ -n "$*" ]; then
+    if (( $# == 1 && ${#states[@]} == 1 )); then
+        to_update=( "$@" )
+    elif [ -n "$*" ]; then
         to_update=$( confirm_update_arg "$@" ) || to_update=()
     elif [ -n "$DISPLAY" ]; then
         to_update=( $(gui_confirm_update "${states[@]}") )
