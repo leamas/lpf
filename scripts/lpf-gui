@@ -61,33 +61,6 @@ def do_build_cmd(handler, cmd):
     GObject.idle_add(do_build)
 
 
-def show_some_text(text, builder_):
-    ''' Read-only text display in a textview. '''
-
-    def cb_on_view_ok_btn_clicked(button, data=None):
-        ''' OK button on view_some_text window. '''
-        button.get_toplevel().hide()
-        return True
-
-    def cb_on_window_delete_event(window, event):
-        ''' Generic window close event. '''
-        window.hide()
-        return True
-
-    textview = builder_.get_object("view_textview")
-    textview.modify_font(FontDescription("Monospace"))
-    buf = textview.get_buffer()
-    buf.set_text(text)
-    w = builder_.get_object('view_window')
-    w.set_title("LPF: logfile")
-    w.connect('delete-event', cb_on_window_delete_event)
-    b = builder_.get_object('view_ok_btn')
-    b.connect('clicked', cb_on_view_ok_btn_clicked)
-    w.set_size_request(600, 600)
-    w.show_all()
-    return w
-
-
 class Handler(GObject.GObject):
     ''' Handle the GUI signals. '''
 
@@ -122,6 +95,39 @@ class Handler(GObject.GObject):
         image.set_from_file(icon_path(icon))
         image.set_padding(10, 10)
         return image
+
+    def show_log(self):
+        ''' Read-only log display in a textview. '''
+
+        def cb_on_view_ok_btn_clicked(button, data=None):
+            ''' OK button on view_some_text window. '''
+            button.get_toplevel().hide()
+            return True
+
+        def cb_on_window_delete_event(window, event):
+            ''' Generic window close event. '''
+            window.hide()
+            return True
+
+        logfile = '/var/lib/lpf/log/%s.log' % self.window_name
+        try:
+            with open(logfile) as f:
+                log = f.read()
+        except OSError:
+            print(" Cannot open logfile: " + logfile)
+            return None
+        textview = self.builder.get_object("view_textview")
+        textview.modify_font(FontDescription("Monospace"))
+        buf = textview.get_buffer()
+        buf.set_text(log)
+        w = self.builder.get_object('view_window')
+        w.set_title("LPF: logfile")
+        w.connect('delete-event', cb_on_window_delete_event)
+        b = self.builder.get_object('view_ok_btn')
+        b.connect('clicked', cb_on_view_ok_btn_clicked)
+        w.set_size_request(600, 600)
+        w.show_all()
+        return w
 
     def notify_menuitem_setup(self, pkg_name=None):
         ''' Return menuitem in Notifications menu. '''
@@ -353,14 +359,7 @@ class Handler(GObject.GObject):
 
         def on_details_log_button_cb(widget, data=None):
             ''' Show last logfile in read-only window. '''
-            logfile = '/var/lib/lpf/log/%s.log' % self.window_name
-            try:
-                with open(logfile) as f:
-                    log = f.read()
-            except OSError:
-                print(" Cannot open logfile: " + logfile)
-                return
-            show_some_text(log, self.builder)
+            self.show_log()
 
         def on_details_dismiss_btn_cb(widget, data=None):
             ''' User clicks 'Dismiss' button in details window. '''
