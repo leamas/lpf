@@ -95,9 +95,9 @@ function hide()
 # Invoke as pkg-build user.
 {
     check_pkgbuild_user
-    pkg=$1
-    user=$( get_user )
-    new_hide=$( mktemp $LPF_VAR/tmp/XXXX )
+    local pkg=$1
+    local user=$( get_user )
+    local new_hide=$( mktemp $LPF_VAR/tmp/XXXX )
     [ -d  $LPF_VAR/notify/$pkg ] || mkdir -p $LPF_VAR/notify/$pkg
     mv $new_hide $LPF_VAR/notify/$pkg/hide.$user
 }
@@ -128,7 +128,7 @@ function remove()
 # Invoke as pkg-build user.
 {
     check_pkgbuild_user
-    pkg=$1
+    local pkg=$1
     rm -rf $LPF_VAR/notify/$pkg
 }
 
@@ -136,10 +136,10 @@ function remove()
 function is_pkg_message_pending()
 # Return true if a message is pending for given package.
 {
-    pkg=$1
-    user=$( get_user )
+    local pkg=$1
+    local user=$( get_user )
     test -d $LPF_VAR/notify/$pkg  || return 1
-    hide_file=$LPF_VAR/notify/$pkg/hide.$user
+    local hide_file=$LPF_VAR/notify/$pkg/hide.$user
     test -f $hide_file || return 0
     test  $hide_file -nt $LPF_VAR/notify/$pkg/state && return 1
     return 0
@@ -159,7 +159,7 @@ function is_message_pending()
 function cli_notify()
 # Print message if there are lpf packages needing rebuild.
 {
-   msg="lpf packages need rebuild (lpf update to fix)."
+   local msg="lpf packages need rebuild (lpf update to fix)."
    is_message_pending && echo ${1:-$msg}
 }
 
@@ -167,7 +167,7 @@ function cli_notify()
 function notify_watch
 # Invoke  $1 if there is package(s) needing rebuild. Does not return.
 {
-    trigger_func="$*"
+    local trigger_func="$*"
     is_message_pending && eval $trigger_func &
     while :; do
         inotifywait -q -q -e moved_to $( find $LPF_VAR/notify -type d )
@@ -180,30 +180,30 @@ function notify_watch
 cmd=$1; shift
 
 case $cmd in
-    create)   create "$@"
-              ;;
-    hide)     hide "$@"
-              ;;
-    unhide)   unhide "$@"
-              ;;
-    remove)   remove "$@"
-              ;;
-    is-message-pending)
-              is_message_pending "$@"
-              ;;
-    cli-notify)
-              cli_notify "$@"
-              ;;
-    notify-watch)
-              notify_watch "$@"
-              ;;
-    is-hidden) is_hidden "$@"
-              ;;
-    lock)     lock "$@"
-              ;;
-    unlock)   unlock "$@"
-              ;;
-    is-locked)
-              is_locked "$@"
-              ;;
+    'create')   create "$@"
+                ;;
+    'hide')     hide "$@"
+                ;;
+    'unhide')   unhide "$@"
+                ;;
+    'remove')   remove "$@"
+                ;;
+    'is-message-pending')
+                is_message_pending "$@"
+                ;;
+    'cli-notify')
+                cli_notify "$@"
+                ;;
+    'notify-watch')
+                notify_watch "$@"
+                ;;
+    'is-hidden') is_hidden "$@"
+                ;;
+    'lock')     lock "$@"
+                ;;
+    'unlock')   unlock "$@"
+                ;;
+    'is-locked')
+                is_locked "$@"
+                ;;
 esac
