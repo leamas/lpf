@@ -67,3 +67,6 @@ for pkgdir in ${pkgdirs[@]}; do
     echo "$pkg: build completed"
     install_rpms $pkg
 done
+
+
+# vim: set expandtab ts=4 sw=4:

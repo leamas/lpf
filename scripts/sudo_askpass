@@ -8,3 +8,6 @@ export NO_AT_BRIDGE=0
 scriptdir=$( dirname $(readlink -fn $0))
 
 zenity --password --title="$*" || $scriptdir/lpf-kill-pgroup
+
+
+# vim: set expandtab ts=4 sw=4:

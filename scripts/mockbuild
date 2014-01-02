@@ -21,3 +21,5 @@ pkg_base=${pkg_base%-*}
 pkg_base=${pkg_base#lpf-}
 echo "$scripts/mockbuild-helper  $pkg_base" | mock -r $mockroot --shell -q
 
+
+# vim: set expandtab ts=4 sw=4:

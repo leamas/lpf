@@ -174,3 +174,6 @@ for pkg in ${to_update[@]}; do
 done
 
 $scriptdir/lpf-notify unlock
+
+
+# vim: set expandtab ts=4 sw=4:

@@ -52,3 +52,6 @@ for arg in $*; do
     cp $arg $topdir/usr/share/lpf/packages/$pkg/SOURCES
 done
 rm -f $config
+
+
+# vim: set expandtab ts=4 sw=4:

@@ -35,3 +35,5 @@ window = builder.get_object('build_error_dialog')
 window.show_all()
 
 Gtk.main()
+
+# vim: set expandtab ts=4 sw=4:

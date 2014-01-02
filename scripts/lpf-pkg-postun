@@ -17,3 +17,6 @@ rm -rf /var/lib/lpf/rpms/$pkg
 rm -rf /var/lib/lpf/approvals/$pkg
 rm -f /var/lib/lpf/log/$pkg.log
 rm -rf /var/lib/lpf/notify/$pkg
+
+
+# vim: set expandtab ts=4 sw=4:

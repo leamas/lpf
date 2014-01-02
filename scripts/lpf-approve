@@ -95,3 +95,6 @@ done
 
 [ -n  "$errors" ] && exit 1
 exit 0
+
+
+# vim: set expandtab ts=4 sw=4:

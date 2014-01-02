@@ -160,3 +160,6 @@ builder.connect_signals(Handler())
 update_handler = UpdateHandler(builder)
 GLib.io_add_watch(0, GLib.IO_IN, update_handler.process_line)
 Gtk.main()
+
+
+# vim: set expandtab ts=4 sw=4:
