@@ -23,13 +23,10 @@ corresponding to installed lpf packages. This also works to update
 target packages to match updated lpf packages.
 .PP
 lpf packages are visible as an icon in the GUI. Clicking this icon is
-the same as running 'lpf update' on the corresponding package.  The
-lpf-gui GUI program  handles basic lpf operations: update,
-view logs, check overall state and notifications management.
+the same as running 'lpf update' on the corresponding package.
 .PP
-To run privileged operations lpf uses sudo(8). In order to use lpf, the
-sudo configuration must allow current user to run commands as root, with
-or without a password. See PRIVILEGED COMMANDS below.
+To run privileged operations lpf uses sudo(8). See PRIVILEGED COMMANDS
+below.
 .PP
 If DISPLAY is defined in the environment, lpf uses GUI dialogs for user
 interaction even when invoked from command line. To force CLI only
@@ -65,7 +62,7 @@ install <package>:
 Install rpms for given package.
 .TP
 reset <package>
-Remove all temporaty files for package, set state as after fresh install.
+Remove all temporary files for package, set state as after fresh install.
 .TP
 log [package]:
 Display logs from last build for package, or just last build.
@@ -104,7 +101,7 @@ After this, log out and in again before proceeding.
 .SH NOTIFICATIONS
 lpf is capable of notifying user when lpf packages are in need of an update
 e. g., when the lpf package has been updated. GUI notifications could
-be enabled from the lpf-gui main window. This installs a daemon listening
+be enabled from the lpf-gui(1) main window. This installs a daemon listening
 to package state changes for current user, displaying gui messages as
 appropriate.
 
@@ -130,15 +127,14 @@ Temporary files: logs, state, built rpm packages etc.
 .TP
 /usr/share/lpf/packages
 Installed lpf packages data.
-.TP
-~/.config/autostart/lpf-notify.desktop
-Daemon listening for package state change events.
-Installed by the GUI when enabling notifications
 
 .SH LICENSE
 This is open source software under the MIT license, see the LICENSE file.
 
 .SH SEE ALSO
+.TP
+lpf-gui(1)
+    Gtk-based graphical frontend to lpf.
 .TP
 https://github.com/leamas/lpf
     Source, FSM description, issue tracker, etc.

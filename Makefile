@@ -32,6 +32,6 @@ install:
 	    install -pm 644 -D icons/lpf-$$size.png \
 	        $(DESTDIR)$(DATADIR)/icons/hicolor/$${size}x$${size}/apps/lpf.png; \
 	done
-	cp -a lpf.1  $(DESTDIR)$(MAN1)
+	cp -a lpf.1 lpf-gui.1  $(DESTDIR)$(MAN1)
 	desktop-file-install \
 	    --dir $(DESTDIR)$(DATADIR)/applications lpf.desktop

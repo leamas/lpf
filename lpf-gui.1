@@ -1,0 +1,38 @@
+.TH lpf-gui 1
+.SH NAME
+lpf-gui \- Non-redistributable rpms management GUI interface
+
+.SH SYNOPSIS
+.B lpf-gui
+
+The program has no options.
+
+.SH DESCRIPTION
+lpf-gui provides a graphical interface handling non-redistributable
+rpm packages. It's based on lpf(1).
+.PP
+lpf handles lpf packages named like lpf-spotify-client and target
+packages which is spotify-client in this case. The lpf package is basically
+just a thin recipe how to build the target package. Target packages are
+by definition non-redistributable.
+.PP
+lpf-gui has functions to build and install target packages, inspect state,
+view logs, handle notifications etc.
+
+.SH LICENSE
+This is open source software under the MIT license, see the LICENSE file.
+
+.SH FILES
+.TP
+~/.config/autostart/lpf-notify.desktop
+Daemon listening for package state change events.
+Installed when enabling notifications
+
+.SH SEE ALSO
+.TP
+https://github.com/leamas/lpf
+    Source, FSM description, issue tracker, etc.
+.TP
+lpf(1)
+    All lpf-gui operations are using lpf.
+

@@ -81,7 +81,7 @@ fi
 %{_datadir}/lpf
 %{_datadir}/applications/lpf.desktop
 %{_datadir}/icons/hicolor/*/apps/lpf.png
-%{_datadir}/man/man1/lpf.*
+%{_datadir}/man/man1/lpf*
 %{_libexecdir}/lpf-kill-pgroup
 # fedpkg import does not accept /etc ATM.
 %attr(440, root, root) %config(noreplace) %{_sysconfdir}/sudoers.d/pkg-build
