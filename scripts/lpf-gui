@@ -49,14 +49,12 @@ def do_build_cmd(handler, cmd):
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError:
             pass
-        set_arrow_cursor(handler.builder)
         if handler.window_name == 'overview':
             handler.update_main_grid()
         else:
             handler.update_details(handler.window_name)
         handler.builder.get_object('main_window').set_sensitive(True)
 
-    set_hourglass_cursor(handler.builder)
     handler.builder.get_object('main_window').set_sensitive(False)
     GObject.idle_add(do_build)
 
