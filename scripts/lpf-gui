@@ -146,7 +146,7 @@ class Handler(GObject.GObject):
         def on_pkg_activate_cb(widget, pkg_name):
             ''' Disable notifications for a package menu entry callback. '''
             cmd = 'hide' if widget.get_active() else 'unhide'
-            subprocess.check_output([here('./lpf'), cmd, pkg_name])
+            subprocess.check_output([here('lpf'), cmd, pkg_name])
             if pkg_name == self.window_name:
                 checkbox = \
                     self.builder.get_object('details_block_notify_checkbox')
@@ -155,7 +155,7 @@ class Handler(GObject.GObject):
         if pkg_name:
             item = Gtk.CheckMenuItem.new_with_label("Disable " + pkg_name)
             try:
-                subprocess.check_output([here('./lpf-notify'),
+                subprocess.check_output([here('lpf-notify'),
                                         'is-hidden',
                                         pkg_name])
                 item.set_active(True)
@@ -206,7 +206,7 @@ class Handler(GObject.GObject):
 
         def on_build_clicked_cb(button, pkg_name):
             ''' Build button for one package clicked callback. '''
-            do_build_cmd(self, ['./lpf', 'update', pkg_name])
+            do_build_cmd(self, [here('lpf'), 'update', pkg_name])
 
         button = Gtk.Button()
         button.set_label('Build...')
@@ -282,7 +282,7 @@ class Handler(GObject.GObject):
 
         def on_build_clicked_cb(button, pkg_name):
             ''' Build button for one package clicked callback. '''
-            do_build_cmd(self, ['./lpf', 'update', pkg_name])
+            do_build_cmd(self, [here('lpf'), 'update', pkg_name])
 
         stateline = subprocess.check_output([here('lpf'), 'state', pkg_name])
         try:
@@ -326,7 +326,7 @@ class Handler(GObject.GObject):
 
         def on_build_all_clicked_cb(button, data=None):
             ''' Build button in main UI callback. '''
-            do_build_cmd(self, ['./lpf', 'update'])
+            do_build_cmd(self, [here('lpf'), 'update'])
 
         def on_manpage_clicked_cb(button, data=None):
             ''' Display manpage... '''
