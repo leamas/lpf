@@ -232,19 +232,17 @@ class Handler(GObject.GObject):
         button.connect("clicked", on_details_more_button_cb, pkg_name)
         return button
 
-    @staticmethod
-    def get_grid(builder_):
+    def get_grid(self):
         ''' Grid replacing original table in main window. '''
         grid = Gtk.Grid()
         grid.set_border_width(10)
-        table_align = builder_.get_object("main_table_align")
+        table_align = self.builder.get_object("main_table_align")
         for child in table_align.get_children():
             table_align.remove(child)
         table_align.add(grid)
         return grid
 
-    @staticmethod
-    def get_about(builder_):
+    def get_about(self):
         ''' Install the Help | About dialog. '''
         # See: https://developer.gnome.org/gtk3/stable/GtkAboutDialog.html
 
@@ -255,16 +253,16 @@ class Handler(GObject.GObject):
         about.set_website("http://github.com/leamas/lpf")
         about.set_website_label("Github project home")
         about.connect("response", lambda w, d: w.hide())
-        builder_.get_object("about_item").connect("activate",
-                                                  lambda w, a: a.show(),
-                                                  about)
+        self.builder.get_object("about_item").connect("activate",
+                                                      lambda w, a: a.show(),
+                                                      about)
 
     def update_main_grid(self, statelines=None):
         ''' Update the main window grid with data from 'lpf state'. '''
         if not statelines:
             statelines = \
                 subprocess.check_output([here('lpf'), 'state']).split('\n')
-        grid = self.get_grid(self.builder)
+        grid = self.get_grid()
         for row, stateline in enumerate(statelines):
             try:
                 pkg_name, state = stateline.split()[0:2]
@@ -323,7 +321,7 @@ class Handler(GObject.GObject):
         except subprocess.CalledProcessError:
             hidden_box.set_active(False)
 
-    def connect(self, builder_):
+    def connect(self):
         ''' Connect most static signals. '''
 
         def on_build_all_clicked_cb(button, data=None):
@@ -379,7 +377,7 @@ class Handler(GObject.GObject):
         ]
 
         for [object_id, signal, func] in connections:
-            builder_.get_object(object_id).connect(signal, func)
+            self.builder.get_object(object_id).connect(signal, func)
 
     def __init__(self, builder_):
 
@@ -398,8 +396,8 @@ class Handler(GObject.GObject):
         GObject.GObject.__init__(self)
         self.builder = builder_
         self.window_name = 'overview'
-        self.connect(builder)
-        self.get_about(builder_)
+        self.connect()
+        self.get_about()
         windows_setup()
         statelines = \
             subprocess.check_output([here('lpf'), 'state']).split('\n')
