@@ -74,8 +74,8 @@ After running above, check status again
 
 An alternative way without using any CLI magic:
    - Install lpf-msttcore-fonts
-   - Locate the lpf factory icon (eg g., search usng gnome3) and click on it.
-     Select "Build all" and watch the package being built and installed
+   - Start the lpf-gui program
+   - Select "Build all" and watch the package being built and installed
      after some dialogs (see screenshots)
 
 

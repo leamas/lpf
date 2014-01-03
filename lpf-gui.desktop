@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=lpf-gui
+Version=1.0
+GenericName=Package Builder
+Comment=Graphical interface to lpf system handling local packages
+Exec=/usr/bin/lpf-gui
+Icon=lpf-gui
+Type=Application
+Terminal=false
+Categories=GTK;System;

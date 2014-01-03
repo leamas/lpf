@@ -77,10 +77,12 @@ fi
 %files
 %doc README.md LICENSE
 %{_bindir}/lpf
+%{_bindir}/lpf-gui
 /usr/lib/rpm/macros.d/macros.lpf
 %{_datadir}/lpf
 %{_datadir}/applications/lpf.desktop
-%{_datadir}/icons/hicolor/*/apps/lpf.png
+%{_datadir}/applications/lpf-gui.desktop
+%{_datadir}/icons/hicolor/*/apps/lpf*.png
 %{_datadir}/man/man1/lpf*
 %{_libexecdir}/lpf-kill-pgroup
 # fedpkg import does not accept /etc ATM.

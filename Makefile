@@ -6,6 +6,8 @@ DATADIR=$(PREFIX)/share
 RPM_MACROS_DIR=/usr/lib/rpm/macros.d
 MAN1=$(DATADIR)/man/man1
 
+HICOLORDIR=$(DESTDIR)$(DATADIR)/icons/hicolor
+
 all:
 	echo 'Only "make install" is doing something'.
 
@@ -25,13 +27,20 @@ install:
 	cp -a icons/*.png $(DESTDIR)$(DATADIR)/lpf/icons
 	rm -f  $(DESTDIR)$(DATADIR)/lpf/scripts/pylint.conf
 	ln -s $(DATADIR)/lpf/scripts/lpf $(DESTDIR)$(BINDIR)/lpf
+	ln -s $(DATADIR)/lpf/scripts/lpf-gui $(DESTDIR)$(BINDIR)/lpf-gui
 	ln -s $(DATADIR)/lpf/scripts/lpf-kill-pgroup \
 	    $(DESTDIR)/$(LIBEXECDIR)/lpf-kill-pgroup
 
 	for size in 24 32 48 64 128; do \
 	    install -pm 644 -D icons/lpf-$$size.png \
-	        $(DESTDIR)$(DATADIR)/icons/hicolor/$${size}x$${size}/apps/lpf.png; \
+	        $(HICOLORDIR)/$${size}x$${size}/apps/lpf.png; \
+	done
+	for size in 24 32 48 ; do \
+	    install -pm 644 -D icons/lpf-gui-$$size.png \
+	        $(HICOLORDIR)/$${size}x$${size}/apps/lpf-gui.png; \
 	done
 	cp -a lpf.1 lpf-gui.1  $(DESTDIR)$(MAN1)
 	desktop-file-install \
 	    --dir $(DESTDIR)$(DATADIR)/applications lpf.desktop
+	desktop-file-install \
+	    --dir $(DESTDIR)$(DATADIR)/applications lpf-gui.desktop
