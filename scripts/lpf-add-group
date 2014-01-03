@@ -42,7 +42,7 @@ function add_lpf_group()
         ok=$?
     fi
     if [ $ok = "0" ]; then
-        $SUDO usermod -a -G $LPF_GROUP $USER
+        pkexec /usr/sbin/usermod -a -G $LPF_GROUP $USER
     else
         exit 1
     fi

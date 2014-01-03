@@ -95,13 +95,8 @@ when building and to run as root when installing. lpf installs a sudo
 config file  which allows users in the pkg-build group to make all required
 operations.
 .PP
-One way to run lpf is to allow the running user to run commands as
-root, with or without a password. Refer to sudoers(8) configuration
-for this. With this configuration, running user will be added to the
-pkg-build group.
-.PP
-Another way to allow current user to run lpf is to add running user to
-the pkg-build group manually. Run
+lpf uses pkexec(1) to add current user to the pkg-build group. This
+is invoked on the first run. To avoid add user manually using:
 .IP "" 4
     $ su -c "usermod -a -G pkg-build $USER"
 .PP
@@ -146,6 +141,14 @@ This is open source software under the MIT license, see the LICENSE file.
 .SH SEE ALSO
 .TP
 https://github.com/leamas/lpf
-Source, FSM description, issue tracker, etc.
+    Source, FSM description, issue tracker, etc.
+.TP
+sudoers(5)
+    Format for /etc/sudoers.d/pkg-build
 .TP
 sudo(8)
+    Used to run privileged operations.
+.TP
+pkexec(1)
+    Used to add user to pkg-build group at initial run.
+
