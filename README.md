@@ -20,26 +20,21 @@ The envisioned usage is that a user
 
 ## Installation
 
-First, clone the sources, create a fresh rpm (your rpm will have
-a different name, look in the rpmbuild output) and install it:
+First clone the sources, create a fresh rpm and install it:
 
     $ git clone https://github.com/leamas/lpf.git
     $ cd lpf/
     $ tools/make_rpm
-    $ sudo rpm -U /home/al/rpmbuild/RPMS/noarch/lpf-0-2.77d58d7.fc18.noarch.rpm
+    $ sudo rpm -U dist/lpf-*.noarch.rpm
 
-Then, go to the examples/msttcore-fonts directory to create your first
-lpf bootstrap package and install it:
+Then install your first lpf bootstrap package:
 
-    $ cd examples/msttcore-fonts
-    $ cp License.txt msttcore-fonts-fontconfig.conf msttcore-fonts.spec \
-      $(rpm --eval %_sourcedir)
-    $ rpmbuild -bb lpf-msttcore-fonts.spec
-    $ rpm -U --force /home/al/rpmbuild/RPMS/noarch/lpf-msttcore-fonts-2.2-1.fc18.noarch.rpm
+    $  cd examples/msttcore-fonts
+    $  sudo rpm -U --force lpf-msttcore-fonts-2.2-1.fc18.noarch.rpm
 
-To use lpf you need to be member of the pkg-build group. On the first run you will be prompted
-about adding this group to your user. These prompts disappear after logging out and in again
-(or rebooting).
+To use lpf you need to be member of the pkg-build group. On the first run you will
+be prompted about adding this group to your user. These prompts disappear after
+logging out and in again (or rebooting).
 
 Check that the /etc/sudodoers file contains the following line (default
 in recent Fedora versions):
@@ -62,7 +57,7 @@ Do that using
 
 This will first present a dialog (text or gui) where you can read and accept
 the license. Depending on your sudo configuration you might also be prompted
-for a password when a yum-builddep or yum install is needed
+for a password when a yum install is needed
 
 After running above, check status again
 
@@ -73,10 +68,10 @@ After running above, check status again
 ## The GUI way
 
 An alternative way without using any CLI magic:
-   - Install lpf-msttcore-fonts
-   - Start the lpf-gui program
-   - Select "Build all" and watch the package being built and installed
-     after some dialogs (see screenshots)
+   - Install lpf-msttcore-fonts.
+   - Start the lpf-gui program (under "System Tools" in old-fashioned menus).
+   - Push "Build all" and watch the package being built and installed
+     after some dialogs (see screenshots).
 
 
 ## lpf package licecycle
@@ -148,6 +143,9 @@ accept before building. The directory structure is
                                 eula
                                     license.txt
 
+Normally, this structure is just created by the lpf-setup-package
+script.
+
 Writing the lpf spec should be simple using the examples as a
 starting point.  When the lpf package is installed, it will enter the
 'approve-wait' state and can be handled as described under Getting
@@ -155,7 +153,7 @@ Started.
 
 The optional CONFIG file is used to tweak how lpf builds the package.
 Typical usage is in packages only built for i686 even on x86\_64 hosts.
-Look into /usr/share/lpg/CONFIG for more.
+Look into /usr/share/lpf/CONFIG for more.
 
 
 ## The lpf tool
@@ -221,16 +219,7 @@ more.
 ## Tests
 The test directory contains some unit tests. To work, the package to test
 must be installed. BEWARE: tests remove all lpf packages on your machine!
-
-To run the tests:
-
-    $ tools/make_rpm
-    $ sudo rpm -U --force /path/to/created/rpm
-    $ cd test
-    $ python -m unittest discover # [-vf]
-
-Adding -vf stops at first failure and prints more info.
-
+See TESTING for more.
 
 ## License
 This is open software licensed under the MIT license, see the LICENSE file.
