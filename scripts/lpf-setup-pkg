@@ -2,7 +2,17 @@
 #
 # Setup package for build
 #
-# Usage: lpf-setup [-a arch] [-e eula license] <topdir> <spec> [ source... ]
+# Usage: lpf-setup [-a arch] [-e eula-license] <topdir> <spec> [ source... ]
+#
+# -a arch: Adds a --target $arch to the rpmbuild command, forces the
+#          target achitecture to a fixed value instead of default host arch.
+#          Typically used on i686-only binary packages.
+# -e eula-license:
+#          Displays license file and requires user to accept it before build.
+# topdir   Where lpf package structure is created, like DESTDIR.
+# [source...]
+#          All sources which cannot ge retrieved with spectool i. e., without
+#          a sane url.
 #
 scriptdir=$( dirname $(readlink -fn $0))
 

@@ -24,7 +24,7 @@ There are some automated tests and some manual. To run them all:
     $ cd test
     $ python -m unittest discover
 
-- Check that there are three applications available in gnome: lpf, bar,
+- Check that there are four applications available in gnome: lpf, bar,
   foo with correct factory icon (under System Tools in classic mode).
 
 - Check GUI update of bar: click on the bar icon
