@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# Install builddeps. Runs as root, be careful.
+
+set -e
 
 for spec in "$@"; do
     if [[ $spec == /usr/share/lpf/packages/* ]]; then

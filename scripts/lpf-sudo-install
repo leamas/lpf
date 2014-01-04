@@ -1,5 +1,10 @@
 #!/bin/bash
+#
+# Install rpms, runs as root - be careful.
 
+set -e
+
+good_rpms=''
 for rpm in "$@"; do
     if [[ $rpm == /var/lib/lpf/rpms/* ]]; then
        good_rpms="$good_rpms $rpm"
@@ -7,14 +12,14 @@ for rpm in "$@"; do
        echo "$0: skipping bad rpm: $rpm" >&2
     fi
 done
-good_rpms=${good_rpms# }
+good_rpms=${good_rpms## }
 
-[ "$good_rpms" ]  || { echo "Nothing to install" >&2; exit 1; }
+[ "$good_rpms" ]  || { echo "$0: Nothing to install" >&2; exit 1; }
 
 to_remove=''
 for file in $( echo $good_rpms ); do
-    pkg=$( rpm -q --qf '%{name}' -p $file ) || continue
-    to_remove="$to_remove $pkg"
+    pkg=$( rpm -q --qf '%{name}' -p $file )
+    rpm -q "$pkg" &> /dev/null && to_remove="$to_remove $pkg"
 done
 to_remove=${to_remove## }
 
