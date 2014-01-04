@@ -30,7 +30,7 @@ First clone the sources, create a fresh rpm and install it:
 Then install your first lpf bootstrap package:
 
     $  cd examples/msttcore-fonts
-    $  sudo rpm -U --force lpf-msttcore-fonts-2.2-1.fc18.noarch.rpm
+    $  sudo rpm -U --force lpf-msttcore-fonts-2.2-1.fc20.noarch.rpm
 
 To use lpf you need to be member of the pkg-build group. On the first run you will
 be prompted about adding this group to your user. These prompts disappear after
@@ -153,43 +153,52 @@ Started.
 
 The optional CONFIG file is used to tweak how lpf builds the package.
 Typical usage is in packages only built for i686 even on x86\_64 hosts.
-Look into /usr/share/lpf/CONFIG for more.
+Look into /usr/share/lpf/CONFIG for more. Also this is normally handled
+by lpf-setup-package.
 
+## The lpf-gui tool
+
+lpf-gui provides a graphical interface to the basic lpf administration. Using
+this one can get an overview on lpf package states, build backages, view logs,
+handle notifications etc. See the first two screenshots and the lpf-gui manpage.
 
 ## The lpf tool
 
-The lpf command is the primary tool for handling lpf packages.
-For now, here is the help (-h) output.
+The lpf command is the complete tool for handling lpf packages, and also
+the underpinnings for lpf-gui.  For now, here is the help (-h) output:
 
-    Usage: lpf <command> [args]
+Usage: lpf <command> [args]
 
     commands:
-        list 	List all packages.
-        update [package]
-                    Interactive approve, build and install of given package or
-                    all packages.
-        state [package]
-                    List package state or state of all packages.
-        scan [package]
-                    Triage a given package or all packages  and
-                    update their status.
-        approve <package>
-                    Approve a package in state approve-wait.
-        build [package]
-                    Build given package or all packages in state
-                    build-wait
-        rebuild <package>
-                    Force re-install of a package where previous installation
-                    failed.
-        install [package]
-                    Install rpms for given package or all packages in state
-                    install-wait
-        log [package]
-                    Display logs from last build for package, or just
-                    last build.
+	list 	List all packages.
+	update [package]
+		    Interactive approve, build and install of given package or
+		    all packages.
+	state [package]
+		    List package state or state of all packages.
+	scan [package]
+		    Triage a given package or all packages  and
+		    update their status.
+	approve <package>
+		    Approve a package in state approve-wait.
+	build [package]
+		    Build given package or all packages in state
+		    build-wait
+	rebuild <package>
+		    Force re-install of a package where previous installation
+		    failed.
+	install <package>
+		    Install rpms for given package.
+	log [package]
+		    Display logs from last build for package, or just
+		    last build.
+	hide <package>
+		    Hide (i. e., disable) notification messages for given package.
 
-In a desktop environment lpf will pop up various GUI windows. To make
-it work as a pure cli application unset the DISPLAY environment variable.
+    See the manpage for more commands and other info.
+
+In a desktop environment lpf will pop up various GUI windows (see
+screenshots).  To make it work as a pure cli application unset $DISPLAY.
 
 ## Notifications
 
@@ -199,24 +208,25 @@ line and the GUI.
 At the command line, 'lpf notify' writes a message if there are lpf packages
 which need to be built. It's intended to be included e. g., in .bashlogin.
 Notifications can be hidden, basically blocking this message until the
-package enters a new state.
+package enters a new state using lpf hide.
 
 In the GUI, the basic tool is the lpf-notify user daemon. This is installed
 by the lpf-gui when selecting "Enable notifications" in the Notifications
 menu. The daemon listens for package state changes and pops up a message
 using the 'lpf notify-watch' command.
 
-There is a locking system for the GUI notifications to avoid multiple messages
-e. g., when actually updating the lpf package.
+There are locks for the GUI notifications to avoid multiple messages e. g.,
+when actually updating the lpf package.
 
 ## Security, users and such
 
 Target packages are built by a dedicated user pkg-build who owns all files
-related to lpf. Users need to access some files e. g., to change state. This
-is done using group permissions. See the manpage (PRIVILEGED COMMANDS) for
+related to lpf. Users need to te able to run as pkg-build and also as root
+to install target packages. See the lpf manpage (PRIVILEGED COMMANDS) for
 more.
 
 ## Tests
+
 The test directory contains some unit tests. To work, the package to test
 must be installed. BEWARE: tests remove all lpf packages on your machine!
 See TESTING for more.
