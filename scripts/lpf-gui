@@ -282,6 +282,11 @@ class Handler(GObject.GObject):
             ''' Build button for one package clicked callback. '''
             do_build_cmd(self, [here('lpf'), 'update', pkg_name])
 
+        def on_reset_clicked_cb(button, pkg_name):
+            ''' Reset button for one package clicked callback. '''
+            subprocess.call([here('lpf'), 'reset', pkg_name])
+            self.update_details(pkg_name)
+
         stateline = subprocess.check_output([here('lpf'), 'state', pkg_name])
         try:
             pkg_name, state, version = stateline.split()
@@ -312,6 +317,8 @@ class Handler(GObject.GObject):
             'details_log_button').set_sensitive(logdate != '-')
         self.builder.get_object("details_build_button").connect(
             "clicked", on_build_clicked_cb, pkg_name)
+        self.builder.get_object('reset_button').connect(
+            "clicked", on_reset_clicked_cb, pkg_name)
         hidden_box = self.builder.get_object('details_block_notify_checkbox')
         try:
             subprocess.check_call([here('lpf-notify'), 'is-hidden', pkg_name])
