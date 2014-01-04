@@ -114,7 +114,7 @@ function approve_package()
 function scan_packages()
 # scan_packages - state command.
 {
-    $PKGBUILD_SUDO $scriptdir/lpf-scan "$@"
+    $PKGBUILD_SUDO $scriptdir/lpf-pkgbuild 'scan' "$@"
 }
 
 

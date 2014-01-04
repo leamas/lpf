@@ -130,6 +130,9 @@ case "$cmd" in
     'create-approve-file')
          create_approve_file "$@"
          ;;
+    'scan')
+         $scriptdir/lpf-scan "$@"
+         ;;
     *)   echo 'What!?' >&2
          exit 1
          ;;
