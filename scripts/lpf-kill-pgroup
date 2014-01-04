@@ -3,28 +3,26 @@
 # Use sudo to kill all children.
 
 scriptdir=$( dirname $(readlink -fn $0))
-SUDO='sudo'
-[ -n "$DISPLAY" ] && SUDO='sudo -A'
+
+SUDO="sudo${DISPLAY:+ -A}"
 export SUDO_ASKPASS=$scriptdir/sudo_askpass
 
-if [ "$EUID" -ne 0 ]; then
-    children=$( pgrep -U pkg-build )
-    if [ -n "${children/ /}" ]; then
-	$SUDO  -u pkg-build kill -TERM $children  &> /dev/null || :
-    fi
-    children=$( pgrep -f /var/lib/lpf/rpms -u root )
-    [ -n "${children/ /}" ] && $SUDO "$scriptdir/lpf-kill-pgroup"
-    children=$( pgrep -f "$scriptdir" )
-    children=${children/$$/}
-    if [ -n "${children/ /}" ]; then
-	kill -TERM $children  &> /dev/null || :
-    fi
-else
-    children=$( pgrep -f /var/lib/lpf/rpms -u root )
-    if [ -n "${children/ /}" ]; then
-	kill -TERM $children  &> /dev/null || :
-    fi
+children=$( pgrep -U pkg-build )
+if [ "${children/ /}" ]; then
+    $SUDO -u pkg-build kill -TERM $children  &> /dev/null || :
 fi
+
+children=$( pgrep -f "$scriptdir" -U $USER )
+children=${children/$$/}
+if [ "${children/ /}" ]; then
+    kill -TERM $children  &> /dev/null || :
+fi
+
+children=$( pgrep -f /var/lib/lpf/rpms -u root )
+if [ "${children/ /}" ]; then
+    $SUDO kill -TERM $children  &> /dev/null || :
+fi
+
 exit 0
 
 
