@@ -3,6 +3,8 @@
 #
 
 scriptdir=${scriptdir:-$( dirname $(readlink -fn $0))}
+source  $scriptdir/lpf-sudo-defs.bash
+
 
 LPF_VAR=${LPF_VAR:-/var/lib/lpf}
 LPF_DATA=${LPF_DATA:-/usr/share/lpf}
@@ -15,12 +17,6 @@ PKG_DATA_DIR="$LPF_DATA/packages"
 LPF_USER='pkg-build'
 LPF_GROUP='pkg-build'
 
-if (( UID == 0 )); then
-    SUDO=''
-else
-    SUDO='sudo'
-    [ -n "$DISPLAY" ] && SUDO='sudo -A'
-fi
 
 function get_logfile()      { echo $LPF_VAR/log/$1.log; }
 function get_approve_file() { echo $LPF_VAR/approvals/$1; }
@@ -62,8 +58,6 @@ function get_state()
         mkdir -p  $LPF_VAR/packages/$1
     cat "$(_get_statefile $1)"  2>/dev/null  || echo 'untriaged'
 }
-
-
 
 
 function get_pkg_version()

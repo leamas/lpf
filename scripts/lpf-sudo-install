@@ -1,40 +1,47 @@
 #!/bin/bash
 #
 # Install rpms, runs as root - be careful.
+#
+# We cut ssome corners here by assuming that when dealing
+# with several rpms, they all have the same version. DNF will make
+# make this much easier, allowing to remove+update without shell.
 
 set -e
 
-good_rpms=''
+scriptdir=${scriptdir:-$( dirname $(readlink -fn $0))}
+source  $scriptdir/lpf-sudo-defs.bash
+
+good_rpms=()
 for rpm in "$@"; do
-    if [[ $rpm == /var/lib/lpf/rpms/* ]]; then
-       good_rpms="$good_rpms $rpm"
+    if [[ $rpm != /var/lib/lpf/rpms/* ]]; then
+       echo "$0: skipping bad rpm (wrong prefix): $rpm" >&2
+    elif has_meta $rpm; then
+       echo "$0: skipping bad rpm (metacharacters): $rpm" >&2
     else
-       echo "$0: skipping bad rpm: $rpm" >&2
+       good_rpms=( ${good_rpms[@]} $rpm )
     fi
 done
-good_rpms=${good_rpms## }
 
-[ "$good_rpms" ]  || { echo "$0: Nothing to install" >&2; exit 1; }
+(( ${#good_rpms} == 0 )) && { echo "$0: Nothing to install" >&2; exit 1; }
 
-to_remove=''
+to_remove=()
 for file in $( echo $good_rpms ); do
     pkg=$( rpm -q --qf '%{name}' -p $file )
-    rpm -q "$pkg" &> /dev/null && to_remove="$to_remove $pkg"
+    rpm -q "$pkg" &> /dev/null && to_remove=( ${to_remove[@]} $pkg )
 done
-to_remove=${to_remove## }
 
-if [ "$to_remove" ]; then
-    current_vers=$( rpm -q --qf '%{version}-%{release}' $to_remove )
-    new_vers=$( rpm -q --qf '%{version}-%{release}' -p ${good_rpms% *} )
+if (( ${#to_remove} > 0 )); then
+    current_vers=$( rpm -q --qf '%{version}-%{release}' ${to_remove[0]} )
+    new_vers=$( rpm -q --qf '%{version}-%{release}' -p ${good_rpms[0]} )
     install='install'
     [ "$current_vers" = "$new_vers" ] && install='reinstall'
     yum -y shell << EOF
-        remove $to_remove
-        $install $good_rpms
+        remove ${to_remove[@]}
+        $install ${good_rpms[@]}
         run
 EOF
 else
-    yum -y install $good_rpms
+    yum -y install ${good_rpms[@]}
 fi
 
 

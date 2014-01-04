@@ -4,11 +4,17 @@
 
 set -e
 
+scriptdir=${scriptdir:-$( dirname $(readlink -fn $0))}
+source  $scriptdir/lpf-sudo-defs.bash
+
+
 for spec in "$@"; do
-    if [[ $spec == /usr/share/lpf/packages/* ]]; then
-       good_specs="$good_specs $spec"
+    if [[ $spec != /usr/share/lpf/packages/* ]]; then
+       echo "$0: skipping bad spec (wrong prefix): $spec >&2"
+    elif has_meta $spec; then
+       echo "$0: skipping bad spec (metacharacters): $spec >&2"
     else
-       echo "$0: skipping bad spec: $spec >&2"
+       good_specs="$good_specs $spec"
     fi
 done
 
