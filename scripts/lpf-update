@@ -32,17 +32,17 @@ function update_package()
     until [[ 'OK failed not-approved' == *$state* ]]; do
         case $state in
             'approve-wait')
-                 approve_package $pkg || "$scriptdir/lpf-kill-pgroup"
+                 $scriptdir/lpf-approve $pkg || "$scriptdir/lpf-kill-pgroup"
                  ;;
             'build-wait')
                  LPF_UPDATE=1 $scriptdir/lpf-build $pkg || \
                      echo "$pkg: build errors"  >&5
                  ;;
             'install-wait')
-                 install_rpms $pkg
+                 $scriptdir/lpf-install $pkg
                  ;;
             'untriaged')
-                 scan_packages $pkg
+                 $scriptdir/lpf-pkgbuild 'scan' "$@"
                  ;;
         esac
         state=$( get_state $pkg )
@@ -116,7 +116,7 @@ function get_to_update()
     local pkg state lpf_vers curr_vers states
     declare -A states
 
-    scan_packages "$@"
+    $scriptdir/lpf-pkgbuild 'scan' "$@"
     while read pkg state lpf_vers; do
         curr_vers=$( rpm -q $pkg 2>/dev/null ) || curr_vers='-'
         [[ 'approve-wait build-wait failed not-approved' == *$state* ]] && \

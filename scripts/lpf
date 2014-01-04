@@ -106,7 +106,7 @@ function rebuild_package()
 function scan_packages_cmd()
 {
     [ -n "$1" ] && check_pkg_arg "$@"
-    scan_packages "$@"
+    $scriptdir/lpf-pkgbuild 'scan' "$@"
 }
 
 
@@ -128,7 +128,7 @@ function approve_package_cmd()
 function install_rpms_cmd()
 {
     check_pkg_arg "$@"
-    install_rpms "$@"
+    $scriptdir/lpf-install "$@"
 }
 
 
@@ -136,7 +136,7 @@ function reset_cmd()
 {
     check_pkg_arg "$@"
     $scriptdir/lpf-pkgbuild 'reset' "$1"
-    scan_packages "$@"
+    $scriptdir/lpf-pkgbuild 'scan' "$@"
 }
 
 
@@ -222,7 +222,7 @@ case $command in
     scan)   scan_packages_cmd "$@"
             ;;
     approve)
-            approve_package_cmd "$@"
+            $scriptdir/lpf-approve  "$@"
             do_trap 0
             ;;
     update) update_packages "$@"

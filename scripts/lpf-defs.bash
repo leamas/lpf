@@ -96,26 +96,6 @@ function get_pkgdirs()
 }
 
 
-function install_rpms()
-# install_rpms [rpm file...]: install command.
-{
-    $scriptdir/lpf-install "$@"
-}
-
-
-function approve_package()
-# approve_package <package>: approve command.
-{
-    $scriptdir/lpf-approve "$@"
-}
-
-function scan_packages()
-# scan_packages - state command.
-{
-    $scriptdir/lpf-pkgbuild 'scan' "$@"
-}
-
-
 function get_arg_pkgdirs()
 # get_arg_pkgdirs [pkg] - return either one existing pkg dir or
 # list of all package dirs.
