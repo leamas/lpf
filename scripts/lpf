@@ -138,7 +138,7 @@ function reset_cmd()
 {
     check_pkg_arg "$@"
     $scriptdir/lpf-pkgbuild 'reset' "$1"
-    scan_packages "@"
+    scan_packages "$@"
 }
 
 
