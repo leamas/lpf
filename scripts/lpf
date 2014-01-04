@@ -90,14 +90,12 @@ function rebuild_package()
     local pkg=$1
 
     case $( get_state $pkg ) in
-        'failed')  $PKGBUILD_SUDO $scriptdir/lpf-packbuild \
-                       'set-state' $pkg 'build-wait'
-                   $PKGBUILD_SUDO $scriptdir/lpf-pkgbuild 'build' $pkg
+        'failed')  $scriptdir/lpf-packbuild 'set-state' $pkg 'build-wait'
+                   $scriptdir/lpf-pkgbuild 'build' $pkg
                    ;;
         'not-approved')
                   $scriptdir/lpf-packbuild 'set-state' $pkg 'approve-wait'
-                  lpf-approve $pkg && \
-                      $PKGBUILD_SUDO $scriptdir/lpf-pkgbuild 'build' $pkg
+                  lpf-approve $pkg && $scriptdir/lpf-pkgbuild 'build' $pkg
                   ;;
         *)        error "Rebuild error" "Illegal state (aborting)" >&2
                   ;;
@@ -115,7 +113,7 @@ function scan_packages_cmd()
 function scan_removal_cmd()
 {
     check_pkg_arg "$@"
-    $PKGBUILD_SUDO $scriptdir/lpf-pkgbuild 'set-state' $1 'removing'
+    $scriptdir/lpf-pkgbuild 'set-state' $1 'removing'
     scan_packages_cmd "$1"
 }
 
@@ -208,7 +206,7 @@ command=$1
 shift
 case $command in
     set-state)
-            $PKGBUILD_SUDO $scriptdir/lpf-pkgbuild 'set-state' $1 $2
+            $scriptdir/lpf-pkgbuild 'set-state' $1 $2
             ;;
     list)   list_packages "$@"
             ;;

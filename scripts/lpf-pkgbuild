@@ -104,7 +104,7 @@ function clear_results()
 
 
 if [[ ! $( id -un ) = "$LPF_USER" && "$UID" -ne '0' ]]; then
-    exec $PKGBUILD_SUDO $scriptdir/lpf-pkgbuild "$@"
+    exec $SUDO -u pkg-build $scriptdir/lpf-pkgbuild "$@"
 fi
 
 cmd="$1"; shift
