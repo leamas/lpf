@@ -35,8 +35,11 @@ commands:
     log [package]
                 Display logs from last build for package, or just
                 last build.
-    hide <package>
-                Hide (i. e., disable) notification messages for given package.
+    mute <package>
+                Mute (i. e., disable) notification messages for  package.
+    unmute <package>
+                Re-enable notification messages for a possibly muted package.
+
 
 See the manpage for more commands and other info.
 EOF
@@ -151,14 +154,14 @@ function get_spec_cmd()
 function hide_cmd()
 {
     check_pkg_arg "$@"
-    sudo -u pkg-build $scriptdir/lpf-pkgbuild 'hide' "$@"
+    $scriptdir/lpf-notify 'hide' "$@"
 }
 
 
 function unhide_cmd()
 {
     check_pkg_arg "$@"
-    sudo -u pkg-build $scriptdir/lpf-pkgbuild 'unhide' "$@"
+    $scriptdir/lpf-notify 'unhide' "$@"
 }
 
 
@@ -240,9 +243,9 @@ case $command in
             ;;
     srpm)   get_srpm_cmd "$@"
             ;;
-    hide)   hide_cmd "$@"
+    mute)   hide_cmd "$@"
             ;;
-    unhide) unhide_cmd "$@"
+    unmute) unhide_cmd "$@"
             ;;
     notify) $scriptdir/lpf-notify 'cli-notify' "$@"
             ;;

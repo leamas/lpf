@@ -144,7 +144,7 @@ class Handler(GObject.GObject):
         def on_pkg_activate_cb(widget, pkg_name):
             ''' Disable notifications for a package menu entry callback. '''
             cmd = 'hide' if widget.get_active() else 'unhide'
-            subprocess.check_output([here('lpf'), cmd, pkg_name])
+            subprocess.check_output([here('lpf-notify'), cmd, pkg_name])
             if pkg_name == self.window_name:
                 checkbox = \
                     self.builder.get_object('details_block_notify_checkbox')

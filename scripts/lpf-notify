@@ -9,8 +9,21 @@
 scriptdir=$( dirname $(readlink -fn $0))
 source $scriptdir/lpf-defs.bash
 
+set -e
+
 function get_user() { echo "${SUDO_USER:-$USER}"; }
 function get_uid() { echo "${SUDO_UID:-$UID}"; }
+
+
+function check_pkgbuild_user()
+# Check that we run as pkg-build user, exit if not
+{
+    [ "$USER" != 'pkg-build' ] && {
+        echo >&2 "Error: must be run as pkg-build user."
+        exit 1
+    }
+    return 0
+}
 
 
 function get_lockdir()
@@ -19,7 +32,7 @@ function get_lockdir()
     [ "$DISPLAY" ] || { echo; return 1; }
     display="$DISPLAY"
     [[ "$display" == :* ]] && display="0${display}"
-    local lockdir="/var/run/user/$( get_uid )/lpf/$display"
+    local lockdir="/var/run/user/$( get_uid )/lpf/locks/$display"
     [ -d $lockdir ]  || mkdir -p $lockdir
     echo "$lockdir"
 }
@@ -36,7 +49,7 @@ function clean_locks()
 # Remove all locks referring to dead processes.
 {
     for lock in $( ls $( get_lockdir )/$( get_user ).* 2>/dev/null ); do
-        pid=${lock#*.}
+        local pid=${lock#*.}
         ps --pid $pid &> /dev/null || rm -f $lock
     done
 }
@@ -64,12 +77,41 @@ function is_locked()
 }
 
 
-function check_pkgbuild_user()
+function get_hidedir()
+# Return directory for user for hide (mute) definitions.
 {
-    [ "$USER" != 'pkg-build' ] && {
-        echo >&2 "Error: must be run as pkg-build user."
-        exit 1
-    }
+    local uid=$( get_uid )
+    local hidedir="/var/run/user/$uid/lpf/hide"
+    echo "$hidedir"
+}
+
+
+function hide()
+# Hide message about given package for invoking user.
+{
+    local pkg=$1
+    local hide_dir=$( get_hidedir )
+    [ -d "$hide_dir" ] || mkdir -p "$hide_dir"
+    echo $( get_state $pkg ) > $hide_dir/$pkg
+}
+
+
+function unhide()
+#  Make message about given package visible for invoking user.
+#  No-op if not hidden.
+{
+    local pkg=$1
+    local hide_dir=$( get_hidedir )
+    rm -f $hide_dir/$pkg
+}
+
+
+function is_hidden()
+# Return 0 if messages for given package are muted for current user.
+{
+    local pkg=$1
+    local hide_dir=$( get_hidedir )
+    test -e  $hide_dir/$pkg
 }
 
 
@@ -78,48 +120,14 @@ function create()
 # Invoke as pkg-build user. Clears any active hides.
 {
     check_pkgbuild_user
-    pkg=$1
-    state=$2
+    local pkg=$1
+    local state=$2
     test -d $LPF_VAR/notify || mkdir -p $LPF_VAR/notify
-    test -d $LPF_VAR/tmp || mkdir -p $LPF_VAR/tmp
-    new_dir=$( mktemp -d $LPF_VAR/tmp/XXXX )
+    new_dir=$( mktemp -d /var/tmp/XXXX )
     echo $state > $new_dir/state
     chmod 755 $new_dir
     rm -rf  $LPF_VAR/notify/$pkg
     mv -Tf $new_dir $LPF_VAR/notify/$pkg
-}
-
-
-function hide()
-# Hide message about given package for invoking user.
-# Invoke as pkg-build user.
-{
-    check_pkgbuild_user
-    local pkg=$1
-    local user=$( get_user )
-    local new_hide=$( mktemp $LPF_VAR/tmp/XXXX )
-    [ -d  $LPF_VAR/notify/$pkg ] || mkdir -p $LPF_VAR/notify/$pkg
-    mv $new_hide $LPF_VAR/notify/$pkg/hide.$user
-}
-
-
-function unhide()
-#  Make message about given package visible for invoking user.
-# Invoke as pkg-build user. No-op if not hidden.
-{
-    check_pkgbuild_user
-    local pkg=$1
-    local user=$( get_user )
-    rm -f $LPF_VAR/notify/$pkg/hide.$user
-}
-
-
-function is_hidden()
-# Return 0 if messages for given package are hidden for current user.
-{
-    local pkg=$1
-    local user=$( get_user )
-    test -e  $LPF_VAR/notify/$pkg/hide.$user
 }
 
 
@@ -137,11 +145,8 @@ function is_pkg_message_pending()
 # Return true if a message is pending for given package.
 {
     local pkg=$1
-    local user=$( get_user )
     test -d $LPF_VAR/notify/$pkg  || return 1
-    local hide_file=$LPF_VAR/notify/$pkg/hide.$user
-    test -f $hide_file || return 0
-    test  $hide_file -nt $LPF_VAR/notify/$pkg/state && return 1
+    is_hidden $pkg && return 1
     return 0
 }
 
@@ -149,7 +154,9 @@ function is_pkg_message_pending()
 function is_message_pending()
 # Return true if there is any message pending.
 {
-    for dir in $LPF_VAR/notify/*; do
+    dirs=( $( find $LPF_VAR/notify -maxdepth 1 -type d ) )
+    (( ${#dirs} == 0 )) && return 1
+    for dir in  ${dirs[@]}; do
         is_pkg_message_pending ${dir##*/} && return 0
     done
     return 1
@@ -182,9 +189,11 @@ cmd=$1; shift
 case $cmd in
     'create')   create "$@"
                 ;;
-    'hide')     hide "$@"
+    'hide'|'mute')
+                hide "$@"
                 ;;
-    'unhide')   unhide "$@"
+    'unhide'|'unmute')
+                unhide "$@"
                 ;;
     'remove')   remove "$@"
                 ;;

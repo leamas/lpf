@@ -11,7 +11,8 @@ readonly rpm_rpmdir=$( rpm --eval %_rpmdir )
 
 
 function set_state()
-# Given package and state, set new state. Possibly create notification.
+# Given package and state, set new state. Possibly create notification
+# or remove it depending on new state.
 {
     [ -e $LPF_VAR/packages/$1 ] || mkdir -p  $LPF_VAR/packages/$1
     local statefile=$(  _get_statefile $1 )
@@ -111,12 +112,6 @@ cmd="$1"; shift
 case "$cmd" in
     'build')
          build "$@"
-         ;;
-    'hide')
-         $scriptdir/lpf-notify hide "$1"
-         ;;
-    'unhide')
-         $scriptdir/lpf-notify unhide "$1"
          ;;
     'set-state')
          set_state "$@"

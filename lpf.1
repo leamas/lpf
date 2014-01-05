@@ -67,9 +67,11 @@ Remove all temporary files for package, set state as after fresh install.
 log [package]:
 Display logs from last build for package, or just last build.
 .TP
-hide <package>
-Disable notification messages for package as long as it stays in current
-state.
+mute <package>
+Disable notification messages for package.
+.TP
+unmute <package>
+Enable notifications messages for a possibly muted package.
 .TP
 notify [message]
 Print given message or a default  one if there are lpf packages in need
@@ -100,22 +102,22 @@ is invoked on the first run. To avoid add user manually using:
 After this, log out and in again before proceeding.
 .SH NOTIFICATIONS
 lpf is capable of notifying user when lpf packages are in need of an update
-e. g., when the lpf package has been updated. GUI notifications could
-be enabled from the lpf-gui(1) main window. This installs a daemon listening
-to package state changes for current user, displaying gui messages as
-appropriate.
-
-Command line notifications could be enabled by adding code to e. g.,
- .bashlogin:
-.IP "" 4
-lpf notify
-.IP "" 0
-which will output a message similar to the well-known "You have mail" if lpf
-packages needs to be updated.
+e. g., when the lpf package has been updated. Notifications are created when
+a package enters any state besides 'OK'. They are cleared once the package
+enters the 'OK' state.
 .PP
-Notifications could be blocked (a. k. a. "hidden") on a per-user basis. This
-is done using the "hide" command or by marking the checkbox in the lpf-gui
-Notification menu.
+GUI notifications could be enabled from the lpf-gui(1) main window. This
+installs a daemon listening to package state changes for current user,
+displaying gui messages as appropriate. The GUI allows muting messages
+for specific packages.
+.PP
+Command line notifications could be enabled by adding code to e. g.,
+ .bashlogin
+.B lpf notify
+which will output a message similar to the well-known "You have mail" if lpf
+packages needs to be updated. Using the 'mute' and 'unmute' commands
+pin-pointed packages can be ignored in this context (this also affects the
+GUI messages).
 .SH FILES
 .TP
 /etc/sudoers.d/pkg-build
@@ -127,6 +129,9 @@ Temporary files: logs, state, built rpm packages etc.
 .TP
 /usr/share/lpf/packages
 Installed lpf packages data.
+.TP
+/var/run/user/$UID/lpf
+User-specific files: mute files, display locks etc.
 
 .SH LICENSE
 This is open source software under the MIT license, see the LICENSE file.

@@ -192,8 +192,9 @@ Usage: lpf <command> [args]
 	log [package]
 		    Display logs from last build for package, or just
 		    last build.
-	hide <package>
-		    Hide (i. e., disable) notification messages for given package.
+	mute <package>
+		    Mute (i. e., disable) notification messages for given package
+                    until it's state changes.
 
     See the manpage for more commands and other info.
 
