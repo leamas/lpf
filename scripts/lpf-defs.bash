@@ -78,7 +78,7 @@ function list_states()
         local state=$( get_state $pkg )
         local spec=$pkgdir/$pkg.spec
         local version=$(get_pkg_version $pkg )
-        printf '%-35s%-15s%-20s\n' $pkg $state $version
+        printf '%-25s%-15s%-25s\n' $pkg $state $version
     done
 }
 

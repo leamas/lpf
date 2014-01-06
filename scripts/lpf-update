@@ -13,8 +13,9 @@ function update_package_close()
     local state=$( get_state $pkg )
 
     if [ -n "$DISPLAY" ]; then
-        local text=$( list_states )
-	zenity --info --title "Update complete" --text="$text"
+        local text="<tt>$( list_states )</tt>"
+        zenity --info --title "Update complete" --text="$text"\
+             --width=750  || :
     fi
     echo "$pkg: exiting" >&5
 }
@@ -104,7 +105,7 @@ function gui_confirm_update()
     listdata=( $( list_states | egrep "$update_states" | sed 's/^/True /'))
     zenity --list --title "Select packages to build and install" --checklist \
         --column Install --column Package --column State --column Version  \
-        --separator=' ' ${listdata[@]} \
+        ---width 700 --separator=' ' ${listdata[@]} \
             || $scriptdir/lpf-kill-pgroup
 
 }
