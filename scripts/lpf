@@ -41,7 +41,8 @@ commands:
                 Re-enable notification messages for a possibly muted package.
 
 
-See the manpage for more commands and other info.
+Unset \$DISPLAY to disable GUI dialogs. See the manpage for more commands
+and other info.
 EOF
 }
 

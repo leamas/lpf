@@ -25,7 +25,7 @@ First clone the sources, create a fresh rpm and install it:
     $ git clone https://github.com/leamas/lpf.git
     $ cd lpf/
     $ tools/make_rpm
-    $ sudo rpm -U dist/lpf-*.noarch.rpm
+    $ sudo rpm -U --force dist/lpf-*.noarch.rpm
 
 Then install your first lpf bootstrap package:
 
@@ -57,7 +57,7 @@ Do that using
 
 This will first present a dialog (text or gui) where you can read and accept
 the license. Depending on your sudo configuration you might also be prompted
-for a password when a yum install is needed
+for a password when a yum install is needed.
 
 After running above, check status again
 
@@ -69,7 +69,8 @@ After running above, check status again
 
 An alternative way without using any CLI magic:
    - Install lpf-msttcore-fonts.
-   - Start the lpf-gui program (under "System Tools" in old-fashioned menus).
+   - Start the lpf-gui program (under "System Tools" or so in old-fashioned
+     menus).
    - Push "Build all" and watch the package being built and installed
      after some dialogs (see screenshots).
 
@@ -239,4 +240,5 @@ This is open software licensed under the MIT license, see the LICENSE file.
 
 lots...
  - Dozens of bugs...
+ - Integrate with new gnome Software application: application data etc.
  - Sooner or later write this in a proper language (python?).
