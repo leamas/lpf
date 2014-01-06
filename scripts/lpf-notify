@@ -154,7 +154,7 @@ function is_pkg_message_pending()
 function is_message_pending()
 # Return true if there is any message pending.
 {
-    dirs=( $( find $LPF_VAR/notify -maxdepth 1 -type d ) )
+    dirs=( $( find $LPF_VAR/notify -maxdepth 1 -mindepth 1 -type d ) )
     (( ${#dirs} == 0 )) && return 1
     for dir in  ${dirs[@]}; do
         is_pkg_message_pending ${dir##*/} && return 0
@@ -172,17 +172,23 @@ function cli_notify()
 
 
 function notify_watch
-# Invoke  $1 if there is package(s) needing rebuild. Does not return.
+# Invoke  $1 if there is package(s) needing rebuild. Kills other instances
+# running for current user. Does not return.
 {
+    local pids=$( pgrep -fu $USER notify_daemon )
+    pids=${pids/$$/}
+    [ "${pids/ /}" ] && kill -TERM $pids && sleep 1 || :
     local trigger_func="$*"
     is_message_pending && eval $trigger_func &
     while :; do
-        inotifywait -q -q -e moved_to $( find $LPF_VAR/notify -type d )
+        inotifywait -q -q -e moved_to $( find $LPF_VAR/notify -type d ) || \
+            continue
         is_locked && continue
         sync
         is_message_pending && eval $trigger_func &
     done
 }
+
 
 cmd=$1; shift
 

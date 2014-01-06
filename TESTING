@@ -40,7 +40,7 @@ There are some automated tests and some manual. To run them all:
 
 Running in mock:
     $ mock -r fedora-19-i386  --init
-    $ mock -r fedora-19-i386  --install ~/lpf-0-99.b7cfc1e.fc20.noarch.rpm
+    $ mock -r fedora-19-i386  --install ~/dist/lpf-*.noarch.rpm
     $ mock -r fedora-19-i386  --install git python-unittest2 desktop-file-utils
     $ mock -r fedora-19-i386  --shell
     <mock-chroot> git clone -b devel https://github.com/leamas/lpf
