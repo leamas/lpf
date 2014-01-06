@@ -124,30 +124,35 @@ class UpdateHandler(object):
 
 
 class Handler(object):
-    ''' default glade event handlers. '''
-    # pylint: disable=missing-docstring, unused-argument
+    ''' Default glade event handlers. '''
+    # pylint: disable=unused-argument
 
     def on_main_dialog_delete(self, *args):
+        ''' user closed window using window manager. '''
         Gtk.main_quit(*args)
         sys.exit(1)
 
     def on_build_error_dialog_close(self, *args):
+        ''' User pushed Close button. '''
         Gtk.main_quit(*args)
         sys.exit(1)
 
     def on_buildlog_btn_clicked(self, button):
+        ''' User pushed 'View buildlog' button.'''
         lpf = os.path.dirname(os.path.abspath(__file__)) + "/lpf"
         subprocess.call([lpf, 'log'])
 
     def on_ok_btn_clicked(self, button):
+        ''' User pushed OK button. '''
         Gtk.main_quit(self, button)
         sys.exit(0)
 
     def on_cancel_btn_clicked(self, button):
+        ''' User pushed Cancel button. '''
         _goodbye()
 
 
-#pylint: disable=invalid-name
+# pylint: disable=invalid-name
 signal.signal(signal.SIGPIPE, signal.SIG_IGN)
 
 builder = Gtk.Builder()

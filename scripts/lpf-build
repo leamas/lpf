@@ -8,6 +8,7 @@ source $scriptdir/lpf-defs.bash
 
 
 function get_approving_user()
+# get_approving_user <pkg>: return user who approved package, or 'unknown'.
 {
     local approve_file=$( get_approve_file $1 )
     ls -l $approve_file 2>/dev/null | awk '{print $3}' ||  echo 'unknown'
@@ -15,6 +16,8 @@ function get_approving_user()
 
 
 function done_msg()
+# done_msg <pkg> <state>: Print "Build completed" (OK or fail) with or
+# without GUI.
 {
     local pkg=$1 state=$2
     if [ "$state" == 'install-wait' ]; then

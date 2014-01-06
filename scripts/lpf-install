@@ -8,6 +8,8 @@ source $scriptdir/lpf-defs.bash
 
 
 function cli_confirm_install()
+# cli_confirm_install <pkg list>: Let user confirm what packages
+# to install, no GUI. Returns packages to install
 {
     local resultdir=$1
     local to_install=()
@@ -25,6 +27,8 @@ function cli_confirm_install()
 
 
 function gui_confirm_install()
+# gui_confirm_install <pkg list>: Let user confirm what packages
+# to install using GUI. Returns packages to install
 {
     local resultdir=$1
     local rpm
@@ -48,6 +52,7 @@ function log_and_echo
 
 
 function install_rpms()
+# install_rpms <pkg>: Install all built rpms for given package.
 {
     local pkg=$1
 

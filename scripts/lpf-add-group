@@ -8,6 +8,7 @@ source $scriptdir/lpf-defs.bash
 
 
 function cli_confirm_add()
+# Let user confirm adding of group pkg-build to $USER (no GUI).
 {
     local resultdir=$1
     local to_install=()
@@ -24,6 +25,7 @@ function cli_confirm_add()
 
 
 function gui_confirm_add()
+# Let user confirm adding of group pkg-build to $USER (GUI).
 {
     text="You must be member of the $LPF_GROUP group to run lpf"
     text="$text (log out and in again to mute this dialog)."
@@ -33,6 +35,7 @@ function gui_confirm_add()
 
 
 function add_lpf_group()
+# Add user pkg-build to current user.
 {
     if [ -n "$DISPLAY" ]; then
         gui_confirm_add

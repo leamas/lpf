@@ -2,7 +2,7 @@
 #
 # Install rpms, runs as root - be careful.
 #
-# We cut ssome corners here by assuming that when dealing
+# We cut some corners here by assuming that when dealing
 # with several rpms, they all have the same version. DNF will make
 # make this much easier, allowing to remove+update without shell.
 

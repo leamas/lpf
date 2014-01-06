@@ -29,6 +29,7 @@ function get_eula_licenses()
 
 
 function gui_approve()
+# User approves EULA using GUI.
 {
     # zenity  character dimensions width x height is about 7x24
     # so this is about 85x20 in characters
@@ -40,6 +41,7 @@ function gui_approve()
 
 
 function cli_approve()
+# User approves EULA, no GUI.
 {
     local license=$1
     more $license
@@ -51,6 +53,7 @@ function cli_approve()
 
 
 function approve()
+# Let user approve EULA, return error code if not approved.
 {
     local script=$1
     local license=$2

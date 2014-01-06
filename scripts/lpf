@@ -13,7 +13,7 @@ function usage()
 Usage: lpf <command> [args]
 
 commands:
-    list 	List all packages.
+    list        List all packages.
     update [package]
                 Interactive approve, build and install of given package or
                 all packages.
@@ -61,6 +61,7 @@ function check_pkg_arg()
 
 
 function list_packages()
+# Return list of installed lpf packages.
 {
     if [ -n "$1" ]; then
        usage
@@ -74,6 +75,7 @@ function list_packages()
 
 
 function list_states_cmd()
+# list_states_cmd [pkg]: print state for given package, or all.
 {
     [ -n "$1" ] && check_pkg_arg "$@"
     list_states "$@"
@@ -81,6 +83,7 @@ function list_states_cmd()
 
 
 function build_packages_cmd()
+# build_packages_cmd [pkg]: build given package, or all.
 {
     [ -n "$1" ] && check_pkg_arg "$@"
     $scriptdir/lpf-build "$@"
@@ -88,6 +91,7 @@ function build_packages_cmd()
 
 
 function rebuild_package()
+# rebuild_package <pkg>: rebuild given packagel.
 {
     check_pkg_arg "$@"
     local pkg=$1
@@ -107,6 +111,7 @@ function rebuild_package()
 
 
 function scan_packages_cmd()
+# scan_packages [pkg]: triage given package, or all.
 {
     [ -n "$1" ] && check_pkg_arg "$@"
     $scriptdir/lpf-pkgbuild 'scan' "$@"
@@ -114,6 +119,7 @@ function scan_packages_cmd()
 
 
 function scan_removal_cmd()
+# scan_removal <pkg>: triage given package assuming target is removed.
 {
     check_pkg_arg "$@"
     $scriptdir/lpf-pkgbuild 'set-state' $1 'removing'
@@ -122,6 +128,7 @@ function scan_removal_cmd()
 
 
 function approve_package_cmd()
+#approve_package_cmd <pkg>: let user approve given package.
 {
     check_pkg_arg "$@"
     approve_package "$@"
@@ -129,6 +136,7 @@ function approve_package_cmd()
 
 
 function install_rpms_cmd()
+# install_rpms_cmd <pkg>: install all rpms for given package.
 {
     check_pkg_arg "$@"
     $scriptdir/lpf-install "$@"
@@ -136,6 +144,7 @@ function install_rpms_cmd()
 
 
 function reset_cmd()
+# reset_cmd <pkg>: remove all temporary files for given package. rescan.
 {
     check_pkg_arg "$@"
     $scriptdir/lpf-pkgbuild 'reset' "$1"
@@ -144,6 +153,7 @@ function reset_cmd()
 
 
 function get_spec_cmd()
+# get_spec_cmd <pkg>: Retrieve target spec for package to current dir.
 {
     check_pkg_arg "$@"
     cp -a $LPF_DATA/packages/$1/*.spec .
@@ -152,6 +162,7 @@ function get_spec_cmd()
 
 
 function hide_cmd()
+# hide_cmd <pkg>: Mute given package.
 {
     check_pkg_arg "$@"
     $scriptdir/lpf-notify 'hide' "$@"
@@ -159,6 +170,7 @@ function hide_cmd()
 
 
 function unhide_cmd()
+# unhide_cmd <pkg>: Unmute given package.
 {
     check_pkg_arg "$@"
     $scriptdir/lpf-notify 'unhide' "$@"
@@ -166,6 +178,7 @@ function unhide_cmd()
 
 
 function get_srpm_cmd()
+# get_srpm_cmd <pkg>: Retrieve target srpm for package to current dir.
 {
     check_pkg_arg "$@"
     sources=$(rpm --eval %_sourcedir)
@@ -176,6 +189,7 @@ function get_srpm_cmd()
 
 
 function update_packages()
+# update_packages [pkg]: Update given package, or all packages.
 {
     [ -n "$1" ] && check_pkg_arg "$@"
     $scriptdir/lpf-update "$@"

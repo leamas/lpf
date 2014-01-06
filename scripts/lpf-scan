@@ -8,6 +8,7 @@ source $scriptdir/lpf-defs.bash
 
 
 function triage()
+# triage <pkg>: Determine state for given pckage.
 {
     local pkg=$1
     local pkgdir="$PKG_DATA_DIR/$pkg"
@@ -16,7 +17,7 @@ function triage()
     while read name version; do
         curr_version=$( rpm -q --qf "%{VERSION}-%{RELEASE}\n" $name ) \
             || curr_version='undef'
-	[ "$(get_state $pkg)" = 'removing' ] && curr_version='undef'
+        [ "$(get_state $pkg)" = 'removing' ] && curr_version='undef'
         if [ "$curr_version" != "$version" ]; then
            if [ -n "$( find $(get_eula_dir $pkg) -type f)" ]; then
                $scriptdir/lpf-pkgbuild 'set-state' $pkg 'approve-wait'
@@ -32,6 +33,7 @@ function triage()
 
 
 function check_OK
+# check_OK <pkg>: Re-evaluate if given package still is in state 'OK'.
 {
     local pkg=$1
     local lpf_vers=$( get_pkg_version $pkg )
@@ -49,6 +51,7 @@ function check_OK
 
 
 function check_install
+# check_install <pkg>: re-evaluate if package still is in state 'install'.
 {
     local pkg=$1
     local resultdir=$( get_resultdir $pkg )
@@ -66,6 +69,7 @@ function check_install
 
 
 function update_state()
+# update_state <pkg>: Re-evaluate state for given package.
 {
     local pkg="$1"
     local approve_file=$( get_approve_file $pkg )
