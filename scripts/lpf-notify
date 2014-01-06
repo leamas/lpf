@@ -116,12 +116,16 @@ function is_hidden()
 
 
 function create()
-# Create a new, pending message for a given package and state.
-# Invoke as pkg-build user. Clears any active hides.
+# Create or update a message for a given package and state.
+# Invoke as pkg-build user.
 {
     check_pkgbuild_user
     local pkg=$1
     local state=$2
+    if [ -f $LPF_VAR/notify/$pkg ]; then
+        echo $state > $LPF_VAR/notify/$pkg
+        return 0
+    fi
     test -d $LPF_VAR/notify || mkdir -p $LPF_VAR/notify
     new_dir=$( mktemp -d /var/tmp/XXXX )
     echo $state > $new_dir/state
@@ -132,8 +136,7 @@ function create()
 
 
 function remove()
-# Remove message for given package
-# Invoke as pkg-build user.
+# Remove message for given package. Invoke as pkg-build user.
 {
     check_pkgbuild_user
     local pkg=$1
