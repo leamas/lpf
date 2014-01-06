@@ -13,6 +13,7 @@ Group:          Development/Tools
 Source0:        %{url}/archive/%{commit}/lpf-0-%{shortcommit}.tar.gz
 BuildArch:      noarch
 
+BuildRequires:  appdata-tools
 BuildRequires:  desktop-file-utils
 Buildrequires:  python2-devel
 Requires:       hicolor-icon-theme
@@ -52,6 +53,9 @@ rm -rf examples
 make DESTDIR=%{buildroot} install
 desktop-file-validate %{buildroot}%{_datadir}/applications/lpf.desktop
 
+%check
+appdata-validate appdata/lpf.appdata.xml
+
 
 %pre
 getent group pkg-build >/dev/null || groupadd -r pkg-build
@@ -83,6 +87,8 @@ fi
 %{_datadir}/applications/lpf.desktop
 %{_datadir}/applications/lpf-gui.desktop
 %{_datadir}/icons/hicolor/*/apps/lpf*.png
+#%%{_datadir}/appdata/appdata.xml  # No sane owner to depend on.
+%{_datadir}/appdata
 %{_datadir}/man/man1/lpf*
 %{_libexecdir}/lpf-kill-pgroup
 # fedpkg import does not accept /etc ATM.

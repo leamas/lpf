@@ -22,6 +22,8 @@ install:
 
 	install -pDm 640 pkg-build.sudo $(DESTDIR)/etc/sudoers.d/pkg-build
 	install -pDm 644 macros.lpf $(DESTDIR)$(RPM_MACROS_DIR)/macros.lpf
+	install -pDm 644 appdata/lpf.appdata.xml \
+	     $(DESTDIR)$(DATADIR)/appdata/lpf.appdata.xml
 	cp -ar scripts CONFIG $(DESTDIR)$(DATADIR)/lpf
 	cp -a lpf-notify.desktop $(DESTDIR)$(DATADIR)/lpf
 	cp -a icons/*.png $(DESTDIR)$(DATADIR)/lpf/icons

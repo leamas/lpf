@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2014 Alec Leamas <leamas@nowhere.net> -->
+<application>
+   <id type="desktop">lpf-gui.desktop</id>
+   <licence>CC0</licence>
+   <description>
+       <p>
+        Lpf (Local Package Factory) handles non-redistributable lpf packages.
+        An lpf package is a recipe how to download, build and install a
+        target package.
+       </p>
+       <p>
+        The basic operation on a lpf package is an 'update'. This downloads
+        data from the web, builds and installs a new target package which
+        corresponds to the lpf package.
+       </p>
+       <p>
+        The lpf-gui allows:
+       </p>
+       <ul>
+          <li>Listing the state of installed lpf packages</li>
+          <li>Updating the lpf package</li>
+          <li>Handle lpf package "update required" notifications</li>
+          <li>View build log, reset package in bad state etc </li>
+       </ul>
+       <p>
+        This scheme overcomes the problems which arises when a package can't be
+        re-distributed. Such a package cannot be installed using the normal
+        procedures.
+       </p>
+   </description>
+   <!-- Fix references to devel branch when merging into master. -->
+   <screenshots>
+       <screenshot type="default" width="640" height="360">
+           https://github.com/leamas/lpf/raw/devel/appdata/main.png
+       </screenshot>
+       <screenshot width="640" height="360">
+           https://github.com/leamas/lpf/raw/devel/appdata/details.png
+       </screenshot>
+   </screenshots>
+-->
+   <url type="homepage">https://github.com/leamas/lpf</url>
+   <updatecontact>rpmfusion-developers@lists.rpmfusion.org</updatecontact>
+</application>
