@@ -16,12 +16,11 @@ function set_state()
 {
     [ -e $LPF_VAR/packages/$1 ] || mkdir -p  $LPF_VAR/packages/$1
     local statefile=$(  _get_statefile $1 )
-    oldstate=$( cat $statefile ) || oldstate='untriaged'
-    echo $2 >$statefile
-    case $2 in
+    echo "$2" >$statefile
+    case "$2" in
        'OK'|'removing'|'untriaged')
             $scriptdir/lpf-notify remove "$1"
-	    ;;
+            ;;
         *)  $scriptdir/lpf-notify create "$1" "$2"
             ;;
     esac
@@ -31,7 +30,7 @@ function set_state()
 function copy_results()
 # Copy built rpms to resultdir.
 {
-    local pkg=$1
+    local pkg="$1"
     local resultdir="$( get_resultdir $pkg )"
     [ -d "$resultdir" ] || mkdir $resultdir
     find $rpm_rpmdir -name \*.rpm -exec cp {} $resultdir \;
@@ -39,11 +38,11 @@ function copy_results()
 
 
 function build_pkg()
-# Given pkg, build it
+# Given pkg, build it.
 {
-    pkg=$1
-    spec=$( get_spec $pkg )
-    buildlog=$( get_logfile $pkg )
+    local pkg="$1"
+    local spec=$( get_spec $pkg )
+    local buildlog=$( get_logfile $pkg )
     rm -rf $rpm_rpmdir/* &> /dev/null
     rm -rf $rpm_srcdir/* &> /dev/null
     [ -w "$rpm_srcdir" ] || rpmdev-setuptree
@@ -67,12 +66,14 @@ function build_pkg()
 
 
 function build()
+# Build all packages in $@
 {
-    for pkg in $@; do build_pkg $pkg; done
+    for pkg in "$@"; do build_pkg $pkg; done
 }
 
 
 function create_approve_file()
+# Create the approve file, marks package as approved.
 {
     local approve_file=$( get_approve_file $1 )
     touch $approve_file
@@ -80,9 +81,9 @@ function create_approve_file()
 
 
 function reset()
-# reset state to pristine, installed package.
+# Reset state to pristine, installed package.
 {
-    pkg=$1
+    local pkg="$1"
     local resultdir=$( get_resultdir $pkg )
     rm -rf $resultdir &>/dev/null || :
     local notifydir=$( get_notifydir $pkg )
@@ -96,9 +97,9 @@ function reset()
 
 
 function clear_results()
-# Remove all built rpms for package
+# Remove all built rpms for package.
 {
-    pkg=$1
+    local pkg="$1"
     local resultdir=$( get_resultdir $pkg )
     rm -rf $resultdir &>/dev/null || :
 }
