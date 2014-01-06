@@ -127,13 +127,11 @@ class Handler(object):
     ''' default glade event handlers. '''
     # pylint: disable=missing-docstring, unused-argument
 
-    def on_build_error_dialog_destroy(self, *args):
-        print "close"
+    def on_main_dialog_delete(self, *args):
         Gtk.main_quit(*args)
         sys.exit(1)
 
     def on_build_error_dialog_close(self, *args):
-        print "close"
         Gtk.main_quit(*args)
         sys.exit(1)
 
