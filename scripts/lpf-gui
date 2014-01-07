@@ -162,7 +162,7 @@ class Handler(GObject.GObject):
                 checkbox.set_active(widget.get_active())
 
         if pkg_name:
-            item = Gtk.CheckMenuItem.new_with_label("Disable " + pkg_name)
+            item = Gtk.CheckMenuItem.new_with_label("Mute " + pkg_name)
             try:
                 subprocess.check_output([here('lpf-notify'),
                                         'is-hidden',
