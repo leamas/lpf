@@ -46,6 +46,15 @@ and other info.
 EOF
 }
 
+function version()
+# print verson data on stdout
+{
+    source $scriptdir/../version
+    echo "Version:    $VERSION"
+    echo "Commit:     $COMMIT"
+    echo "Build date: $DATE"
+}
+
 
 function check_pkg_arg()
 # check_pkg_arg <pkg>: Check a mandatory package arg, exit on errors.
@@ -266,6 +275,9 @@ case $command in
             ;;
     scan-removal)
             scan_removal_cmd "$@"
+            ;;
+    version)
+            version
             ;;
     *)      usage
             exit 1
