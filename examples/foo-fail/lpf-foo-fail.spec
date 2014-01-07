@@ -52,7 +52,6 @@ cp -a %{SOURCE4} README
 %postun
 %lpf_postun
 
-%triggerpostun -- %{target_pkg}
 %lpf_triggerpostun
 
 

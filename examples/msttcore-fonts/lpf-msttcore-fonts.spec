@@ -46,11 +46,7 @@ if [ "$1" = '0' ]; then
     /usr/share/lpf/scripts/lpf-pkg-postun %{target_pkg}
 fi
 
-%triggerpostun -- %{target_pkg}
-echo "postun: args: $@" > /tmp/triggerpostun
-if [ "$2" = '0' ]; then
-    lpf scan-removal %{target_pkg} &>/dev/null || :
-fi
+%lpf_triggerpostun
 
 
 %files
