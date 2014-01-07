@@ -1,0 +1,5 @@
+# BEWARE: this is sourced both as a python and a bash file.
+
+VERSION="0"
+COMMIT="@commit@"
+DATE="@date@"

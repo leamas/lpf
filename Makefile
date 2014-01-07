@@ -29,6 +29,7 @@ install:
 	cp -a lpf.1 lpf-gui.1 $(DESTDIR)$(DATADIR)/lpf
 	cp -a icons/*.png $(DESTDIR)$(DATADIR)/lpf/icons
 	rm -f  $(DESTDIR)$(DATADIR)/lpf/scripts/pylint.conf
+	cp -ar scripts CONFIG version $(DESTDIR)$(DATADIR)/lpf
 	ln -s $(DATADIR)/lpf/scripts/lpf $(DESTDIR)$(BINDIR)/lpf
 	ln -s $(DATADIR)/lpf/scripts/lpf-gui $(DESTDIR)$(BINDIR)/lpf-gui
 	ln -s $(DATADIR)/lpf/scripts/lpf-kill-pgroup \

@@ -1,0 +1,7 @@
+#!/bin/bash
+#
+# Version filter, can also be used with file argument.
+#
+
+sed -r ${1:+'-i'} -e "/COMMIT=/s/=.*/=\"@commit@\"/"  \
+                  -e "/DATE=/s/=.*/=\"@date@\"/" $1
