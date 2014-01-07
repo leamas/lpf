@@ -51,7 +51,7 @@ class Handler(object):
             return
         for pkg_name in self.outdated:
             try:
-                subprocess.check_call([here('lpf'), 'hide', pkg_name])
+                subprocess.check_call([here('lpf'), 'mute', pkg_name])
             except subprocess.CalledProcessError:
                 pass
 
