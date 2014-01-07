@@ -93,6 +93,7 @@ function hide()
     local hide_dir=$( get_hidedir )
     [ -d "$hide_dir" ] || mkdir -p "$hide_dir"
     echo $( get_state $pkg ) > $hide_dir/$pkg
+    return 0
 }
 
 
@@ -178,7 +179,7 @@ function notify_watch
 # Invoke  $1 if there is package(s) needing rebuild. Kills other instances
 # running for current user. Does not return.
 {
-    local pids=$( pgrep -fu $USER notify_daemon )
+    local pids=$( pgrep -fu $USER 'notify-watch' )
     pids=${pids/$$/}
     [ "${pids/ /}" ] && kill -TERM $pids && sleep 1 || :
     local trigger_func="$*"

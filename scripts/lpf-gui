@@ -141,8 +141,16 @@ class Handler(GObject.GObject):
                     os.mkdir(os.path.dirname(user_notifier))
                 if not os.path.exists(user_notifier):
                     shutil.copyfile(_USER_NOTIFIER_TEMPLATE, user_notifier)
+                    try:
+                        subprocess.call(['gtk-launch', 'lpf-notify'])
+                    except subprocess.CalledProcessError:
+                        pass
             elif os.path.exists(user_notifier):
                 os.unlink(user_notifier)
+                try:
+                    subprocess.call(['pkill', '-9', '-f', 'notify-watch'])
+                except subprocess.CalledProcessError:
+                    pass
 
         def on_pkg_activate_cb(widget, pkg_name):
             ''' Disable notifications for a package menu entry callback. '''

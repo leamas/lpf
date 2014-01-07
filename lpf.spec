@@ -86,6 +86,7 @@ fi
 %{_datadir}/lpf
 %{_datadir}/applications/lpf.desktop
 %{_datadir}/applications/lpf-gui.desktop
+%{_datadir}/applications/lpf-notify.desktop
 %{_datadir}/icons/hicolor/*/apps/lpf*.png
 #%%{_datadir}/appdata/appdata.xml  # No sane owner to depend on.
 %{_datadir}/appdata

@@ -50,7 +50,10 @@ class Handler(object):
         if not widget.get_active():
             return
         for pkg_name in self.outdated:
-            subprocess.check_call([here('lpf'), 'hide', pkg_name])
+            try:
+                subprocess.check_call([here('lpf'), 'hide', pkg_name])
+            except subprocess.CalledProcessError:
+                pass
 
     def on_lpf_button_clicked_cb(self, widget, data=None):
         ''' User clicked 'Run lpf' button. '''

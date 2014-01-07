@@ -47,3 +47,5 @@ install:
 	    --dir $(DESTDIR)$(DATADIR)/applications lpf.desktop
 	desktop-file-install \
 	    --dir $(DESTDIR)$(DATADIR)/applications lpf-gui.desktop
+	desktop-file-install \
+	    --dir $(DESTDIR)$(DATADIR)/applications lpf-notify.desktop
