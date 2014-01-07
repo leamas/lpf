@@ -19,7 +19,7 @@ def _goodbye():
     subprocess.call([kill_pgroup])
     sys.exit(1)
 
-
+# header_label
 class UpdateHandler(object):
     ''' FSM GUI accepting user commands and input from script to update. '''
 
@@ -27,6 +27,7 @@ class UpdateHandler(object):
         self.builder = builder_
         self._state = 'init'
         self._icons = [None, None, None, None, None]
+        self._package = None
         builder_.get_object('ok_btn').set_sensitive(False)
         builder_.get_object('buildlog_btn').set_sensitive(False)
 
@@ -48,8 +49,10 @@ class UpdateHandler(object):
             self._state = 'builddeps'
             dialog = self.builder.get_object("main_dlg")
             try:
-                title = "lpf: " + line.split(':')[0]
-                dialog.set_title(title)
+                self._package = line.split(':')[0]
+                dialog.set_title("lpf: " + self._package)
+                self.builder.get_object("header_label").set_text(
+                    "Updating: " + self._package)
             except ValueError:
                 pass
             dialog.show_all()
@@ -98,9 +101,13 @@ class UpdateHandler(object):
         if 'install completed' in line:
             self._set_icon(4, Gtk.Image(stock=Gtk.STOCK_YES))
             self._state = 'done'
+            self.builder.get_object("header_label").set_text(
+                "Updating: " + self._package + ', completed OK.')
         elif 'installation errors' in line or 'no rpms to install' in line:
             self._set_icon(4, Gtk.Image(stock=Gtk.STOCK_NO))
             self._state = 'done'
+            self.builder.get_object("header_label").set_text(
+                "Updating: " + self._package + ', failed.')
 
     # pylint: disable=unused-argument
     def process_line(self, source, cb_condition):
