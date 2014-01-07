@@ -7,6 +7,7 @@ import os
 import os.path
 import shutil
 import subprocess
+import sys
 import time
 
 from gi.repository import Gtk              # pylint:disable=no-name-in-module
@@ -421,6 +422,14 @@ class Handler(GObject.GObject):
         builder.get_object('main_window').show_all()
 
 
+if len(sys.argv) > 2:
+    print "Usage: lpf-gui [package]"
+    sys.exit(2)
+elif len(sys.argv) == 2:
+    try:
+        subprocess.call([here('lpf'), 'update', sys.argv[1]])
+    except subprocess.CalledProcessError:
+        pass
 builder = Gtk.Builder()
 builder.add_from_file(here("lpf-gui.ui"))
 Handler(builder)
