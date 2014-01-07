@@ -137,6 +137,8 @@ class Handler(GObject.GObject):
         def on_notify_activate_cb(widget, pkg_name):
             ''' Handle changes in 'Enable notifications' menu item. '''
             if widget.get_active():
+                if not os.path.exists(os.path.dirname(user_notifier)):
+                    os.mkdir(os.path.dirname(user_notifier))
                 if not os.path.exists(user_notifier):
                     shutil.copyfile(_USER_NOTIFIER_TEMPLATE, user_notifier)
             elif os.path.exists(user_notifier):
