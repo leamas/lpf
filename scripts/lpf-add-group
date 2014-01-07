@@ -10,17 +10,13 @@ source $scriptdir/lpf-defs.bash
 function cli_confirm_add()
 # Let user confirm adding of group pkg-build to $USER (no GUI).
 {
-    local resultdir=$1
-    local to_install=()
-    local rpm
     echo -n "OK to add group $LPF_GROUP to your current user $USER? [n]: "
     read
     if [[ "$REPLY" == [Yy]* ]]; then
-        rc=0
+        return 0
     else
-        rc=1
+        return 1
     fi
-    return $rc
 }
 
 
