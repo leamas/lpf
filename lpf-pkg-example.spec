@@ -69,6 +69,11 @@ target-url:      [Url: from target]
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 
+# Check that lpf and target spec have the same version.
+%check
+%lpf_check %{SOURCE0}
+
+
 %post
 %lpf_post
 

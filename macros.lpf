@@ -6,7 +6,6 @@
 DISPLAY= lpf scan 2>/dev/null || : \
 %{nil}
 
-
 %lpf_postun() \
 if [ "$1" = '0' ]; then \
     /usr/share/lpf/scripts/lpf-pkg-postun %{target_pkg} &>/dev/null || :; \
@@ -17,5 +16,12 @@ fi \
 %lpf_triggerpostun() \
 if [ "$2" = '0' ]; then \
     lpf scan-removal %{target_pkg} &>/dev/null || : ; \
+fi \
+%{nil}
+
+%lpf_check() \
+spec_vers="%( rpm --specfile -q --qf '%%{version}-%%{release}\\n' %1 | head -1 )"; \
+if [[ '%{version}-%{release}' != "$spec_vers" ]]; then \
+    echo "lpf/target version mismatch" >&2; exit 1;  \
 fi \
 %{nil}
