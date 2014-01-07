@@ -35,19 +35,17 @@ function gui_confirm_add()
 
 
 function add_lpf_group()
-# Add user pkg-build to current user.
+# Add user pkg-build to current user. Use sudo if possible, else pkexec.
 {
     if [ -n "$DISPLAY" ]; then
-        gui_confirm_add
-        ok=$?
+        gui_confirm_add || return 1
     else
-        cli_confirm_add
-        ok=$?
+        cli_confirm_add || return 1
     fi
-    if [ $ok = "0" ]; then
-        pkexec /usr/sbin/usermod -a -G $LPF_GROUP $USER
+    if sudo -l /usr/sbin/usermod &>/dev/null; then
+        $SUDO usermod -a -G $LPF_GROUP $USER
     else
-        exit 1
+        pkexec /usr/sbin/usermod -a -G $LPF_GROUP $USER
     fi
 }
 

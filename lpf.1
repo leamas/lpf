@@ -94,8 +94,10 @@ when building and to run as root when installing. lpf installs a sudo
 config file  which allows users in the pkg-build group to make all required
 operations.
 .PP
-lpf uses pkexec(1) to add current user to the pkg-build group. This
-is invoked on the first run. To avoid add user manually using:
+If possible, lpf uses sudo also to add current user to the pkg-build group.
+If the sudoers configuration doesn't allow current user to do this, pkexec(1)
+is used instead. This is invoked on the first run. To avoid add user manually
+using:
 .IP "" 4
     $ su -c "usermod -a -G pkg-build $USER"
 .PP
@@ -112,7 +114,7 @@ displaying gui messages as appropriate. The GUI allows muting messages
 for specific packages.
 .PP
 Command line notifications could be enabled by adding code to e. g.,
- .bashlogin
+ ~/.bashlogin.
 .B lpf notify
 which will output a message similar to the well-known "You have mail" if lpf
 packages needs to be updated. Using the 'mute' and 'unmute' commands

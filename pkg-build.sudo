@@ -3,6 +3,9 @@
 #
 Defaults:%pkg-build !requiretty
 
+Cmnd_Alias CHECK_COMMANDS = /usr/sbin/usermod
+Defaults!CHECK_COMMANDS  listpw=never
+
 %pkg-build ALL = (pkg-build) NOPASSWD: /usr/share/lpf/scripts/lpf-pkgbuild
 %pkg-build ALL = (pkg-build) NOPASSWD: /usr/bin/kill
 %pkg-build ALL = NOPASSWD: /usr/share/lpf/scripts/lpf-kill-pgroup
