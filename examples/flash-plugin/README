@@ -1,0 +1,17 @@
+lpf-flash-plugin
+================
+
+This is a lpf package. It's only use is to install another package, called the
+target package. For lpf-flash-plugin, the target package is flash-plugin.
+
+The package can be used in two ways:
+
+In the GUI, you could find the lpf-flash-plugin icon. By clicking on it you will
+download flash-plugin, build and install an rpm.
+
+On the command line, you can use the lpf command, see lpf -h for usage. The
+basic usage is
+
+ $ lpf update
+
+which does the same thing as clicking on the GUI icon.

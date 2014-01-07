@@ -1,0 +1,149 @@
+# Binary package, no debuginfo should be generated
+%global debug_package %{nil}
+# Avoid binary manipulation or the main executable gets corrupted
+%global __spec_install_post /usr/lib/rpm/brp-compress
+
+Name:           skype
+Version:        4.2.0.11
+Release:        8%{?dist}
+Summary:        Skype Messaging and Telephony Client
+
+License:        Skype End User License Agreement
+URL:            http://www.skype.com/products/skype/linux/
+# Download at:
+# http://www.skype.com/intl/en/get-skype/on-your-computer/linux/downloading.dynamic
+Source0:        http://download.skype.com/linux/%{name}-%{version}.tar.bz2
+
+BuildRequires:  desktop-file-utils
+Requires:       hicolor-icon-theme
+Requires:       %{name}-data = %{version}-%{release}
+# Needed for the welcome screen, not pulled in by dependencies
+Requires:       webkitgtk%{_isa}
+
+ExclusiveArch:  %{ix86}
+
+%description
+Millions of individuals and businesses use Skype to make free video and voice
+calls, send instant messages and share files with other Skype users. Everyday,
+people also use Skype to make low-cost calls to landlines and mobiles.
+
+%package data
+Summary:        Skype Messaging and Telephony Client data files
+BuildArch:      noarch
+Requires:       %{name} = %{version}-%{release}
+
+%description data
+This package contains icons, sounds and support files for the main Skype
+package.
+
+%prep
+%setup -q
+cat << EOF > %{name}-wrapper
+#!/bin/sh
+PULSE_LATENCY_MSEC=30 skype-bin
+EOF
+sed -i 's/\r$//' LICENSE
+
+%build
+# Nothing to build
+
+%install
+# Fedora 20+ needs a wrapper for PulseAudio latency
+mkdir -p %{buildroot}%{_sysconfdir}/prelink.conf.d/
+%if 0%{?fedora} >= 20 || 0%{?rhel} >= 7
+install -p -D -m 755 %{name}-wrapper %{buildroot}%{_bindir}/%{name}
+install -p -D -m 655 %{name} %{buildroot}%{_bindir}/%{name}-bin
+echo "-b %{_bindir}/skype-bin" > %{buildroot}%{_sysconfdir}/prelink.conf.d/%{name}-%{_arch}.conf
+%else
+install -p -D -m 655 %{name} %{buildroot}%{_bindir}/%{name}
+echo "-b %{_bindir}/skype" > %{buildroot}%{_sysconfdir}/prelink.conf.d/%{name}-%{_arch}.conf
+%endif
+
+install -p -D -m 644 %{name}.conf %{buildroot}%{_sysconfdir}/dbus-1/system.d/%{name}.conf
+
+for size in 16 24 32 48 64 96 128 256; do
+    install -p -D -m 644 icons/SkypeBlue_${size}x${size}.png \
+        %{buildroot}%{_datadir}/icons/hicolor/${size}x${size}/apps/%{name}.png
+done
+
+mkdir -p %{buildroot}%{_datadir}/%{name}
+cp -afr sounds avatars lang %{buildroot}%{_datadir}/%{name}
+
+sed -i -e 's/.png//g' %{name}.desktop
+desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
+
+%post data
+touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
+/usr/bin/update-desktop-database &> /dev/null || :
+
+%postun data
+if [ $1 -eq 0 ] ; then
+    touch --no-create %{_datadir}/icons/hicolor &>/dev/null
+    gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+fi
+/usr/bin/update-desktop-database &> /dev/null || :
+
+%posttrans data
+gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+
+%files
+# Always replace the prelink information, the binary gets corrupted otherwise
+%config %{_sysconfdir}/prelink.conf.d/%{name}-%{_arch}.conf
+%{_bindir}/%{name}
+%if 0%{?fedora} >= 20
+%{_bindir}/%{name}-bin
+%endif
+
+%files data
+%doc LICENSE README third-party_attributions.txt
+# DBus information comes from upstream
+%config %{_sysconfdir}/dbus-1/system.d/%{name}.conf
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/icons/hicolor/*/apps/%{name}.png
+%{_datadir}/%{name}
+
+%changelog
+* Wed Nov 20 2013 Simone Caronni <negativo17@gmail.com> - 4.2.0.11-8
+- Split main executable from data files (preparation for x86_64 binaries).
+
+* Wed Nov 6 2013 Alec Leamas <leamas@nowhere.net>  - 4.2.0.11-7
+- Importing spec from rpmfusion #2978 into lpf-skype package.
+- Kudos Simone Caronni for writing that spec!
+- Generate skype-wrapper in the spec file.
+- Add -a to cp command.
+
+* Mon Oct 21 2013 Simone Caronni <negativo17@gmail.com> - 4.2.0.11-6
+- Add webkitgtk as requirement; it's required by the welcome screen and not
+  pulled in automatically.
+
+* Thu Oct 10 2013 Simone Caronni <negativo17@gmail.com> - 4.2.0.11-5
+- Convert the profile to wrapper for Fedora 20.
+
+* Tue Oct 08 2013 Simone Caronni <negativo17@gmail.com> - 4.2.0.11-4
+- Force PulseAudio latency in Fedora 20+ through an alias to the skype command
+  in /etc/profile.d/.
+
+* Fri Sep 20 2013 Simone Caronni <negativo17@gmail.com> - 4.2.0.11-3
+- Rpmlint fixes.
+
+* Tue May 21 2013 Simone Caronni <negativo17@gmail.com> - 4.2.0.11-2
+- Added new icon sizes.
+
+* Mon May 20 2013 Simone Caronni <negativo17@gmail.com> - 4.2.0.11-1
+- Update to 4.2.0.11.
+
+* Thu Nov 15 2012 Simone Caronni <negativo17@gmail.com> - 4.1.0.20-1
+- Updated to 4.1.0.20.
+
+* Thu Sep 06 2012 Simone Caronni <negativo17@gmail.com> - 4.0.0.8-1
+- Updated to 4.0.0.8.
+
+* Thu Feb 16 2012 Simone Caronni <negativo17@gmail.com> - 2.2.0.35-3
+- Removed main binary from prelinking.
+
+* Thu Feb 09 2012 Simone Caronni <negativo17@gmail.com> - 2.2.0.35-2
+- Do not strip debuginfo.
+
+* Tue Dec 20 2011 Simone Caronni <negativo17@gmail.com> - 2.2.0.35-1
+- First build.
+

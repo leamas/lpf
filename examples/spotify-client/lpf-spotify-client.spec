@@ -4,7 +4,7 @@
 Name:           lpf-spotify-client
                 # Upstream spotify version, verbatim.
 Version:        0.9.4.183.g644e24e.428
-Release:        4%{?dist}
+Release:        6%{?dist}
 Summary:        Spotify music player native client package bootstrap
 
 License:        MIT
@@ -69,6 +69,12 @@ fi
 
 
 %changelog
+* Fri Dec 27 2013 leamas@nowhere.net - 0.9.4.183.g644e24e.428-6
+- Rebuild after F20 branching
+
+* Wed Nov 27 2013 Alec Leamas <leamas@nowhere.net> - 0.9.4.183.g644e24e.428-5
+- Updating %%triggerpostun
+
 * Tue Nov 26 2013 Alec Leamas <leamas@nowhere.net> - 0.9.4.183.g644e24e.428-4
 - Updating %%triggerun and %%postun.
 
