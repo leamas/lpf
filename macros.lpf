@@ -14,10 +14,12 @@ fi \
 
 
 %lpf_triggerpostun() \
+%triggerpostun -- %{target_pkg} \
 if [ "$2" = '0' ]; then \
     lpf scan-removal %{target_pkg} &>/dev/null || : ; \
 fi \
 %{nil}
+
 
 %lpf_check() \
 spec_vers="%( rpm --specfile -q --qf '%%{version}-%%{release}\\n' %1 | head -1 )"; \

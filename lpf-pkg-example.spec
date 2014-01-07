@@ -80,7 +80,6 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %postun
 %lpf_postun
 
-%triggerpostun -- %{target_pkg}
 %lpf_triggerpostun
 
 
