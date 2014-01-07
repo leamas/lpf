@@ -3,7 +3,7 @@
 
 Name:           lpf-flash-plugin
 Version:        11.2.202.327
-Release:        4%{?dist}
+Release:        5%{?dist}
 Epoch:          1
 Summary:        Adobe Flash Player package bootstrap
 
@@ -40,18 +40,18 @@ cp %{SOURCE2} LICENSE
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 
+%check
+%lpf_check %{SOURCE0}
+
+
 %post
-DISPLAY= lpf scan 2>/dev/null || :
+%lpf_post
 
 %postun
-if [ "$1" = '0' ]; then
-    /usr/share/lpf/scripts/lpf-pkg-postun %{target_pkg} &>/dev/null || :
-fi
+%lpf_postun
 
 %triggerpostun -- %{target_pkg}
-if [ "$2" = '0' ]; then
-    lpf scan-removal %{target_pkg} &>/dev/null || :
-fi
+%lpf_triggerpostun
 
 
 %files
@@ -59,7 +59,6 @@ fi
 /usr/share/applications/%{name}.desktop
 /usr/share/lpf/packages/%{target_pkg}
 %attr(775,pkg-build,pkg-build) /var/lib/lpf/packages/%{target_pkg}
-%attr(664,pkg-build,pkg-build) /var/lib/lpf/packages/%{target_pkg}/state
 
 
 %changelog

@@ -339,11 +339,12 @@ class Handler(GObject.GObject):
 
             def do_manpage():
                 ''' Do the dirty work. '''
-                subprocess.call(['yelp', 'man:' + here('../lpf.1')])
-                set_arrow_cursor(self.builder)
+                try:
+                    subprocess.call(['yelp', 'man:' + here('../lpf-gui.1')])
+                except subprocess.CalledProcessError:
+                    pass
                 self.builder.get_object('main_window').set_sensitive(True)
 
-            set_hourglass_cursor(self.builder)
             self.builder.get_object('main_window').set_sensitive(False)
             GObject.idle_add(do_manpage)
 

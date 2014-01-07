@@ -4,7 +4,7 @@
 Name:           lpf-spotify-client
                 # Upstream spotify version, verbatim.
 Version:        0.9.4.183.g644e24e.428
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Spotify music player native client package bootstrap
 
 License:        MIT
@@ -46,18 +46,18 @@ cp %{SOURCE3} README
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 
+%check
+%lpf_check %{SOURCE0}
+
+
 %post
-lpf scan 2>/dev/null || :
+%lpf_post
 
 %postun
-if [ "$1" = '0' ]; then
-    /usr/share/lpf/scripts/lpf-pkg-postun %{target_pkg} &>/dev/null || :
-fi
+%lpf_postun
 
 %triggerpostun -- %{target_pkg}
-if [ "$2" = '0' ]; then
-    lpf scan-removal %{target_pkg} &>/dev/null || :
-fi
+%lpf_triggerpostun
 
 
 %files
@@ -65,7 +65,6 @@ fi
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/lpf/packages/%{target_pkg}
 %attr(775,pkg-build,pkg-build) /var/lib/lpf/packages/%{target_pkg}
-%attr(664,pkg-build,pkg-build) /var/lib/lpf/packages/%{target_pkg}/state
 
 
 %changelog

@@ -3,7 +3,7 @@
 
 Name:           flash-plugin
 Version:        11.2.202.327
-Release:        2%{?dist}
+Release:        5%{?dist}
 Epoch:          1
 Summary:        Adobe Flash Player
 License:        Non-redistributable, no modification permitted
