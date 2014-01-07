@@ -43,9 +43,8 @@ pkg=$(basename $spec .spec)
 
 install  -d $topdir/usr/share/lpf/packages/$pkg/SOURCES
 install  -d $topdir/usr/share/lpf/packages/$pkg/eula
-install  -dm 775  $topdir/var/lib/lpf/packages/$pkg
+install  -dm 755  $topdir/var/lib/lpf/packages/$pkg
 echo 'untriaged' >  $topdir/var/lib/lpf/packages/$pkg/state
-chmod 664 $topdir/var/lib/lpf/packages/$pkg/state
 
 install -pm 644 -D  /usr/share/applications/lpf.desktop \
     $topdir/usr/share/applications/lpf-$pkg.desktop
