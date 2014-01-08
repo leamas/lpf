@@ -15,6 +15,11 @@ from gi.repository import Gdk              # pylint:disable=no-name-in-module
 from gi.repository import GObject          # pylint:disable=no-name-in-module
 from gi.repository.Pango import FontDescription  # pylint: disable=F0401,E0611
 
+import version
+
+VERSION = "Version: %s ( %s %s )" % (
+    version.VERSION, version.COMMIT, version.DATE.split()[0] )
+
 _HERE = os.path.dirname(os.path.realpath(__file__))
 _USER_NOTIFIER_TEMPLATE = os.path.join(_HERE, '..', 'lpf-notify.desktop')
 
@@ -254,9 +259,10 @@ class Handler(GObject.GObject):
     def get_about(self):
         ''' Install the Help | About dialog. '''
         # See: https://developer.gnome.org/gtk3/stable/GtkAboutDialog.html
-
         about = Gtk.AboutDialog()
         about.set_program_name('LPF - Local Package Factory')
+        about.set_version(VERSION)
+        about.set_logo_icon_name('lpf')
         about.set_copyright("Copyright \xc2\xa9 2013-2014 Alec Leamas")
         #about.set_authors(authors)
         about.set_website("http://github.com/leamas/lpf")
