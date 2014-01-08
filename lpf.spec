@@ -27,7 +27,6 @@ Requires:       sudo
 Requires:       yum-utils
 Requires:       zenity
 Requires(pre):  shadow-utils
-Requires(post): procps-ng
 
 
 %description
