@@ -7,7 +7,7 @@
        <p>
         Lpf (Local Package Factory) handles non-redistributable lpf packages.
         An lpf package is a recipe how to download, build and install a
-        target package.
+        target package. The target package is the useful one.
        </p>
        <p>
         The basic operation on a lpf package is an 'update'. This downloads
@@ -38,7 +38,7 @@
            https://github.com/leamas/lpf/raw/devel/appdata/details.png
        </screenshot>
    </screenshots>
--->
+
    <url type="homepage">https://github.com/leamas/lpf</url>
    <updatecontact>rpmfusion-developers@lists.rpmfusion.org</updatecontact>
 </application>
