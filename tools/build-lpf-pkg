@@ -1,0 +1,7 @@
+#!/bin/bash
+
+
+rm -rf rpms; mkdir rpms
+rpmbuild -D "_sourcedir $PWD" -D "_rpmdir rpms" --quiet -bb $1
+mv $(find rpms -name \*.rpm) .
+rm -rf rpms
