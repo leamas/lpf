@@ -108,19 +108,20 @@ An alternative way without using any CLI magic:
 
 
  - After installation an lpf package is untriaged. Normally, the %post
-   scriptlet will invoke lpf scan.
- - After running lpf scan the package is waiting for user approving the
-   eula or if this is not required submitted for building directly.
- - Running lpf-approve submits packages for building after user
+   scriptlet will invoke ```lpf scan```.
+ - After running ```lpf scan``` the package is waiting for user approving
+   the eula or if this is not required submitted for building directly.
+ - Running ```lpf approve``` submits packages for building after user
    accepting the eula.
- - Running lpf-build builds target package.  The lpf
+ - Running ```lpf build``` builds target package.  The lpf
    package enter state install-wait or failed.
- - Running lpf-install installs package which enter state OK.
+ - Running ```lpf install``` installs package which enter state OK.
  - After updating the lpf package , the target package will have a
    different version than the lpf package and state is untriaged
  - Likewise, the state is untriaged if target package is not installed.
  - A failed package can be rebuilt.
- - The update command is indeed a shortcut for approve-build-install.
+ - The ```lpf update``` command is indeed a shortcut for
+   approve-build-install.
 
 ## The lpf package
 To create an lpf package you first create a target package. My example
@@ -144,23 +145,22 @@ accept before building. The directory structure is
                                 eula
                                     license.txt
 
-Normally, this structure is just created by the lpf-setup-package
-script.
-
-Writing the lpf spec should be simple using the examples as a
-starting point.  When the lpf package is installed, it will enter the
-'approve-wait' state and can be handled as described under Getting
-Started.
-
 The optional CONFIG file is used to tweak how lpf builds the package.
 Typical usage is in packages only built for i686 even on x86\_64 hosts.
-Look into /usr/share/lpf/CONFIG for more. Also this is normally handled
-by lpf-setup-package.
 
-## The lpf-gui tool
+Writing the lpf spec should be simple using the examples as a
+starting point. There is also info the annotated lpf-pkg-example.spec file.
+When doing this the internal structure as described here is handled by the
+lpf-setup-package script which constructs it given a target specfile,
+possible eula terms and extra sources. See comments in lpf-setup-package
+
+When the lpf package is installed, it will enter the 'approve-wait' state
+and can be handled as described under Getting Started.
+
+## The lpf-gui tool.
 
 lpf-gui provides a graphical interface to the basic lpf administration. Using
-this one can get an overview on lpf package states, build backages, view logs,
+this one can get an overview on lpf package states, update packages, view logs,
 handle notifications etc. See the first two screenshots and the lpf-gui manpage.
 
 ## The lpf tool
@@ -205,17 +205,19 @@ screenshots).  To make it work as a pure cli application unset $DISPLAY.
 ## Notifications
 
 There is a notifications system which can be used both from the command
-line and the GUI.
+line and the GUI. A notification is created when a lpf package enters
+any state besides 'OK'. It's cleared when it eventually becomes 'OK' again.
 
-At the command line, 'lpf notify' writes a message if there are lpf packages
-which need to be built. It's intended to be included e. g., in .bashlogin.
-Notifications can be hidden, basically blocking this message until the
-package enters a new state using lpf hide.
+At the command line, ```lpf notify``` writes a message if there are lpf
+packages which need to be built. It's intended to be included e. g., in
+.bashlogin.  Notifications for a specific package can be muted, basically
+blocking this message until the package enters state 'OK' using
+```lpf mute```.
 
 In the GUI, the basic tool is the lpf-notify user daemon. This is installed
 by the lpf-gui when selecting "Enable notifications" in the Notifications
 menu. The daemon listens for package state changes and pops up a message
-using the 'lpf notify-watch' command.
+using the ```lpf notify-watch``` command.
 
 There are locks for the GUI notifications to avoid multiple messages e. g.,
 when actually updating the lpf package.
@@ -240,4 +242,8 @@ This is open software licensed under the MIT license, see the LICENSE file.
 
 lots...
  - Dozens of bugs...
+ - python3 port.
+ - Rewrite the notitification code with a proper daemonm and using the
+   notification interface - i. e., using python.
  - Sooner or later write this in a proper language (python?).
+ - Rewrite python scripts as libs, to precompile.

@@ -17,7 +17,7 @@
 
 # The lpf package has the name lpf-<target-package>.spec:
 Name:           lpf-restricted-fonts
-# The lpf package version is the same as the target package:
+# The lpf package version-release must be the same as the target package:
 Version:        2.2
 Release:        1%{?dist}
 Summary:        Bootstrap package building restricted-fonts using lpf
@@ -64,6 +64,7 @@ target-url:      [Url: from target]
 %install
 # lpf-setup-pkg creates the package structure according to:
 # lpf-setup-pkg [-a arch] [-e eula] <topdir> <specfile> [sources...]
+# See comment in lpf-setup-pkg for more info.
 /usr/share/lpf/scripts/lpf-setup-pkg \
     -e %{SOURCE1} %{buildroot} %{SOURCE0} %{SOURCE2}
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
