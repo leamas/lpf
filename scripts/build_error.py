@@ -9,6 +9,7 @@ from gi.repository import Gtk        # pylint:disable=no-name-in-module
 
 
 class Handler(object):
+    ''' Implicit signal handlers declared in glade. '''
 
     def on_build_error_dialog_destroy(self, *args):
         ''' Window closed using window manager. '''
@@ -27,14 +28,20 @@ class Handler(object):
         Gtk.main_quit(self, button)
 
 
-# pylint: disable=invalid-name
-builder = Gtk.Builder()
-ui = os.path.dirname(os.path.abspath(__file__)) + "/build-error.ui"
-builder.add_from_file(ui)
-builder.connect_signals(Handler())
-window = builder.get_object('build_error_dialog')
-window.show_all()
+def main():
+    ''' Indeed: main function... '''
+    builder = Gtk.Builder()
+    ui = os.path.dirname(os.path.abspath(__file__)) + "/build-error.ui"
+    builder.add_from_file(ui)
+    builder.connect_signals(Handler())
+    window = builder.get_object('build_error_dialog')
+    window.show_all()
 
-Gtk.main()
+    Gtk.main()
+
+
+if __name__ == '__main__':
+    main()
+
 
 # vim: set expandtab ts=4 sw=4:

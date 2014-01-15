@@ -56,4 +56,5 @@ pylint:
 	    scripts/lpf-gui \
 	    scripts/lpf_gui_base.py \
 	    scripts/update.py \
-	    scripts/notify.py
+	    scripts/notify.py  \
+	    scripts/build_error.py
