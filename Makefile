@@ -50,3 +50,8 @@ install:
 	    --dir $(DESTDIR)$(DATADIR)/applications lpf-gui.desktop
 	desktop-file-install \
 	    --dir $(DESTDIR)$(DATADIR)/applications lpf-notify.desktop
+
+pylint:
+	@PYTHONPATH=scripts pylint --rcfile=pylint.conf \
+	    scripts/lpf-gui \
+	    scripts/lpf_gui_base.py
