@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 ''' Update package GUI. '''
 
 import os.path
