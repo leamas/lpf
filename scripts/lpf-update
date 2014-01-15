@@ -153,7 +153,7 @@ function update_packages()
     update_package $pkg
     local state=$( get_state $pkg )
     if [[ "$state" == 'failed' && -n "$DISPLAY" ]]; then
-        local reply=$( $scriptdir/build_error.py )
+        local reply=$( $scriptdir/build_error )
         [ "$reply" = 'view_buildlog' ] && show_buildlog $pkg
     fi
     update_package_close $pkg

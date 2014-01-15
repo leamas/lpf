@@ -28,7 +28,7 @@ function done_msg()
         fi
     else
         if [ -n "$DISPLAY" ]; then
-            reply=$( $scriptdir/build_error.py )
+            reply=$( $scriptdir/build_error )
             if [ "$reply" = "view_buildlog" ]; then
                 zenity --text-info --filename $(get_logfile $1)  \
                     --width 600 --height 500
