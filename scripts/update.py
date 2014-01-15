@@ -113,7 +113,7 @@ class UpdateHandler(object):
     def process_line(self, source, cb_condition):
         ''' Parse input line from update script. '''
         l = sys.stdin.readline()
-        print l.rstrip()
+        print(l.rstrip())
         if self._state == 'init':
             self._do_init(l)
         elif self._state == 'builddeps':
