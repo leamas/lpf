@@ -6,6 +6,7 @@
 *.src.rpm
 *.swp
 *.xcf
+*debuglog.txt
 dist
 rpms
 test-usr
