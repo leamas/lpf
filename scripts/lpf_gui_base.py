@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 ''' Main UI: list and update packages. '''
 
 
@@ -118,7 +116,7 @@ class Handler(GObject.GObject):
             with open(logfile) as f:
                 log = f.read()
         except OSError:
-            print(" Cannot open logfile: " + logfile)
+            print((" Cannot open logfile: " + logfile))
             return None
         textview = self.builder.get_object("view_textview")
         textview.modify_font(FontDescription("Monospace"))
@@ -275,8 +273,8 @@ class Handler(GObject.GObject):
     def update_main_grid(self, statelines=None):
         ''' Update the main window grid with data from 'lpf state'. '''
         if not statelines:
-            statelines = \
-                subprocess.check_output([here('lpf'), 'state']).split('\n')
+            statebytes = subprocess.check_output([here('lpf'), 'state'])
+            statelines = statebytes.decode('utf-8').split('\n')
         grid = self.get_grid()
         for row, stateline in enumerate(statelines):
             try:
@@ -304,16 +302,17 @@ class Handler(GObject.GObject):
             subprocess.call([here('lpf'), 'reset', pkg_name])
             self.update_details(pkg_name)
 
-        stateline = subprocess.check_output([here('lpf'), 'state', pkg_name])
+        statebytes = subprocess.check_output([here('lpf'), 'state', pkg_name])
+        stateline = statebytes.decode('utf-8')
         try:
             pkg_name, state, vers = stateline.split()
         except ValueError:
-            print("Cannot update details bad state: " + stateline)
+            print(("Cannot update details bad state: " + stateline))
             return
         self.builder.get_object('details_version_value_lbl').set_text(vers)
         try:
             cmd = ['rpm', '-q', '--qf', '%{version}-%{release}', pkg_name]
-            target_vers = subprocess.check_output(cmd)
+            target_vers = subprocess.check_output(cmd).decode('utf-8')
         except subprocess.CalledProcessError:
             target_vers = 'Not installed'
 
@@ -373,8 +372,8 @@ class Handler(GObject.GObject):
             find_condition = lambda i: self.window_name in i.get_label()
             item = self._find_in_menu('notifications_menu', find_condition)
             if not item:
-                print("Cannot find view menu item for window: "
-                      + self.window_name)
+                print(("Cannot find view menu item for window: "
+                      + self.window_name))
                 return
             item.set_active(widget.get_active())
 
@@ -422,8 +421,8 @@ class Handler(GObject.GObject):
         self.connect()
         self.get_about()
         windows_setup()
-        statelines = \
-            subprocess.check_output([here('lpf'), 'state']).split('\n')
+        statebytes = subprocess.check_output([here('lpf'), 'state'])
+        statelines = statebytes.decode('utf-8').split('\n')
         self.update_main_grid(statelines)
         self.notify_menuitem_setup(None)
         for stateline in statelines:
@@ -442,7 +441,7 @@ class Handler(GObject.GObject):
 def main():
     ''' Indeed: main program. '''
     if len(sys.argv) > 2:
-        print "Usage: lpf-gui [package]"
+        print("Usage: lpf-gui [package]")
         sys.exit(2)
     elif len(sys.argv) == 2:
         try:

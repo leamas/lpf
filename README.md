@@ -242,7 +242,6 @@ This is open software licensed under the MIT license, see the LICENSE file.
 
 lots...
  - Dozens of bugs...
- - python3 port.
  - Rewrite the notitification code with a proper daemon and using the
    notification interface - i. e., using python.
  - Sooner or later write this in a proper language (python?).

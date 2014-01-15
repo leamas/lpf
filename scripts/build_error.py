@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 ''' Simple build error dialog, access to logs etc. '''
 
 import os.path
