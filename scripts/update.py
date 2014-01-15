@@ -126,7 +126,7 @@ class UpdateHandler(object):
             self._do_install(l)
         if self._state in ['done', 'failed']:
             self.builder.get_object('ok_btn').set_sensitive(True)
-            builder.get_object('buildlog_btn').set_sensitive(True)
+            self.builder.get_object('buildlog_btn').set_sensitive(True)
         return True
 
 
@@ -159,17 +159,22 @@ class Handler(object):
         _goodbye()
 
 
-# pylint: disable=invalid-name
-signal.signal(signal.SIGPIPE, signal.SIG_IGN)
+def main():
+    ''' Indeed: main program. '''
+    builder = Gtk.Builder()
+    ui = os.path.dirname(os.path.abspath(__file__)) + "/update.ui"
+    builder.add_from_file(ui)
+    builder.connect_signals(Handler())
 
-builder = Gtk.Builder()
-ui = os.path.dirname(os.path.abspath(__file__)) + "/update.ui"
-builder.add_from_file(ui)
-builder.connect_signals(Handler())
+    update_handler = UpdateHandler(builder)
+    GLib.io_add_watch(0, GLib.IO_IN, update_handler.process_line)
+    Gtk.main()
 
-update_handler = UpdateHandler(builder)
-GLib.io_add_watch(0, GLib.IO_IN, update_handler.process_line)
-Gtk.main()
+
+if __name__ == '__main__':
+    signal.signal(signal.SIGPIPE, signal.SIG_IGN)
+    main()
+
 
 
 # vim: set expandtab ts=4 sw=4:
