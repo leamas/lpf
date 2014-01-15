@@ -55,4 +55,5 @@ pylint:
 	@PYTHONPATH=scripts pylint --rcfile=pylint.conf \
 	    scripts/lpf-gui \
 	    scripts/lpf_gui_base.py \
-	    scripts/update.py
+	    scripts/update.py \
+	    scripts/notify.py
