@@ -168,7 +168,7 @@ $scriptdir/lpf-notify lock
 to_update=$( get_to_update $@ )
 for pkg in ${to_update[@]}; do
     if [ -n "$DISPLAY" ]; then
-        update_packages $pkg  | "$scriptdir/update.py"
+        update_packages $pkg  | "$scriptdir/update"
     else
         update_packages $pkg
     fi
