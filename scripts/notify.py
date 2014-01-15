@@ -17,7 +17,8 @@ def here(path):
 
 def get_outdated():
     ''' Return list of packages not in 'OK' state. '''
-    statelines = subprocess.check_output([here('lpf'), 'state']).split('\n')
+    statebytes = subprocess.check_output([here('lpf'), 'state'])
+    statelines = statebytes.decode('utf-8').split('\n')
     outdated = []
     for stateline in statelines:
         try:
