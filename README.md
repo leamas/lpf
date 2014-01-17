@@ -27,6 +27,9 @@ First clone the sources, create a fresh rpm and install it:
     $ tools/make_rpm
     $ sudo rpm -U --force dist/lpf-*.noarch.rpm
 
+Install the required dependencies: look into lpf.spec and install all
+packages mentioned as Requires: or BuildRequires:
+
 Then install your first lpf bootstrap package:
 
     $  cd examples/msttcore-fonts
