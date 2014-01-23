@@ -107,11 +107,11 @@ function rebuild_package()
     local pkg=$1
 
     case $( get_state $pkg ) in
-        'failed')  $scriptdir/lpf-packbuild 'set-state' $pkg 'build-wait'
+        'failed')  $scriptdir/lpf-pkgbuild 'set-state' $pkg 'build-wait'
                    $scriptdir/lpf-pkgbuild 'build' $pkg
                    ;;
         'not-approved')
-                  $scriptdir/lpf-packbuild 'set-state' $pkg 'approve-wait'
+                  $scriptdir/lpf-pkgbuild 'set-state' $pkg 'approve-wait'
                   lpf-approve $pkg && $scriptdir/lpf-pkgbuild 'build' $pkg
                   ;;
         *)        error "Rebuild error" "Illegal state (aborting)" >&2
