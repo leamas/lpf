@@ -38,6 +38,8 @@ There are some automated tests and some manual. To run them all:
 
 - Check that repeated GUI update displays correct "Nothing to update" message.
 
+- Rebuild lpf-skype on a 64-bit host.
+
 Running in mock:
     $ mock -r fedora-19-i386  --init
     $ mock -r fedora-19-i386  --install ~/dist/lpf-*.noarch.rpm

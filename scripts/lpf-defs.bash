@@ -23,6 +23,7 @@ function get_approve_file() { echo $LPF_VAR/approvals/$1; }
 function get_resultdir()    { echo $LPF_VAR/rpms/$1; }
 function get_notifydir()    { echo $LPF_VAR/notify/$1; }
 function get_pkg_srcdir()   { echo $LPF_DATA/packages/$1/SOURCES; }
+function get_pkg_datadir()  { echo $LPF_DATA/packages/$1; }
 function get_eula_dir()     { echo $LPF_DATA/packages/$1/eula; }
 function get_spec()         { echo $LPF_DATA/packages/$1/$1.spec; }
 function _get_statefile()   { echo $LPF_VAR/packages/$1/state; }

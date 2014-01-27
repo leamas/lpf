@@ -43,12 +43,15 @@ function build_pkg()
     local pkg="$1"
     local spec=$( get_spec $pkg )
     local buildlog=$( get_logfile $pkg )
+    local pkgdir=$( get_pkg_datadir $pkg )
     rm -rf $rpm_rpmdir/* &> /dev/null
     rm -rf $rpm_srcdir/* &> /dev/null
     [ -w "$rpm_srcdir" ] || rpmdev-setuptree
 
     exec 5<&1 6<&2  # Preserve  stdout/stderr.
     exec &>> $buildlog
+    source $scriptdir/../CONFIG
+    [ -f $pkgdir/CONFIG ] && source $pkgdir/CONFIG
     cd $rpm_srcdir
     cp $( get_pkg_srcdir $pkg )/* $PWD &>/dev/null || :
     echo "$pkg: downloading sources" >&5 && spectool -g $spec &&
