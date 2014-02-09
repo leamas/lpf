@@ -11,5 +11,6 @@ dist
 rpms
 test-usr
 test-var
+tmp
 usr
 var

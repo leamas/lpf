@@ -1,26 +1,28 @@
 # %%global will not work here, lazy evaluation needed.
 %define         target_pkg %(t=%{name}; echo ${t#lpf-})
 
-Name:           lpf-msttcore-fonts
-Version:        2.2
+Name:           lpf-mscore-tahoma-fonts
+Version:        1.0
 Release:        1%{?dist}
-Summary:        Bootstrap package building msttcore-fonts using lpf
+Summary:        Bootstrap package building mscore-tahoma-fonts using lpf
 
 License:        MIT
 URL:            https://github.com/leamas/lpf
 Group:          Development/Tools
 BuildArch:      noarch
-Source0:        msttcore-fonts.spec.in
+Source0:        mscore-tahoma-fonts.spec.in
+Source1:        License.txt
+Source2:        55-mscore-tahoma.conf
+
+
 BuildRequires:  desktop-file-utils
 BuildRequires:  lpf
 Requires:       lpf
-Requires:       lpf-mscore-fonts
-Requires:       lpf-mscore2-fonts
 
 
 %description
 Bootstrap package allowing the lpf system to build the
-msttccore-fonts non-redistributable package.
+mscore-tahoma-fonts non-redistributable package.
 
 
 %prep
@@ -31,9 +33,9 @@ msttccore-fonts non-redistributable package.
 
 
 %install
-# lpf-setup-pkg [eula] <topdir> <specfile> [sources...]
-/usr/share/lpf/scripts/lpf-setup-pkg %{buildroot} %{SOURCE0}
-desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
+# lpf-setup-pkg [-e eula] <topdir> <specfile> [sources...]
+/usr/share/lpf/scripts/lpf-setup-pkg -e %{SOURCE1} %{buildroot} %{SOURCE0} \
+    %{SOURCE2}
 
 
 %post
@@ -52,5 +54,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 
 %changelog
-* Sun May 05 2013 Alec Leamas <leamas@nowhere.net> - 0.9.0.133.gd18ed58.259-2
+* Mon Feb 10 2014 Alec Leamas <leamas@nowhere.net> - 1.0-1
 - Initial release
