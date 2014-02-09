@@ -7,7 +7,11 @@
 Summary:   Microsoft core TrueType fonts for better Windows Compatibility
 Name:      %{fontname}-fonts
 Version:   1.0
+<<<<<<< HEAD
 Release:   1%{?dist}
+=======
+Release:   1
+>>>>>>> Packaging msttcore
 
 URL:       http://mscorefonts2.sourceforge.net/
 License:   non-redistributable, no commercial use, no modifications permitted
@@ -47,7 +51,13 @@ Requires:  %{fontname}-webdings-fonts
 
 BuildRequires:  cabextract
 BuildRequires:  fontpackages-devel
+<<<<<<< HEAD
 Provides:       msttcore-fonts-installer = 2.6
+=======
+Obsoletes:      msttcore-fonts-installer <= 2.6
+Provides:       msttcore-fonts-installer = 2.6
+Obsoletes:      msttcorefonts <= 2.1
+>>>>>>> Packaging msttcore
 Provides:       msttcorefonts  = 2.1
 
 %description
@@ -56,12 +66,15 @@ http://www.microsoft.com/typography/fontpack/ , updated in the European
 Union Expansion Update circa May 2007, still available on the Microsoft
 website.
 
+<<<<<<< HEAD
 This is a meta package pulling in the different fonts making the complete
 set.
 
 The Tahoma font (often distributed with the fonts in this package) is in
 a separate package mscore-tahoma-fonts due to different license terms.
 
+=======
+>>>>>>> Packaging msttcore
 
 %package common
 Summary: Common support files
@@ -210,6 +223,7 @@ install -m 0755 -d $RPM_BUILD_ROOT%{_fontconfig_templatedir} \
 for fontconf in %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} \
     %{SOURCE15} %{SOURCE16} %{SOURCE17} %{SOURCE18} %{SOURCE19}
 do
+<<<<<<< HEAD
     install -m 0644 -p $fontconf %{buildroot}%{_fontconfig_templatedir}
     basename=$( basename $fontconf )
     ln -s %{_fontconfig_templatedir}/$basename \
@@ -220,12 +234,35 @@ done
 %files common
 %doc Licen.TXT
 
+=======
+  install -m 0644 -p $fontconf %{buildroot}%{_fontconfig_templatedir}
+  basename=$( basename $fontconf )
+  ln -s %{_fontconfig_templatedir}/$basename \
+        %{buildroot}%{_fontconfig_confdir}/$basename
+done
+
+mkdir -p $RPM_BUILD_ROOT/etc/X11/xorg.conf.d/
+cat -> $RPM_BUILD_ROOT/etc/X11/xorg.conf.d/09-msttcore-fontpath.conf <<'EOT'
+Section "Files"
+  FontPath "%{fontdir}"
+EndSection
+EOT
+
+
+%files common
+%doc Licen.TXT
+%config(noreplace) /etc/X11/xorg.conf.d/09-msttcore-fontpath.conf
+>>>>>>> Packaging msttcore
 
 %files
 
 
 %changelog
+<<<<<<< HEAD
 * Tue Feb 11 2014 Alec Leamas <leamas.alec@gmail.com> - 1.0-2
+=======
+* Mon Feb 10 2014  Alec Leamas <leamas@nowhere.net> - 1.0-1
+>>>>>>> Packaging msttcore
 - Based on previous work available at
   https://downloads.sourceforge.net/project/mscorefonts2/specs/msttcore-fonts-2.1-2.spec
 - Adapting to lpf, don't download in scriptlets.
