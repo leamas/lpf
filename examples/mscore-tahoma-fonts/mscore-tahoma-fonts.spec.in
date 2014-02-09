@@ -1,0 +1,54 @@
+%global fontname     mscore
+%global sf_corefonts http://downloads.sourceforge.net/corefonts/the%20fonts/final
+
+Summary:   Microsoft core Tahoma fonts for better Windows Compatibility
+Name:      %{fontname}-tahoma-fonts
+Version:   1.0
+Release:   1
+
+URL:       http://mscorefonts2.sourceforge.net/
+License:   non-redistributable
+Group:     User Interface/X
+BuildArch: noarch
+Source0:   License.txt
+Source1:   %{sf_corefonts}/wd97vwr32.exe
+Source2:   55-%{fontname}-tahoma.conf
+
+Requires:  xorg-x11-font-utils
+Requires:  fontconfig
+
+BuildRequires:  cabextract
+BuildRequires:  fontpackages-devel
+
+
+%description
+TTF Tahoma fonts that was distributed by Microsoft as part of the
+Word Reader package, which haves sort of a free license.
+
+
+%prep
+%setup -cT
+cabextract %{SOURCE1}
+cabextract Viewer1.cab
+
+
+%build
+
+
+%install
+install -d  $RPM_BUILD_ROOT/%{_datadir}/fonts/%{fontname}
+install -pm 644 *.ttf  $RPM_BUILD_ROOT/%{_datadir}/fonts/%{fontname}
+install -dm 0755 $RPM_BUILD_ROOT%{_fontconfig_templatedir} \
+    $RPM_BUILD_ROOT%{_fontconfig_confdir}
+install -m 0644 -p %{SOURCE2} %{buildroot}%{_fontconfig_templatedir}
+basename=$( basename %{SOURCE2} )
+ln -s %{_fontconfig_templatedir}/$basename \
+    %{buildroot}%{_fontconfig_confdir}/$basename
+
+
+%_font_pkg -n tahoma -f *-%{fontname}-tahoma.conf *.ttf
+
+
+%changelog
+* Mon Feb 10 2014 Alec Leamas <leamas@nowhere.net> - 1.0-1
+- Initial release.

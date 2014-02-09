@@ -1,89 +1,35 @@
-%global fontname msttcore
-%global fontconf 70-%{fontname}.conf
-
-# directory to unpack truetype fonts from the cab into
-%global fontdir %{_datadir}/fonts/%{fontname}
-
-%global sf_corefonts http://downloads.sourceforge.net/corefonts/the%20fonts/final
 
 Summary:   Microsoft core TrueType fonts for better Windows Compatibility
-Name:      %{fontname}-fonts
-Version:   2.2
+Name:      msttcore-fonts
+Version:   3.0
 Release:   1
 
 URL:       http://mscorefonts2.sourceforge.net/
 License:   non-redistributable
 Group:     User Interface/X
 BuildArch: noarch
-Obsoletes: msttcorefonts <= 2.0-3
-Provides:  msttcorefonts = 2.2-1
-Requires:  cabextract
-Requires:  xorg-x11-font-utils
-Requires:  fontconfig
 
-Source0:   http://sourceforge.net/projects/mscorefonts2/files/cabs/EUupdate.EXE
-Source1:   %{sf_corefonts}/andale32.exe
-Source2:   %{sf_corefonts}/arialb32.exe
-Source3:   %{sf_corefonts}/comic32.exe
-Source4:   %{sf_corefonts}/courie32.exe
-Source5:   %{sf_corefonts}/georgi32.exe
-Source6:   %{sf_corefonts}/impact32.exe
-Source7:   %{sf_corefonts}/webdin32.exe
-Source8:   %{sf_corefonts}/wd97vwr32.exe
-Source20:  msttcore-fonts-fontconfig.conf
+Requires:  lpf-mscore-fonts
+Requires:  lpf-mscore2-fonts
+Obsoletes: msttcore-fonts-installer
+Provides:  msttcore-fonts-installer
 
 
 %description
-TrueType core fonts for the web that were once
-available from http://www.microsoft.com/typography/fontpack/ prior
-to 2002, and most recently updated in the European Union Expansion
-Update circa May 2007, still available on the Microsoft website.
+TrueType core fonts for the web that were once available from
+http://www.microsoft.com/typography/fontpack/ prior
+to 2002 updated in the European Union Expansion Update circa May 2007,
+still available on the Microsoft website.
 
-These are the fonts added:
-
-    1998 Andale Mono
-    2006 Arial: bold, bold italic, italic, regular
-    1998 Arial: black
-    1998 Comic: bold, regular
-    2000 Courier: bold, bold italic, italic, regular
-    1998 Impact
-    2006 Times: bold, bold italic, italic, regular
-    2006 Trebuchet: bold, bold italic, italic, regular
-    2006 Verdana: bold, bold italic, italic, regular
-    1998 Webdings
+This is a meta package pulling in two lpf packages. You should run
+'lpf update' after installing this package.
 
 
-%prep
-%setup -cT
-for src in  %{SOURCE0} %{SOURCE1} %{SOURCE2} %{SOURCE3} %{SOURCE4} \
-    %{SOURCE5} \ %{SOURCE6} %{SOURCE7} %{SOURCE8}
-do
-    cabextract $src
-done
-
-
+%build
 
 %install
-install -d  $RPM_BUILD_ROOT/%{fontdir}
-install -m 644 -p *.ttf *.TTF $RPM_BUILD_ROOT/%{fontdir}
-install -m 0755 -d $RPM_BUILD_ROOT%{_fontconfig_templatedir} \
-                   $RPM_BUILD_ROOT%{_fontconfig_confdir}
-install -m 0644 -p %{SOURCE20} \
-      $RPM_BUILD_ROOT%{_fontconfig_templatedir}/%{fontconf}
-ln -s %{_fontconfig_templatedir}/%{fontconf} \
-      $RPM_BUILD_ROOT%{_fontconfig_confdir}/%{fontconf}
 
-mkdir -p $RPM_BUILD_ROOT/etc/X11/xorg.conf.d/
-cat -> $RPM_BUILD_ROOT/etc/X11/xorg.conf.d/09-msttcore-fontpath.conf <<'EOT'
-Section "Files"
-  FontPath "%{fontdir}"
-EndSection
-EOT
-
-
-%_font_pkg -f %{fontconf} *.ttf *.TTF
-%config(noreplace) /etc/X11/xorg.conf.d/09-msttcore-fontpath.conf
-%doc License.txt Licen.TXT
+%files
 
 
 %changelog
@@ -199,4 +145,3 @@ https://downloads.sourceforge.net/project/mscorefonts2/specs/msttcore-fonts-2.0-
 
 * Fri Aug 25 2001 Daniel Resare <noa metamatrix se>
 - initial version
-
