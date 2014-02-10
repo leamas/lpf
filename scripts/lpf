@@ -70,6 +70,16 @@ function check_pkg_arg()
 }
 
 
+function check_not_centos()
+# Exit with an error message if we are on centos. 
+{
+    if [[ $( rpm -E %centos ) == [567] ]]; then
+        echo "Not implemented in centos. Sorry."
+        exit 3
+    fi
+}
+
+
 function list_packages()
 # Return list of installed lpf packages.
 {
@@ -174,6 +184,7 @@ function get_spec_cmd()
 function hide_cmd()
 # hide_cmd <pkg>: Mute given package.
 {
+    check_not_centos
     check_pkg_arg "$@"
     $scriptdir/lpf-notify 'hide' "$@"
 }
@@ -182,6 +193,7 @@ function hide_cmd()
 function unhide_cmd()
 # unhide_cmd <pkg>: Unmute given package.
 {
+    check_not_centos
     check_pkg_arg "$@"
     $scriptdir/lpf-notify 'unhide' "$@"
 }
@@ -211,7 +223,11 @@ if [ -z "$1" -o "$1" = '-h' ]; then
     exit 1
 fi
 
-if [[ $( rpm -E %centos ) == [567] ]]; then unset DISPLAY; fi
+
+if [[ $( rpm -E %centos ) == [567] ]]; then
+    unset DISPLAY 
+    CENTOS='1'
+fi
 
 export SUDO_ASKPASS=$scriptdir/sudo_askpass
 id -Gn | grep -q $LPF_GROUP  || {
@@ -273,7 +289,8 @@ case $command in
             ;;
     unmute) unhide_cmd "$@"
             ;;
-    notify) $scriptdir/lpf-notify 'cli-notify' "$@"
+    notify) check_not_centos
+            $scriptdir/lpf-notify 'cli-notify' "$@"
             ;;
     scan-removal)
             scan_removal_cmd "$@"
