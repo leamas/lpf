@@ -13,13 +13,17 @@ Group:          Development/Tools
 Source0:        %{url}/archive/%{commit}/lpf-0-%{shortcommit}.tar.gz
 BuildArch:      noarch
 
+%if 0%{?fedora}
 BuildRequires:  appdata-tools
-BuildRequires:  desktop-file-utils
 Buildrequires:  python3-devel
-Requires:       hicolor-icon-theme
 Requires:       inotify-tools
-Requires:       polkit
 Requires:       procps-ng
+%else
+Requires:       procps
+%endif
+BuildRequires:  desktop-file-utils
+Requires:       hicolor-icon-theme
+Requires:       polkit
 Requires:       rpmdevtools
 Requires:       rpm-build
 Requires:       shadow-utils
@@ -52,8 +56,11 @@ rm -rf examples
 make DESTDIR=%{buildroot} install
 desktop-file-validate %{buildroot}%{_datadir}/applications/lpf.desktop
 
+
 %check
+%if 0%{?fedora}
 appdata-validate appdata/lpf.appdata.xml
+%endif
 
 
 %pre
