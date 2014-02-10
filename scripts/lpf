@@ -211,6 +211,8 @@ if [ -z "$1" -o "$1" = '-h' ]; then
     exit 1
 fi
 
+if [[ $( rpm -E %centos ) == [567] ]]; then unset DISPLAY; fi
+
 export SUDO_ASKPASS=$scriptdir/sudo_askpass
 id -Gn | grep -q $LPF_GROUP  || {
     if [ "$EUID" != "0" ]; then
