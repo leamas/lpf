@@ -1,0 +1,151 @@
+%global fontname cleartype
+%global fontdir %{_datadir}/fonts/%{fontname}
+
+Summary:   Microsoft ClearType fonts for better Windows Compatibility
+Name:      %{fontname}-fonts
+Version:   1.0
+Release:   1%{?dist}
+
+URL:       http://mscorefonts2.sourceforge.net/
+License:   non-redistributable, no modifications permitted
+Group:     User Interface/X
+BuildArch: noarch
+Source1:   http://sourceforge.net/projects/mscorefonts2/files/cabs/PowerPointViewer.exe
+Source10:  55-%{fontname}-calibri.conf
+Source11:  55-%{fontname}-cambria.conf
+Source12:  55-%{fontname}-candara.conf
+Source13:  55-%{fontname}-consolas.conf
+Source14:  55-%{fontname}-constantia.conf
+Source15:  55-%{fontname}-corbel.conf
+
+Requires:  xorg-x11-font-utils
+Requires:  fontconfig
+Requires:  %{fontname}-calibri-fonts
+Requires:  %{fontname}-cambria-fonts
+Requires:  %{fontname}-candara-fonts
+Requires:  %{fontname}-consolas-fonts
+Requires:  %{fontname}-constantia-fonts
+Requires:  %{fontname}-corbel-fonts
+
+BuildRequires:  cabextract
+BuildRequires:  fontpackages-devel
+
+%description
+Cleartype fonts made available to the public in the PowerPoint Viewer
+package around 2006.
+
+This is a meta package pulling in the different fonts making the complete
+set.
+
+
+%package common
+Summary: Common support files
+
+%description common
+Common support files for %{fontname}-fonts packages including licenses.
+
+
+%package -n %{fontname}-calibri-fonts
+Summary:  %{fontname} Calibri ttf font
+Requires: %{name}-common = %{version}-%{release}
+
+%description -n %{fontname}-calibri-fonts
+Microsoft Calibri font, part of the ClearType collection made available
+in the PowerPointViewer package, still available on the Microsoft website.
+
+%_font_pkg -n calibri -f *-%{fontname}-calibri.conf CALIBR*.TTF
+
+
+%package -n %{fontname}-cambria-fonts
+Summary:  %{fontname} Cambria ttf font
+Requires: %{name}-common = %{version}-%{release}
+
+%description -n %{fontname}-cambria-fonts
+Microsoft Cambria font, part of the ClearType collection made available
+in the PowerPointViewer package, still available on the Microsoft website.
+
+%_font_pkg -n cambria -f *-%{fontname}-cambria.conf CAMBRI*.TTF
+
+
+%package -n %{fontname}-candara-fonts
+Summary:  %{fontname} Trebuchet ttf font
+Requires: %{name}-common = %{version}-%{release}
+
+%description -n %{fontname}-candara-fonts
+Microsoft Candara font, part of the ClearType collection made available
+in the PowerPointViewer package, still available on the Microsoft website.
+
+%_font_pkg -n candara -f *-%{fontname}-candara.conf CANDAR*.TTF
+
+
+%package -n %{fontname}-consolas-fonts
+Summary:  %{fontname} verdana ttf font
+Requires: %{name}-common = %{version}-%{release}
+
+%description -n %{fontname}-consolas-fonts
+Microsoft Consolas font, part of the ClearType collection made available
+in the PowerPointViewer package, still available on the Microsoft website.
+
+%_font_pkg -n consolas -f *-%{fontname}-consolas.conf CONSOL*.TTF
+
+
+%package -n %{fontname}-constantia-fonts
+Summary:  %{fontname} Andale Mono ttf font
+Requires: %{name}-common = %{version}-%{release}
+
+%description -n %{fontname}-constantia-fonts
+Microsoft Constantia font, part of the ClearType collection made available
+in the PowerPointViewer package, still available on the Microsoft website.
+
+%_font_pkg -n constantia -f *-%{fontname}-constantia.conf  CONSTAN*.TTF
+
+
+%package -n %{fontname}-corbel-fonts
+Summary:  %{fontname} corbel ttf font
+Requires: %{name}-common = %{version}-%{release}
+
+%description -n %{fontname}-corbel-fonts
+Microsoft Corbel font, part of the ClearType collection made available
+in the PowerPointViewer package, still available on the Microsoft website.
+
+%_font_pkg -n corbel -f *-%{fontname}-corbel.conf CORBEL*.TTF
+
+
+%prep
+%setup -cT
+cabextract %{SOURCE1}
+cabextract ppviewer.cab
+touch -r eula.txt timestamp
+sed -i 's/\r//' eula.txt
+iconv -f utf-16 -t utf-8 < eula.txt > eula.tmp && mv -f eula.tmp eula.txt
+touch -r timestamp eula.txt
+
+
+%build
+
+
+%install
+install -d  $RPM_BUILD_ROOT/%{fontdir}
+install -m 644 -p  *.TTF $RPM_BUILD_ROOT/%{fontdir}
+install -m 0755 -d $RPM_BUILD_ROOT%{_fontconfig_templatedir} \
+    $RPM_BUILD_ROOT%{_fontconfig_confdir}
+for fontconf in \
+    %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{SOURCE15}
+do
+    install -m 0644 -p $fontconf %{buildroot}%{_fontconfig_templatedir}
+    basename=$( basename $fontconf )
+    ln -s %{_fontconfig_templatedir}/$basename \
+        %{buildroot}%{_fontconfig_confdir}/$basename
+done
+
+
+%files common
+%doc eula.txt
+
+
+%files
+
+
+%changelog
+* Tue Feb 11 2014 Alec Leamas <leamas.alec@gmail.com> - 1.0-2
+- Initial release.
