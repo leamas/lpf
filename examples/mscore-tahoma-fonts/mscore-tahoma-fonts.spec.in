@@ -7,7 +7,7 @@ Version:   1.0
 Release:   1%{?dist}
 
 URL:       http://mscorefonts2.sourceforge.net/
-License:   non-redistributable
+License:   non-redistributable, no modifications permitted
 Group:     User Interface/X
 BuildArch: noarch
 Source0:   License.txt
@@ -23,7 +23,8 @@ BuildRequires:  fontpackages-devel
 
 %description
 TTF Tahoma fonts that was distributed by Microsoft as part of the
-Word Reader package, which haves sort of a free license.
+Word Reader package having sort of a free license. Nowadays
+available from the Sourceforge mscorefonts2 project.
 
 
 %prep

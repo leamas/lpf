@@ -47,9 +47,7 @@ Requires:  %{fontname}-webdings-fonts
 
 BuildRequires:  cabextract
 BuildRequires:  fontpackages-devel
-Obsoletes:      msttcore-fonts-installer <= 2.6
 Provides:       msttcore-fonts-installer = 2.6
-Obsoletes:      msttcorefonts <= 2.1
 Provides:       msttcorefonts  = 2.1
 
 %description
@@ -57,6 +55,12 @@ TrueType core fonts for the web that prior to 2002 was available from
 http://www.microsoft.com/typography/fontpack/ , updated in the European
 Union Expansion Update circa May 2007, still available on the Microsoft
 website.
+
+This is a meta package pulling in the different fonts making the complete
+set.
+
+The Tahoma font (often distributed with the fonts in this package) is in
+a separate package mscore-tahoma-fonts due to different license terms.
 
 
 %package common
@@ -206,29 +210,22 @@ install -m 0755 -d $RPM_BUILD_ROOT%{_fontconfig_templatedir} \
 for fontconf in %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} \
     %{SOURCE15} %{SOURCE16} %{SOURCE17} %{SOURCE18} %{SOURCE19}
 do
-  install -m 0644 -p $fontconf %{buildroot}%{_fontconfig_templatedir}
-  basename=$( basename $fontconf )
-  ln -s %{_fontconfig_templatedir}/$basename \
+    install -m 0644 -p $fontconf %{buildroot}%{_fontconfig_templatedir}
+    basename=$( basename $fontconf )
+    ln -s %{_fontconfig_templatedir}/$basename \
         %{buildroot}%{_fontconfig_confdir}/$basename
 done
-
-mkdir -p $RPM_BUILD_ROOT/etc/X11/xorg.conf.d/
-cat -> $RPM_BUILD_ROOT/etc/X11/xorg.conf.d/09-msttcore-fontpath.conf <<'EOT'
-Section "Files"
-  FontPath "%{fontdir}"
-EndSection
-EOT
 
 
 %files common
 %doc Licen.TXT
-%config(noreplace) /etc/X11/xorg.conf.d/09-msttcore-fontpath.conf
+
 
 %files
 
 
 %changelog
-* Mon Feb 10 2014  Alec Leamas <leamas@nowhere.net> - 1.0-1
+* Tue Feb 11 2014 Alec Leamas <leamas.alec@gmail.com> - 1.0-2
 - Based on previous work available at
   https://downloads.sourceforge.net/project/mscorefonts2/specs/msttcore-fonts-2.1-2.spec
 - Adapting to lpf, don't download in scriptlets.
