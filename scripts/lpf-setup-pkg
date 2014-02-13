@@ -52,6 +52,10 @@ sed  -e '/^Name/s/=.*/= lpf '"$pkg/" \
      -e '/^Comment/s/=.*/= Use lpf system to build '"$pkg/" \
      -e "/^Exec/s/\$/ $pkg/" \
      -i $topdir/usr/share/applications/lpf-$pkg.desktop
+if [[ $( rpm -E %centos ) == [567] ]]; then
+    sed -i -e '/^Exec/s|=.*|'"= $scriptdir/lpf-gui-stub|" \
+        $topdir/usr/share/applications/lpf-$pkg.desktop
+fi
 
 [ -n "$eula" ] && cp -a $eula $topdir/usr/share/lpf/packages/$pkg/eula
 chmod 644 $config

@@ -1,3 +1,8 @@
 #!/bin/bash
 msg="Sorry, not implemented in centos. Use command-line lpf instead."
-zenity --error --text="$msg"
+if [ "$DISPLAY" ]; then
+    zenity --error --text="$msg"
+else
+    echo $msg >&2
+    exit 1
+fi
