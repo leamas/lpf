@@ -46,6 +46,13 @@ and other info.
 EOF
 }
 
+function running_on_centos()
+# Return ($?) if we are running on centos or not.
+{
+    test $( rpm -E %centos ) == [567]
+}
+
+
 function version()
 # print verson data on stdout
 {
@@ -71,9 +78,9 @@ function check_pkg_arg()
 
 
 function check_not_centos()
-# Exit with an error message if we are on centos. 
+# Exit with an error message if we are on centos.
 {
-    if [[ $( rpm -E %centos ) == [567] ]]; then
+    if running_on_centos; then
         echo "Not implemented in centos. Sorry."
         exit 3
     fi
@@ -223,11 +230,7 @@ if [ -z "$1" -o "$1" = '-h' ]; then
     exit 1
 fi
 
-
-if [[ $( rpm -E %centos ) == [567] ]]; then
-    unset DISPLAY 
-    CENTOS='1'
-fi
+if running_on_centos; then unset DISPLAY; fi
 
 export SUDO_ASKPASS=$scriptdir/sudo_askpass
 id -Gn | grep -q $LPF_GROUP  || {
