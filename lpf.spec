@@ -15,7 +15,7 @@ BuildArch:      noarch
 
 BuildRequires:  appdata-tools
 BuildRequires:  desktop-file-utils
-Buildrequires:  python2-devel
+Buildrequires:  python3-devel
 Requires:       hicolor-icon-theme
 Requires:       inotify-tools
 Requires:       polkit
