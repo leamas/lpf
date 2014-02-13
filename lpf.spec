@@ -56,6 +56,11 @@ rm -rf examples
 make DESTDIR=%{buildroot} install
 desktop-file-validate %{buildroot}%{_datadir}/applications/lpf.desktop
 
+%if ! 0%{?fedora}
+rm %{buildroot}/usr/bin/lpf-gui
+cp -a scripts/lpf-gui-stub %{buildroot}/usr/bin/lpf-gui
+%endif
+
 
 %check
 %if 0%{?fedora}
@@ -70,15 +75,18 @@ getent passwd pkg-build >/dev/null || \
         -c "lpf local package build user" pkg-build
 exit 0
 
+
 %post
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
 /usr/bin/lpf scan || :
+
 
 %postun
 if [ $1 -eq 0 ] ; then
     /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
     /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 fi
+
 
 %posttrans
 /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :

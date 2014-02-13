@@ -1,0 +1,3 @@
+#!/bin/bash
+msg="Sorry, not implemented in centos. Use command-line lpf instead."
+zenity --error --text="$msg"
