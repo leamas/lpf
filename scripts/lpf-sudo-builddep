@@ -18,7 +18,7 @@ for spec in "$@"; do
     fi
 done
 
-[ "$good_specs" ] && /usr/bin/yum-builddep $good_specs
+[ "$good_specs" ] && /usr/bin/yum-builddep -y $good_specs
 
 
 # vim: set expandtab ts=4 sw=4:
