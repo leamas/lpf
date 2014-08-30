@@ -109,6 +109,8 @@ if [[ ! $( id -un ) = "$LPF_USER" && "$UID" -ne '0' ]]; then
     exec $SUDO -u pkg-build $scriptdir/lpf-pkgbuild "$@"
 fi
 
+umask 002
+
 cmd="$1"; shift
 case "$cmd" in
     'build')
