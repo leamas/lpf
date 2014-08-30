@@ -222,6 +222,7 @@ if [ "$( id -gn )" !=  "$LPF_GROUP" ]; then
     exec sg pkg-build "$0 $*"
 fi
 
+umask 002
 trap "do_trap 81" SIGINT ERR
 
 # http://forums.gentoo.org/viewtopic-t-947211-start-0.html

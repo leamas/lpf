@@ -5,6 +5,8 @@
 
 set -e
 
+umask 002
+
 scriptdir=${scriptdir:-$( dirname $(readlink -fn $0))}
 source  $scriptdir/lpf-sudo-defs.bash
 
