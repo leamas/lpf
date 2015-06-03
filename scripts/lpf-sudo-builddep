@@ -19,7 +19,7 @@ for spec in "$@"; do
 done
 
 for spec in $(echo $good_specs); do
-    deps=$( /usr/bin/dnf builddep $spec )
+    deps=$( /usr/bin/dnf -y builddep $spec )
     echo -n $deps
 done
 echo -en ${good_specs:+"\n"}
