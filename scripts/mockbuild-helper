@@ -30,7 +30,7 @@ function install_rpms()
     echo "$pkg: installing rpms."
     local to_install=$( find  $resultdir  -type f )
     echo "$pkg: installing ${to_install[@]}."
-    yum -y install ${to_install[@]} && rm -rf $resultdir
+    dnf --quiet -y install ${to_install[@]} && rm -rf $resultdir
     case $? in
         0) $scriptdir/lpf-packbuild 'set-state' $pkg 'OK'
            echo "$pkg: install completed, no errors"
@@ -58,7 +58,7 @@ for pkgdir in ${pkgdirs[@]}; do
     cp $PKG_DATA_DIR/$pkg/SOURCES/* $(pwd) || :
     echo "$pkg: downloading sources" && spectool -g $spec &&
         echo "$pkg: installing build dependencies" &&
-        yum-builddep $spec &&
+        dnf --quiet builddep $spec &&
         echo "$pkg: building" && \
         rpmbuild ${rpmbuild_opts:-'-bb'} $spec && \
         echo "$pkg: storing results"  &&

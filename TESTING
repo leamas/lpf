@@ -2,7 +2,7 @@ There are some automated tests and some manual. To run them all:
 
 - Generate a new rpm and install it:
     $ tools/make_rpm
-    $ sudo yum install ~/rpmbuild/RPMS/noarch/lpf-0-2.b7cd782.fc18.noarch.rpm
+    $ sudo dnf install ~/rpmbuild/RPMS/noarch/lpf-0-2.b7cd782.fc18.noarch.rpm
 
 - Apply patch to make unittests run without a password:
 

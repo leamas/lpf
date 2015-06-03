@@ -24,7 +24,7 @@ Requires:       rpmdevtools
 Requires:       rpm-build
 Requires:       shadow-utils
 Requires:       sudo
-Requires:       yum-utils
+Requires:       dnf-plugins-core
 Requires:       zenity
 Requires(pre):  shadow-utils
 
@@ -53,7 +53,7 @@ make DESTDIR=%{buildroot} install
 desktop-file-validate %{buildroot}%{_datadir}/applications/lpf.desktop
 
 %check
-appdata-validate appdata/lpf.appdata.xml
+appstream-util validate-relax appdata/lpf.appdata.xml
 
 
 %pre

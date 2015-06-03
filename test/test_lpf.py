@@ -67,4 +67,7 @@ class TestLpf(unittest.TestCase):
             subprocess.check_call(['/bin/bash', '-c', './test-notify'],
                                    stdout=devnull)
 
+if __name__ == "__main__":
+    unittest.main()
+
 # vim: set expandtab ts=4 sw=4:

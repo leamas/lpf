@@ -60,7 +60,7 @@ Do that using
 
 This will first present a dialog (text or gui) where you can read and accept
 the license. Depending on your sudo configuration you might also be prompted
-for a password when a yum install is needed.
+for a password when a dnf install is needed.
 
 After running above, check status again
 

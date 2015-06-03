@@ -2,7 +2,9 @@
 <!-- Copyright 2014 Alec Leamas <leamas@nowhere.net> -->
 <application>
    <id type="desktop">lpf-gui.desktop</id>
-   <licence>CC0</licence>
+   <name>lpf</name>
+   <summary>Local package factory</summary>
+   <metadata_license>CC0</metadata_license>
    <description>
        <p>
         Lpf (Local Package Factory) handles non-redistributable lpf packages.
