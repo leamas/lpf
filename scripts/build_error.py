@@ -4,6 +4,7 @@ import os.path
 import os
 os.environ['NO_AT_BRIDGE'] = '0'
 
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk        # pylint:disable=no-name-in-module
 
 
