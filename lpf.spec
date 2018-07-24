@@ -37,7 +37,7 @@ problems:
 
 It works by downloading sources, possibly requiring a user to accept
 license terms and then building and installing rpm package(s) locally.
-Besides being interactive the operation is similar to akmod and dkms
+Besides being interactive the operation is similar to akmod and dkms.
 
 
 %prep
