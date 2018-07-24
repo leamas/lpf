@@ -6,6 +6,9 @@ import signal
 import subprocess
 import sys
 
+import gi
+gi.require_version('Gtk', '3.0')
+
 from gi.repository import GLib        # pylint: disable=no-name-in-module
 from gi.repository import Gtk         # pylint: disable=no-name-in-module
 

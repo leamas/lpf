@@ -8,6 +8,9 @@ import subprocess
 import sys
 import time
 
+import gi
+gi.require_version('Gtk', '3.0')
+
 from gi.repository import Gtk              # pylint:disable=no-name-in-module
 from gi.repository import Gdk              # pylint:disable=no-name-in-module
 from gi.repository import GObject          # pylint:disable=no-name-in-module
