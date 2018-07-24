@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 for pkg in $( lpf list ); do
    to_remove="$to_remove lpf-$pkg"

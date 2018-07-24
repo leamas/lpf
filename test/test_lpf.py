@@ -64,7 +64,7 @@ class TestLpf(unittest.TestCase):
     def test_notify(self):
         ''' Test notifications i. e., lpf-notify. '''
         with open('/dev/null', 'w') as devnull:
-            subprocess.check_call(['/bin/bash', '-c', './test-notify'],
+            subprocess.check_call(['/usr/bin/bash', '-c', './test-notify'],
                                    stdout=devnull)
 
 if __name__ == "__main__":
