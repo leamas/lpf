@@ -10,7 +10,7 @@ source $scriptdir/lpf-defs.bash
 function usage()
 {
     cat << EOF
-Usage: lpf <command> [args]
+Usage: lpf [-n] <command> [args]
 
 commands:
     list        List all packages.
@@ -41,8 +41,8 @@ commands:
                 Re-enable notification messages for a possibly muted package.
 
 
-Unset \$DISPLAY to disable GUI dialogs. See the manpage for more commands
-and other info.
+Use the -n flag or unset \$DISPLAY to disable GUI dialogs. See the manpage for
+more commands and other info.
 EOF
 }
 
@@ -230,6 +230,17 @@ export NO_AT_BRIDGE=0
 
 export SUDO_ASKPASS=$scriptdir/sudo_askpass
 
+# parse basic flags with getopts
+while getopts "hn" opt; do
+  # shellcheck disable=2220
+  case $opt in
+    h) usage; exit;;
+    n) unset DISPLAY;;
+  esac
+done
+shift "$((OPTIND-1))"
+
+# now fall through to command parsing
 command=$1
 shift
 case $command in
