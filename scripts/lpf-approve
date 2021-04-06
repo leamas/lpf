@@ -44,7 +44,7 @@ function cli_approve()
 # User approves EULA, no GUI.
 {
     local license=$1
-    more $license
+    ${PAGER:-more} $license
     echo -n "Do you accept these license terms [n] ? "
     read reply
     [ -z "$reply" ] && reply='No'
