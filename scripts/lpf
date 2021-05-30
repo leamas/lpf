@@ -214,7 +214,8 @@ fi
 export SUDO_ASKPASS=$scriptdir/sudo_askpass
 id -Gn | grep -q $LPF_GROUP  || {
     if [ "$EUID" != "0" ]; then
-       $scriptdir/lpf-add-group || exit 1
+       $scriptdir/lpf-add-group
+       exit 1
     fi
 }
 
