@@ -6,7 +6,7 @@ Version:        0.2
 Release:        1.%{shortcommit}%{?dist}
 Summary:        Local package factory - build non-redistributable rpms
 
-                # Icon from iconarchive.com
+# Icon from iconarchive.com
 License:        MIT
 URL:            https://github.com/leamas/lpf
 Source0:        %{url}/archive/%{commit}/lpf-%{version}-%{shortcommit}.tar.gz
@@ -56,7 +56,7 @@ make DESTDIR=%{buildroot} install
 desktop-file-validate %{buildroot}%{_datadir}/applications/lpf.desktop
 
 %check
-appstream-util validate-relax --nonet appdata/lpf.appdata.xml
+appstream-util validate-relax --nonet appdata/lpf-gui.appdata.xml
 
 
 %pre
@@ -67,8 +67,10 @@ getent passwd pkg-build >/dev/null || \
 exit 0
 
 %post
+#/usr/bin/lpf scan || :
+
+%if 0%{?rhel} && 0%{?rhel} < 8
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-/usr/bin/lpf scan || :
 
 %postun
 if [ $1 -eq 0 ] ; then
@@ -78,6 +80,7 @@ fi
 
 %posttrans
 /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+%endif
 
 
 %files
@@ -102,7 +105,7 @@ fi
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.2-15.f1f5dd9
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
-* Wed Sep 09 2020 Petr Viktorin <pviktori@redhat.com> - 0.2-14.%{shortcommit}
+* Wed Sep 09 2020 Petr Viktorin <pviktori@redhat.com> - 0.2-14.f1f5dd9
 - Switch BuildRequires to python3
 
 * Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.2-13.f1f5dd9
