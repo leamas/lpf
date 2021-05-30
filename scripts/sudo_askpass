@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 #
 # zenity wrapper used as sudo askpass helper
 

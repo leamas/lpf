@@ -34,10 +34,12 @@
    <!-- Fix references to devel branch when merging into master. -->
    <screenshots>
        <screenshot type="default" width="640" height="360">
-           https://github.com/leamas/lpf/raw/devel/appdata/main.png
+           <image>https://github.com/leamas/lpf/raw/devel/appdata/main.png</image>
+           <caption>Main windows</caption>
        </screenshot>
        <screenshot width="640" height="360">
-           https://github.com/leamas/lpf/raw/devel/appdata/details.png
+           <image>https://github.com/leamas/lpf/raw/devel/appdata/details.png</image>
+           <caption>Window with details</caption>
        </screenshot>
    </screenshots>
 

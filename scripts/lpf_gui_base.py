@@ -8,6 +8,9 @@ import subprocess
 import sys
 import time
 
+import gi
+gi.require_version('Gtk', '3.0')
+
 from gi.repository import Gtk              # pylint:disable=no-name-in-module
 from gi.repository import Gdk              # pylint:disable=no-name-in-module
 from gi.repository import GObject          # pylint:disable=no-name-in-module
@@ -448,6 +451,9 @@ def main():
             subprocess.call([here('lpf'), 'update', sys.argv[1]])
         except subprocess.CalledProcessError:
             pass
+    if not Gtk.init_check()[0]:
+        print("Unable to init xserver, so we can't start graphic interface, you can try using lpf from command line")
+        return
     builder = Gtk.Builder()
     builder.add_from_file(here("lpf-gui.ui"))
     Handler(builder)

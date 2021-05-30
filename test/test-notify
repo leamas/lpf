@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 scriptdir="$( dirname $( readlink -fn $0 ))/../scripts"
 source $scriptdir/lpf-defs.bash
 exec &> test-notify.log
