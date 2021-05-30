@@ -451,6 +451,9 @@ def main():
             subprocess.call([here('lpf'), 'update', sys.argv[1]])
         except subprocess.CalledProcessError:
             pass
+    if not Gtk.init_check()[0]:
+        print("Unable to init xserver, so we can't start graphic interface, you can try using lpf from command line")
+        return
     builder = Gtk.Builder()
     builder.add_from_file(here("lpf-gui.ui"))
     Handler(builder)
