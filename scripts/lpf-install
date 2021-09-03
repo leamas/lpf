@@ -39,7 +39,7 @@ function gui_confirm_install()
     zenity --list --title "Select RPMs to install" --checklist \
         --column Install --column RPM \
         --separator=' ' \
-        ${listdata[@]} | awk -v dir=$resultdir \
+        ${listdata[@]} | grep -v "WINDOW DECORATIONS" | awk -v dir=$resultdir \
                             '{for (i=1; i<=NF; i++) print dir "/" $i}'
 }
 
