@@ -39,7 +39,7 @@ package.
 %prep
 %setup -q
 cat << EOF > %{name}-wrapper
-#!/bin/sh
+#!/usr/bin/sh
 PULSE_LATENCY_MSEC=30 skype-bin
 EOF
 sed -i 's/\r$//' LICENSE
