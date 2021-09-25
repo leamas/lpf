@@ -54,7 +54,7 @@ function update_package()
 function confirm_update_arg()
 {
     local pkg state version
-    read pkg state version < <( list_states $@ ) || { usage; exit 1; }
+    read pkg state version < <( list_states $@ ) || exit 1;
     if [[ 'failed approve-wait build-wait install-wait not-approved' \
            == *$state* ]]
     then
@@ -134,7 +134,7 @@ function get_to_update()
 
     local to_update
     if (( $# == 1 && ${#states[@]} == 1 )); then
-        to_update=( "$@" )
+        to_update=( "${states[@]}" )
     elif [ -n "$*" ]; then
         to_update=$( confirm_update_arg "$@" ) || to_update=()
     elif [ -n "$DISPLAY" ]; then
@@ -165,7 +165,7 @@ exec 5<&1 6<&2
 export LPF_UPDATE=1
 $scriptdir/lpf-notify lock
 
-to_update=$( get_to_update $@ )
+to_update=$( get_to_update " $@")
 for pkg in ${to_update[@]}; do
     if [ -n "$DISPLAY" ]; then
         update_packages $pkg  | "$scriptdir/update"
