@@ -13,7 +13,7 @@ function usage()
 Usage: lpf [-n] <command> [args]
 
 commands:
-    list        List all packages.
+    list        List all installed lpf packages.
     update [package]
                 Interactive approve, build and install of given package or
                 all packages.
@@ -32,6 +32,9 @@ commands:
                 failed.
     install <package>
                 Install rpms for given package.
+    reset <package>
+                Remove all temporary files for package, set state as after
+                fresh install.
     log [package]
                 Display logs from last build for package, or just
                 last build.
@@ -39,6 +42,18 @@ commands:
                 Mute (i. e., disable) notification messages for  package.
     unmute <package>
                 Re-enable notification messages for a possibly muted package.
+    notify [message]
+                Print given message or a default  one if there are lpf
+                packages in need of action - typically in need to be updated.
+    spec <package>
+                Copy spec file for package to current directory.
+    srpm <package>
+                Build a srpm file for package in current directory.
+    scan-removal <package>
+                Triage package with the assumption that existing target
+                package is removed (use in spec scriptlets).
+    version version
+                Print version data.
 
 
 Use the -n flag or unset \$DISPLAY to disable GUI dialogs. See the manpage for
