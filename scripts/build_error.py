@@ -23,6 +23,7 @@ class Handler(object):
 
     def on_view_buildlog_button_clicked(self, button):
         ''' User pushes 'View buildlog' button. '''
+        print('view_buildlog')
         Gtk.main_quit(self, button)
 
     def on_ok_button_clicked(self, button):
