@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 #
 # Setup package for build
 #
@@ -56,7 +56,7 @@ sed  -e '/^Name/s/=.*/= lpf '"$pkg/" \
 [ -n "$eula" ] && cp -a $eula $topdir/usr/share/lpf/packages/$pkg/eula
 chmod 644 $config
 [ -s "$config" ] && cp -a $config $topdir/usr/share/lpf/packages/$pkg/CONFIG
-cp -a $spec* $topdir/usr/share/lpf/packages/$pkg/${pkg}.spec
+cp -a $spec.in $topdir/usr/share/lpf/packages/$pkg/${pkg}.spec
 for arg in $*; do
     cp $arg $topdir/usr/share/lpf/packages/$pkg/SOURCES
 done

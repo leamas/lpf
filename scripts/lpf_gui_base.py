@@ -8,6 +8,9 @@ import subprocess
 import sys
 import time
 
+import gi
+gi.require_version('Gtk', '3.0')
+
 from gi.repository import Gtk              # pylint:disable=no-name-in-module
 from gi.repository import Gdk              # pylint:disable=no-name-in-module
 from gi.repository import GObject          # pylint:disable=no-name-in-module
@@ -273,7 +276,11 @@ class Handler(GObject.GObject):
     def update_main_grid(self, statelines=None):
         ''' Update the main window grid with data from 'lpf state'. '''
         if not statelines:
-            statebytes = subprocess.check_output([here('lpf'), 'state'])
+            try:
+                statebytes = subprocess.check_output([here('lpf'), 'state'])
+            except subprocess.CalledProcessError as e:
+                print(e)
+                sys.exit(1)
             statelines = statebytes.decode('utf-8').split('\n')
         grid = self.get_grid()
         for row, stateline in enumerate(statelines):
@@ -302,7 +309,11 @@ class Handler(GObject.GObject):
             subprocess.call([here('lpf'), 'reset', pkg_name])
             self.update_details(pkg_name)
 
-        statebytes = subprocess.check_output([here('lpf'), 'state', pkg_name])
+        try:
+            statebytes = subprocess.check_output([here('lpf'), 'state', pkg_name])
+        except subprocess.CalledProcessError as e:
+            print(e)
+            sys.exit(1)
         stateline = statebytes.decode('utf-8')
         try:
             pkg_name, state, vers = stateline.split()
@@ -421,7 +432,11 @@ class Handler(GObject.GObject):
         self.connect()
         self.get_about()
         windows_setup()
-        statebytes = subprocess.check_output([here('lpf'), 'state'])
+        try:
+            statebytes = subprocess.check_output([here('lpf'), 'state'])
+        except subprocess.CalledProcessError as e:
+            print(e)
+            sys.exit(1)
         statelines = statebytes.decode('utf-8').split('\n')
         self.update_main_grid(statelines)
         self.notify_menuitem_setup(None)
@@ -448,6 +463,9 @@ def main():
             subprocess.call([here('lpf'), 'update', sys.argv[1]])
         except subprocess.CalledProcessError:
             pass
+    if not Gtk.init_check()[0]:
+        print("Unable to init xserver, so we can't start graphic interface, you can try using lpf from command line")
+        return
     builder = Gtk.Builder()
     builder.add_from_file(here("lpf-gui.ui"))
     Handler(builder)

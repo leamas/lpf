@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 #
 # Add the lpf group to current user.
 #
@@ -10,7 +10,9 @@ source $scriptdir/lpf-defs.bash
 function cli_confirm_add()
 # Let user confirm adding of group pkg-build to $USER (no GUI).
 {
-    echo -n "OK to add group $LPF_GROUP to your current user $USER? [n]: "
+    echo -n "You must be member of the $LPF_GROUP group to run lpf. "
+    echo "If you prefer, you may run as root \"usermod -a -G $LPF_GROUP $USER\" "
+    echo -n "OK to add group $LPF_GROUP to your current user $USER ? [n]: "
     read
     if [[ "$REPLY" == [Yy]* ]]; then
         return 0
@@ -23,16 +25,28 @@ function cli_confirm_add()
 function gui_confirm_add()
 # Let user confirm adding of group pkg-build to $USER (GUI).
 {
-    text="You must be member of the $LPF_GROUP group to run lpf"
-    text="$text (log out and in again to mute this dialog)."
-    text="$text\nOK to add group $LPF_GROUP to your current user $USER?"
-    zenity --question  --text "$text"
+    text="You must be member of the $LPF_GROUP group to run lpf."
+    text="$text\nOK to add group $LPF_GROUP to your current user $USER ?"
+    text="$text If you prefer, you may run as root:\nusermod -a -G $LPF_GROUP $USER"
+    zenity --question --width="400" --text "$text"
 }
 
 
 function add_lpf_group()
 # Add user pkg-build to current user. Use sudo if possible, else pkexec.
 {
+    id $EUID -Gn | grep -q $LPF_GROUP && {
+        text="Your user is added to $LPF_GROUP group but haven't yet take effect. \
+It only takes effect when the user logs in again please logout and login or do exec su - $USER \
+you can read more details on <a
+href=\"https://unix.stackexchange.com/questions/6387/i-added-a-user-to-a-group-but-group-permissions-on-files-still-have-no-effect\"> https://unix.stackexchange.com/questions/6387/i-added-a-user-to-a-group-but-group-permissions-on-files-still-have-no-effect </a>"
+        if [ -n "$DISPLAY" ]; then
+            zenity --error --width="400" --text "$text"
+        else
+            echo -n $text
+        fi
+        exit 1
+    }
     if [ -n "$DISPLAY" ]; then
         gui_confirm_add || return 1
     else
@@ -41,7 +55,16 @@ function add_lpf_group()
     if sudo -l /usr/sbin/usermod &>/dev/null; then
         $SUDO usermod -a -G $LPF_GROUP $USER
     else
+    if [ -n "$DISPLAY" ]; then
         pkexec /usr/sbin/usermod -a -G $LPF_GROUP $USER
+        if [ $? -ne "0" ]; then
+            echo "pkexec failed"
+            return 1
+        fi
+    else
+        echo "Using su to run \"usermod -a -G $LPF_GROUP $USER\" (please type root password)"
+        su root -c "usermod -a -G $LPF_GROUP $USER"
+    fi
     fi
 }
 

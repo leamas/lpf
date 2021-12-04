@@ -3,7 +3,7 @@
 lpf \- Build non-redistributable rpms
 
 .SH SYNOPSIS
-.B lpf <command> [options]
+.B lpf [-n] <command> [options]
 
 .SH DESCRIPTION
 Builds and installs non-redistributable rpms by downloading binaries,
@@ -30,7 +30,7 @@ below.
 .PP
 If DISPLAY is defined in the environment, lpf uses GUI dialogs for user
 interaction even when invoked from command line. To force CLI only
-operation, unset DISPLAY.
+operation, use the -n flag or unset DISPLAY.
 .PP
 lpf has a notification system for packages needing to be updated. See
 NOTIFICATIONS below.
@@ -157,4 +157,3 @@ sudo(8)
 .TP
 pkexec(1)
     Used to add user to pkg-build group at initial run.
-

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 #
 #
 # Notification handling: create, check, hide, remove. Here is

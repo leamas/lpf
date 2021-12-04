@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 #
 # State-changing operations, needs to be run as pkg-build user.
 #

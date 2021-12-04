@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 #
 # lpf Local Package Building Service wrapper script
 #
@@ -10,10 +10,10 @@ source $scriptdir/lpf-defs.bash
 function usage()
 {
     cat << EOF
-Usage: lpf <command> [args]
+Usage: lpf [-n] <command> [args]
 
 commands:
-    list        List all packages.
+    list        List all installed lpf packages.
     update [package]
                 Interactive approve, build and install of given package or
                 all packages.
@@ -32,6 +32,9 @@ commands:
                 failed.
     install <package>
                 Install rpms for given package.
+    reset <package>
+                Remove all temporary files for package, set state as after
+                fresh install.
     log [package]
                 Display logs from last build for package, or just
                 last build.
@@ -39,10 +42,22 @@ commands:
                 Mute (i. e., disable) notification messages for  package.
     unmute <package>
                 Re-enable notification messages for a possibly muted package.
+    notify [message]
+                Print given message or a default  one if there are lpf
+                packages in need of action - typically in need to be updated.
+    spec <package>
+                Copy spec file for package to current directory.
+    srpm <package>
+                Build a srpm file for package in current directory.
+    scan-removal <package>
+                Triage package with the assumption that existing target
+                package is removed (use in spec scriptlets).
+    version version
+                Print version data.
 
 
-Unset \$DISPLAY to disable GUI dialogs. See the manpage for more commands
-and other info.
+Use the -n flag or unset \$DISPLAY to disable GUI dialogs. See the manpage for
+more commands and other info.
 EOF
 }
 
@@ -214,7 +229,8 @@ fi
 export SUDO_ASKPASS=$scriptdir/sudo_askpass
 id -Gn | grep -q $LPF_GROUP  || {
     if [ "$EUID" != "0" ]; then
-       $scriptdir/lpf-add-group || exit 1
+       $scriptdir/lpf-add-group
+       exit 1
     fi
 }
 
@@ -230,6 +246,17 @@ export NO_AT_BRIDGE=0
 
 export SUDO_ASKPASS=$scriptdir/sudo_askpass
 
+# parse basic flags with getopts
+while getopts "hn" opt; do
+  # shellcheck disable=2220
+  case $opt in
+    h) usage; exit;;
+    n) unset DISPLAY;;
+  esac
+done
+shift "$((OPTIND-1))"
+
+# now fall through to command parsing
 command=$1
 shift
 case $command in

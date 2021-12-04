@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/sh
 #
 # Given an lpf package, build and install the target package
 # in a mock changeroot, similar to lpf update.

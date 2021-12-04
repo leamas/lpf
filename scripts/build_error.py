@@ -4,6 +4,9 @@ import os.path
 import os
 os.environ['NO_AT_BRIDGE'] = '0'
 
+import gi
+gi.require_version('Gtk', '3.0')
+
 from gi.repository import Gtk        # pylint:disable=no-name-in-module
 
 
@@ -20,6 +23,7 @@ class Handler(object):
 
     def on_view_buildlog_button_clicked(self, button):
         ''' User pushes 'View buildlog' button. '''
+        print('view_buildlog')
         Gtk.main_quit(self, button)
 
     def on_ok_button_clicked(self, button):

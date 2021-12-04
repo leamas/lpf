@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 #
 # The update command
 
@@ -54,7 +54,7 @@ function update_package()
 function confirm_update_arg()
 {
     local pkg state version
-    read pkg state version < <( list_states $@ ) || { usage; exit 1; }
+    read pkg state version < <( list_states $@ ) || exit 1;
     if [[ 'failed approve-wait build-wait install-wait not-approved' \
            == *$state* ]]
     then
@@ -106,7 +106,7 @@ function gui_confirm_update()
         $( list_states | egrep "$update_states" | sed 's/^/True /'))
     zenity --list --title "Select packages to build and install" --checklist \
         --column Install --column Package --column State --column Version  \
-        ---width 700 --separator=' ' ${listdata[@]} \
+        --width 700 --separator=' ' ${listdata[@]} \
             || $scriptdir/lpf-kill-pgroup
 }
 
